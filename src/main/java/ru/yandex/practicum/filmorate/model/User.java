@@ -14,26 +14,26 @@ public class User {
     /**
      * Индификатор пользователя
      */
-    private final int id;
+    private int id;
 
     /**
      * Электронная почта
      */
-    private final String email;
+    private String email;
 
     /**
      * Логин пользователя
      */
-    private final String login;
+    private String login;
 
     /**
      * Имя пользователя(для отображения)
      */
-    private final String name;
+    private String name;
 
     /**
      * Дата рождения
      */
-    private final Instant birthday;
+    private Instant birthday;
 
 }
