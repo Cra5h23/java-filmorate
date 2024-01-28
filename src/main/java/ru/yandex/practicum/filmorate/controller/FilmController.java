@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exeptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,14 +20,14 @@ import java.util.Map;
 public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
 
-    private final int generatorId = 0;
+    private int generatorId = 0;
 
     @GetMapping
     public Collection getAllFilms() {
         return Collections.unmodifiableCollection(films.values());
     }
 
-    @PostMapping("/film")
+    @PostMapping()
     public Film addFilm(@RequestBody Film film) {
         filmValidator(film);
         film.setId(++generatorId);
@@ -55,7 +55,10 @@ public class FilmController {
 
     private void filmValidator(Film film) {
         int validationDescriptionLength = 200;
-        Instant validationReleaseDate = Instant.parse("1985-12-28T");
+        LocalDate validationReleaseDate = LocalDate.of(1895, 12, 28);
+        if (film == null) {
+            throw new ValidationException("Фильм не может быть null");
+        }
 
         if (film.getName().isBlank() || film.getName() == null) {
             throw new ValidationException("Имя фильма не должно быть пустым");
@@ -68,7 +71,7 @@ public class FilmController {
             throw new ValidationException("Дата релиза не должна быть раньше " + validationReleaseDate);
         }
 
-        if (film.getDuration() > 0) {
+        if (film.getDuration() < 0) {
             throw new ValidationException("Продолжительность фильма должна быть положительной");
         }
     }
