@@ -35,6 +35,23 @@ public class FilmController {
         return film;
     }
 
+    @PutMapping
+    public Film updateFilm(@RequestBody Film film) {
+        filmValidator(film);
+        int filmId = film.getId();
+        if (films.containsKey(filmId)) {
+           return films.keySet().stream()
+                    .filter(id-> id == filmId)
+                    .map(films::get)
+                    .peek(f -> f.setName(film.getName()))
+                    .peek(f-> f.setReleaseDate(film.getReleaseDate()))
+                    .peek(f->f.setDuration(film.getDuration()))
+                    .peek(f-> f.setDescription(film.getDescription()))
+                    .findFirst().get();
+        } else {
+            throw new ValidationException("Нет фильма с id:" + filmId);
+        }
+    }
 
     private void filmValidator(Film film) {
         int validationDescriptionLength = 200;
