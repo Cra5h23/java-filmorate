@@ -29,6 +29,9 @@ public class FilmController {
 
     @PostMapping("/film")
     public Film addFilm(@RequestBody Film film) {
+        filmValidator(film);
+        film.setId(++generatorId);
+        films.put(film.getId(), film);
         return film;
     }
 
