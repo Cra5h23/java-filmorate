@@ -1,10 +1,10 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
 
-import java.time.Instant;
+import java.time.LocalDate;
 
 /**
  * Film.
@@ -12,26 +12,28 @@ import java.time.Instant;
  * @author Nikolay Radzivon
  */
 @Data
+@Builder
 public class Film {
     /**
      * Индификатор фильма
      */
-    private final int id;
+    @Builder.Default
+    private int id = 0;
+
     /**
      * Имя фильма
      */
-    private final String name;
+    private String name;
     /**
      * Описание фильма
      */
-    private final String description;
+    private String description;
     /**
      * Дата релиза фильма
      */
-    private final Instant releaseDate;
+    private LocalDate releaseDate;
     /**
      * Продолжительнность фильма
      */
-    private final int duration;
-
+    private int duration;
 }
