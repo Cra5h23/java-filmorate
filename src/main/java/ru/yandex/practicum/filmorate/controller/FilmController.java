@@ -60,12 +60,19 @@ public class FilmController {
             throw new ValidationException("Фильм не может быть null");
         }
 
-        if (film.getName().isBlank() || film.getName() == null) {
-            throw new ValidationException("Имя фильма не должно быть пустым");
-        }
-        if (film.getDescription().length() > validationDescriptionLength) {
-            throw new ValidationException("Длинна описания не должна привышать 200 символов");
-        }
+//        if (film == null) {
+//            log.warn("Фильм не может быть null");
+//            throw new ValidationException("Фильм не может быть null");
+//        }
+//
+//        if (film.getName() == null || film.getName().isBlank()) {
+//            log.warn("Имя фильма не должно быть пустым");
+//            throw new ValidationException("Имя фильма не должно быть пустым");
+//        }
+//        if (film.getDescription().length() > validationDescriptionLength) {
+//            log.warn("Длинна описания не должна привышать " + validationDescriptionLength + " символов");
+//            throw new ValidationException("Длинна описания не должна привышать " + validationDescriptionLength + " символов");
+//        }
 
         if (film.getReleaseDate().isBefore(validationReleaseDate)) {
             throw new ValidationException("Дата релиза не должна быть раньше " + validationReleaseDate);
