@@ -1,14 +1,12 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exeptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.time.LocalDate;
+import javax.validation.Valid;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Класс FilmController
@@ -17,69 +15,24 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/films")
+@Slf4j
+@RequiredArgsConstructor
 public class FilmController {
-    private final Map<Integer, Film> films = new HashMap<>();
 
-    private int generatorId = 0;
+    private final FilmRepository filmRepository;
 
     @GetMapping
-    public Collection getAllFilms() {
-        return Collections.unmodifiableCollection(films.values());
+    public Collection<Film> getAllFilms() {
+        return filmRepository.getAllFilms();
     }
 
     @PostMapping()
-    public Film addFilm(@RequestBody Film film) {
-        filmValidator(film);
-        film.setId(++generatorId);
-        films.put(film.getId(), film);
-        return film;
+    public Film addNewFilm(@Valid @RequestBody Film film) {
+        return filmRepository.addFilm(film);
     }
 
     @PutMapping
-    public Film updateFilm(@RequestBody Film film) {
-        filmValidator(film);
-        int filmId = film.getId();
-        if (films.containsKey(filmId)) {
-           return films.keySet().stream()
-                    .filter(id-> id == filmId)
-                    .map(films::get)
-                    .peek(f -> f.setName(film.getName()))
-                    .peek(f-> f.setReleaseDate(film.getReleaseDate()))
-                    .peek(f->f.setDuration(film.getDuration()))
-                    .peek(f-> f.setDescription(film.getDescription()))
-                    .findFirst().get();
-        } else {
-            throw new ValidationException("Нет фильма с id:" + filmId);
-        }
-    }
-
-    private void filmValidator(Film film) {
-        int validationDescriptionLength = 200;
-        LocalDate validationReleaseDate = LocalDate.of(1895, 12, 28);
-        if (film == null) {
-            throw new ValidationException("Фильм не может быть null");
-        }
-
-//        if (film == null) {
-//            log.warn("Фильм не может быть null");
-//            throw new ValidationException("Фильм не может быть null");
-//        }
-//
-//        if (film.getName() == null || film.getName().isBlank()) {
-//            log.warn("Имя фильма не должно быть пустым");
-//            throw new ValidationException("Имя фильма не должно быть пустым");
-//        }
-//        if (film.getDescription().length() > validationDescriptionLength) {
-//            log.warn("Длинна описания не должна привышать " + validationDescriptionLength + " символов");
-//            throw new ValidationException("Длинна описания не должна привышать " + validationDescriptionLength + " символов");
-//        }
-
-        if (film.getReleaseDate().isBefore(validationReleaseDate)) {
-            throw new ValidationException("Дата релиза не должна быть раньше " + validationReleaseDate);
-        }
-
-        if (film.getDuration() < 0) {
-            throw new ValidationException("Продолжительность фильма должна быть положительной");
-        }
+    public Film updateFilm(@Valid @RequestBody Film film) {
+      return filmRepository.updateFilm(film);
     }
 }
