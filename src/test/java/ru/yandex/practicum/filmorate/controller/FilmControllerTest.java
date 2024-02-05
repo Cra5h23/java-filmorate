@@ -1,37 +1,39 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class FilmControllerTests {
+public class FilmControllerTest {
 
     @Autowired
     MockMvc mockMvc;
 
     @Autowired
-    FilmRepository filmRepository;
+    FilmController filmController;
 
     @Autowired
     ObjectMapper objectMapper;
 
     @AfterEach
     void tearDown() {
-        filmRepository.getFilmMap().clear();
+        filmController.getFilmMap().clear();
     }
 
     @Test
@@ -50,13 +52,13 @@ public class FilmControllerTests {
                 .description("Test2")
                 .releaseDate(LocalDate.now().minusDays(30))
                 .build();
-        List<Film> filmList = List.of(this.filmRepository.addFilm(film1Test), this.filmRepository.addFilm(film2Test));
+        List<Film> filmList = List.of(this.filmController.addNewFilm(film1Test), this.filmController.addNewFilm(film2Test));
 
         String s = objectMapper.writeValueAsString(filmList);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
-                content().contentType(MediaType.APPLICATION_JSON),
+                content().contentType(APPLICATION_JSON),
                 content().json(s)
         );
     }
@@ -73,11 +75,11 @@ public class FilmControllerTests {
         String s = objectMapper.writeValueAsString(film1);
         String s1 = objectMapper.writeValueAsString(film1.toBuilder().id(1).build());
         var requestBuilder = post("http://localhost:8080/films")
-                .contentType("application/json").content(s);
+                .contentType(APPLICATION_JSON).content(s);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
-                content().contentType(MediaType.APPLICATION_JSON),
+                content().contentType(APPLICATION_JSON),
                 content().json(s1)
         );
     }
@@ -93,7 +95,7 @@ public class FilmControllerTests {
                 .build();
         String s = objectMapper.writeValueAsString(film1);
         var requestBuilder = post("http://localhost:8080/films")
-                .contentType("application/json").content(s);
+                .contentType(APPLICATION_JSON).content(s);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest()
@@ -113,7 +115,7 @@ public class FilmControllerTests {
                 .build();
         String s = objectMapper.writeValueAsString(film1);
         var requestBuilder = post("http://localhost:8080/films")
-                .contentType("application/json").content(s);
+                .contentType(APPLICATION_JSON).content(s);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest()
@@ -131,7 +133,7 @@ public class FilmControllerTests {
                 .build();
         String s = objectMapper.writeValueAsString(film1);
         var requestBuilder = post("http://localhost:8080/films")
-                .contentType("application/json").content(s);
+                .contentType(APPLICATION_JSON).content(s);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest()
@@ -149,7 +151,7 @@ public class FilmControllerTests {
                 .build();
         String s = objectMapper.writeValueAsString(film1);
         var requestBuilder = post("http://localhost:8080/films")
-                .contentType("application/json").content(s);
+                .contentType(APPLICATION_JSON).content(s);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest()
@@ -165,16 +167,16 @@ public class FilmControllerTests {
                 .description("Test1")
                 .releaseDate(LocalDate.now().minusDays(20))
                 .build();
-        Film film = filmRepository.addFilm(film1);
+        Film film = filmController.addNewFilm(film1);
 
         String s = objectMapper.writeValueAsString(film.toBuilder().name("TestFilmUpdate").build());
 
         var requestBuilder = put("http://localhost:8080/films")
-                .contentType("application/json").content(s);
+                .contentType(APPLICATION_JSON).content(s);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
-                content().contentType(MediaType.APPLICATION_JSON),
+                content().contentType(APPLICATION_JSON),
                 content().json(s)
         );
     }
@@ -188,12 +190,12 @@ public class FilmControllerTests {
                 .description("Test1")
                 .releaseDate(LocalDate.now().minusDays(20))
                 .build();
-        Film film = filmRepository.addFilm(film1);
+        Film film = filmController.addNewFilm(film1);
 
         String s = objectMapper.writeValueAsString(film.toBuilder().name("").build());
 
         var requestBuilder = put("http://localhost:8080/films")
-                .contentType("application/json").content(s);
+                .contentType(APPLICATION_JSON).content(s);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest()
@@ -209,7 +211,7 @@ public class FilmControllerTests {
                 .description("Test1")
                 .releaseDate(LocalDate.now().minusDays(20))
                 .build();
-        Film film = filmRepository.addFilm(film1);
+        Film film = filmController.addNewFilm(film1);
 
         String s = objectMapper.writeValueAsString(film.toBuilder()
                 .description("SE3Qwr9lTHLmMflOygSaJ7iPcfmiwHUf4qRGW754wRYQxvl1B31DVxo5jqHpEEMEowYiSt0OoVdQCGDogHdl7j5As" +
@@ -218,7 +220,7 @@ public class FilmControllerTests {
                 .build());
 
         var requestBuilder = put("http://localhost:8080/films")
-                .contentType("application/json").content(s);
+                .contentType(APPLICATION_JSON).content(s);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest()
@@ -234,12 +236,12 @@ public class FilmControllerTests {
                 .description("Test1")
                 .releaseDate(LocalDate.now().minusDays(20))
                 .build();
-        Film film = filmRepository.addFilm(film1);
+        Film film = filmController.addNewFilm(film1);
 
         String s = objectMapper.writeValueAsString(film.toBuilder().releaseDate(LocalDate.of(1894, 12, 23)).build());
 
         var requestBuilder = put("http://localhost:8080/films")
-                .contentType("application/json").content(s);
+                .contentType(APPLICATION_JSON).content(s);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest()
@@ -255,12 +257,12 @@ public class FilmControllerTests {
                 .description("Test1")
                 .releaseDate(LocalDate.now().minusDays(20))
                 .build();
-        Film film = filmRepository.addFilm(film1);
+        Film film = filmController.addNewFilm(film1);
 
         String s = objectMapper.writeValueAsString(film.toBuilder().duration(-20).build());
 
         var requestBuilder = put("http://localhost:8080/films")
-                .contentType("application/json").content(s);
+                .contentType(APPLICATION_JSON).content(s);
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest()
