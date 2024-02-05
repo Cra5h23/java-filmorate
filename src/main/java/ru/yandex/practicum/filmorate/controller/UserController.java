@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +27,7 @@ public class UserController {
 
     @GetMapping
     public Collection<User> getAllUsers() {
-        return Collections.unmodifiableCollection(userMap.values());
+        return userMap.values();
     }
 
     @PostMapping
@@ -49,15 +48,16 @@ public class UserController {
             user.setName(user.getLogin());
         }
         int userId = user.getId();
-        log.info("Обновлена задача с id: {}", userId);
-        return userMap.keySet().stream()
-                .filter(id -> id.equals(userId))
-                .map(userMap::get)
-                .peek(u -> u.setName(user.getName()))
-                .peek(u -> u.setLogin(user.getLogin()))
-                .peek(u -> u.setEmail(user.getEmail()))
-                .peek(u -> u.setBirthday(user.getBirthday()))
-                .findFirst()
-                .orElseThrow(() -> new ValidationException("Нет пользователя с id: " + userId));
+        User u = userMap.get(userId);
+        if (u == null) {
+            log.warn("Нет пользователя с id: {}", userId);
+            throw new ValidationException("Нет пользователя с id: " + userId);
+        }
+        u.setName(user.getName());
+        u.setLogin(user.getLogin());
+        u.setEmail(user.getEmail());
+        u.setBirthday(user.getBirthday());
+        log.info("Обновлён пользователь с id: {}", userId);
+        return u;
     }
 }

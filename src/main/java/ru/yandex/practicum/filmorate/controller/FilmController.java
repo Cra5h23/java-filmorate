@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,34 +27,30 @@ public class FilmController {
 
     @GetMapping
     public Collection<Film> getAllFilms() {
-        return Collections.unmodifiableCollection(filmMap.values());
+        return filmMap.values();
     }
 
     @PostMapping
     public Film addNewFilm(@Valid @RequestBody Film film) {
         film.setId(++generatorFilmId);
         filmMap.put(film.getId(), film);
-        log.info("Добавлена задача {}", film);
+        log.info("Добавлен фильм {}", film);
         return film;
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         int filmId = film.getId();
-        try {
-            return filmMap.keySet().stream()
-                    .filter(id -> id.equals(filmId))
-                    .map(filmMap::get)
-                    .peek(f -> f.setName(film.getName()))
-                    .peek(f -> f.setReleaseDate(film.getReleaseDate()))
-                    .peek(f -> f.setDuration(film.getDuration()))
-                    .peek(f -> f.setDescription(film.getDescription()))
-                    .peek(f -> log.info("Обновлён фильм с id:{}", filmId))
-                    .findFirst()
-                    .orElseThrow(() -> new ValidationException("Нет фильма с id:" + filmId));
-        } catch (ValidationException e) {
-            log.warn(e.getMessage());
-            throw new ValidationException(e.getMessage());
+        Film f = filmMap.get(filmId);
+        if (f == null) {
+            log.warn("Нет фильма с id:" + filmId);
+            throw new ValidationException("Нет фильма с id:" + filmId);
         }
+        f.setName(film.getName());
+        f.setDescription(film.getDescription());
+        f.setReleaseDate(film.getReleaseDate());
+        f.setDuration(film.getDuration());
+        log.info("Обновлён пользователь с id: " + filmId);
+        return f;
     }
 }

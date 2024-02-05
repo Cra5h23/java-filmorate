@@ -39,7 +39,6 @@ public class User {
      * Логин пользователя
      */
     @NotBlank(message = "Логин пользователя не должен быть пустым")
-    @NotNull
     private String login;
 
     /**
