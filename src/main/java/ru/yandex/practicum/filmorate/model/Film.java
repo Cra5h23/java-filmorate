@@ -7,7 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.Builder;
 import lombok.Data;
-import ru.yandex.practicum.filmorate.model.validator.MinReleaseData;
+import ru.yandex.practicum.filmorate.validator.MinReleaseData;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
