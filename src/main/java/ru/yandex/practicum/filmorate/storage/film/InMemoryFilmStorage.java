@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     private Map<Integer, Film> filmMap = new HashMap<>();
     @Override
     public Collection<Film> getAllFilms() {
-        return null;
+        return Collections.unmodifiableCollection(filmMap.values()); //todo должна ли быть неизменяемой
     }
 
     @Override
