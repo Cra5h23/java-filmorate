@@ -13,8 +13,9 @@ import java.util.Map;
 @Component
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
-    private Map<Integer, Film> filmMap = new HashMap<>();
+    private final Map<Integer, Film> filmMap = new HashMap<>();
     private int generatorFilmId = 0;
+
     @Override
     public Collection<Film> getAllFilms() {
         log.info("Запрошены все фильмы");
