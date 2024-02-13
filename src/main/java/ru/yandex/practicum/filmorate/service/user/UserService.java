@@ -30,5 +30,13 @@ public class UserService {
         userStorage.getUserById(userId).getFriends().add(friendId);
     }
 
+    public void deletingFromFriends(int userId, int deletingFriendId) {
+        if (userStorage.getUserById(userId) == null) {
+            throw new ValidationException(format("Нет пользователя с id:%d",userId));
+        }
+        if (userStorage.getUserById(deletingFriendId) == null) {
+            throw new ValidationException(format("Попытка удалить из друзей несуществующего пользователя с id:%d",deletingFriendId));
+        }
+        userStorage.getUserById(userId).getFriends().remove(deletingFriendId);
     }
 }
