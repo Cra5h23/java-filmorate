@@ -39,4 +39,18 @@ public class UserService {
         }
         userStorage.getUserById(userId).getFriends().remove(deletingFriendId);
     }
+
+    public Collection<User> getAllFriends(int userId) {
+        if (userStorage.getUserById(userId) == null) {
+            throw new ValidationException(format("Нет пользователя с id:%d",userId));
+        }
+        return userStorage.getUserById(userId).getFriends().stream()
+                .map(userStorage::getUserById)
+                .collect(Collectors.toList());
+    }
+
+    // Методы которые должны быть
+    // добавление в друзья
+    // удаление из друзей
+    // вывод списка общих друзей.
 }
