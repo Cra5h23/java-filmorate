@@ -1,15 +1,15 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Класс FilmController
@@ -20,15 +20,17 @@ import java.util.Map;
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
-    @Getter
-    private final Map<Integer, Film> filmMap = new HashMap<>();//todo перенести в хранилище
 
-    private int generatorFilmId = 0; //todo
+//    private final Map<Integer, Film> filmMap = new HashMap<>();//todo перенести в хранилище
+
+//    private int generatorFilmId = 0; //todo
 
     private final FilmStorage filmStorage;
+    private final FilmService filmService;
 
-    public FilmController(FilmStorage filmStorage) {
+    public FilmController(FilmStorage filmStorage, FilmService filmService) {
         this.filmStorage = filmStorage;
+        this.filmService = filmService;
     }
 
 
@@ -76,5 +78,26 @@ public class FilmController {
     @DeleteMapping
     public void deleteFilm(@RequestParam int id) {
         filmStorage.deleteFilm(id);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public ResponseEntity<?> userLikesFilm(@PathVariable(name = "id") Integer filmId, @PathVariable Integer userId) { //todo (id-> filmId)
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(filmService.addLikeFilm(filmId, userId));
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public ResponseEntity<?> userRemoveLikeFromFilm(@PathVariable(name = "id") Integer filmId, @PathVariable Integer userId) {
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(filmService.deleteLikeFilm(filmId, userId));
+    }
+
+    @GetMapping("/popular")
+    public ResponseEntity<?> getListOfMostPopularFilms(@RequestParam(defaultValue = "10") Integer count) {
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(filmService.getMostPopularFilm(count));
     }
 }
