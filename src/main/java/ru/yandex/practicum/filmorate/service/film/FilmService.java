@@ -44,7 +44,7 @@ public class FilmService {
             throw new LikeException(String.format("Попытка добавить лайк фильму от несуществующего пользователя id:%d", userId));
         }
         if (filmById.getLikes().contains(userId)) {
-            throw new LikeException(String.format("Пользователь с id:%d уже поставил лайк фильму с id%d",userId , filmId));
+            throw new LikeException(String.format("Пользователь с id:%d уже поставил лайк фильму с id:%d",userId , filmId));
         }
 
         filmById.addLike(userId);
