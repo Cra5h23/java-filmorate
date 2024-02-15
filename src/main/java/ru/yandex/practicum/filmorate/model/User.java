@@ -59,4 +59,8 @@ public class User {
     private LocalDate birthday;
 
     private final Set<Integer> friends = new HashSet<>();
+
+    public void addFriend(Integer friendId) {
+        friends.add(friendId);
+    }
 }
