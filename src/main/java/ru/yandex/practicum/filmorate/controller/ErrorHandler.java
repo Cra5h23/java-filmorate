@@ -6,8 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.yandex.practicum.filmorate.exeption.LikeException;
-import ru.yandex.practicum.filmorate.exeption.ValidationException;
+import ru.yandex.practicum.filmorate.exeption.*;
 
 import java.util.Map;
 
@@ -20,19 +19,11 @@ import java.util.Map;
 public class ErrorHandler {
 
     @ExceptionHandler
-    public ResponseEntity<?> handlerLikeException(final LikeException e) {
-        return new ResponseEntity<>(
-                Map.of("Неверно введены данные", e.getMessage()),
-                HttpStatus.NOT_FOUND //todo исправить ResponseEntity
-        );
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<?> handlerValidationException(final ValidationException e) {
-        return new ResponseEntity<>(
-                Map.of("Неверно введены данные", e.getMessage()),
-                HttpStatus.NO_CONTENT //todo проверить код и справить
-        );
+    public ResponseEntity<?> handlerFilmServiceException(final FilmServiceException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("Неверно введены данные", e.getMessage()));
     }
 
     @ExceptionHandler
