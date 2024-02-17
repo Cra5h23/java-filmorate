@@ -26,8 +26,11 @@ public class FilmController {
     private final FilmService filmService;
 
     @GetMapping
-    public Collection<Film> getAllFilms() {
-        return filmStorage.getAllFilms();
+    public ResponseEntity<Collection<Film>> getAllFilms() {
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(filmStorage.getAllFilms());
     }
 
     @GetMapping("/{id}")
