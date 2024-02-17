@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,28 +20,14 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/films")
 @Slf4j
+@AllArgsConstructor
 public class FilmController {
-
-//    private final Map<Integer, Film> filmMap = new HashMap<>();//todo перенести в хранилище
-
-//    private int generatorFilmId = 0; //todo
-
     private final FilmStorage filmStorage;
     private final FilmService filmService;
 
-    public FilmController(FilmStorage filmStorage, FilmService filmService) {
-        this.filmStorage = filmStorage;
-        this.filmService = filmService;
-    }
-
-
-    //@GetMapping
     @GetMapping
     public Collection<Film> getAllFilms() {
         return filmStorage.getAllFilms();
-
-
-//        return filmMap.values();//todo
     }
 
     @GetMapping("/{id}")
@@ -51,28 +38,11 @@ public class FilmController {
     @PostMapping
     public Film addNewFilm(@Valid @RequestBody Film film) {
         return filmStorage.addFilm(film);
-
-//        film.setId(++generatorFilmId);
-//        filmMap.put(film.getId(), film);
-//        log.info("Добавлен фильм {}", film);
-//        return film;
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         return filmStorage.updateFilm(film);
-        /*int filmId = film.getId();
-        Film f = filmMap.get(filmId);
-        if (f == null) {
-            log.warn("Нет фильма с id:" + filmId);
-            throw new ValidationException("Нет фильма с id:" + filmId);
-        }
-        f.setName(film.getName());
-        f.setDescription(film.getDescription());
-        f.setReleaseDate(film.getReleaseDate());
-        f.setDuration(film.getDuration());
-        log.info("Обновлён пользователь с id: " + filmId);
-        return f;*/
     }
 
     @DeleteMapping
