@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exeption.ValidationException;
+import ru.yandex.practicum.filmorate.exeption.FilmStorageException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
@@ -18,7 +18,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getAllFilms() {
-        log.info("Запрошены все фильмы");
+        log.info("Запрошен список всех фильмов");
         return Collections.unmodifiableCollection(filmMap.values()); //todo должна ли быть неизменяемой?
     }
 
@@ -32,12 +32,13 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        int filmId = film.getId();
-        Film f = filmMap.get(filmId);
-        if (f == null) {
-            log.warn("Нет фильма с id:" + filmId);
-            throw new ValidationException(String.format("Нет фильма с id:%d", filmId));
-        }
+        var filmId = film.getId();
+        var f = checkFilm(filmId);
+//        Film f = filmMap.get(filmId);
+//        if (f == null) {
+//            log.warn("Нет фильма с id:" + filmId);
+//            throw new ValidationException(String.format("Нет фильма с id:%d", filmId));
+//        }
         f.setName(film.getName());
         f.setDescription(film.getDescription());
         f.setReleaseDate(film.getReleaseDate());
@@ -48,18 +49,31 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(int id) {
-        var film = filmMap.get(id);
-        if (film == null) {
-            throw new ValidationException(String.format("Нет фильма с id:%d",id));
-        }
-        return film;
+//        var film = filmMap.get(id);
+//        if (film == null) {
+//            throw new ValidationException(String.format("Нет фильма с id:%d", id));
+//        }
+//        return film;
+        var f = checkFilm(id);
+        log.info("Получен фильм с id: {}", id);
+        return f;
     }
 
     @Override
     public void deleteFilm(int id) {
-        if (!filmMap.containsKey(id)) {
-            throw new ValidationException(String.format("Нет фильма с id:%s",id));
-        }
+        checkFilm(id);
+//        if (!filmMap.containsKey(id)) {
+//            throw new ValidationException(String.format("Нет фильма с id:%s", id));
+//        }
+        log.info("Удалён фильм с id: {}", id);
         filmMap.remove(id);
+    }
+
+    private Film checkFilm(Integer id) {
+        if (!filmMap.containsKey(id)) {
+            log.warn("Фильм с id: {} не существует", id);
+            throw new FilmStorageException(String.format("Фильм с id: %d не существует", id));
+        }
+        return filmMap.get(id);
     }
 }
