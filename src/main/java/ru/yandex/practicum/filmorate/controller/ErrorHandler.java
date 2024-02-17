@@ -43,4 +43,12 @@ public class ErrorHandler {
                         "Ошибка добавления пользователя в друзья", e.getMessage()));
     }
 
+    @ExceptionHandler
+    public ResponseEntity<?> handlerThrowable(Throwable e) { //Todo
+        return ResponseEntity
+                .internalServerError()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("Произошла внутренняя ошибка сервера", e.getMessage()));
+    }
+
 }
