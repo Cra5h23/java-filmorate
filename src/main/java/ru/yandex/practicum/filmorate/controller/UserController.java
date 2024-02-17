@@ -33,13 +33,6 @@ public class UserController {
     @PostMapping
     public User addNewUser(@Valid @RequestBody User user) {
         return userStorage.addUser(user);
-//        user.setId(++generatorUserId);
-//        if (user.getName() == null || user.getName().isBlank()) {
-//            user.setName(user.getLogin());
-//        }
-//        userMap.put(user.getId(), user);
-//        log.info("Добавлен пользователь {}", user);
-//        return user;
     }
 
 
@@ -82,5 +75,12 @@ public class UserController {
                 .body(userService.getUserFriends(userId));
     }
 
+    @GetMapping("{id}/friends/common/{otherId}")
+    public ResponseEntity<?> getUsersCommonFriends(
+            @PathVariable(name = "id") Integer userId, @PathVariable Integer otherId) {
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(userService.getListOfCommonFriends(userId, otherId));
+    }
 
 }
