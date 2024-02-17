@@ -15,6 +15,8 @@ import static java.lang.String.format;
  * @author Nikolay Radzivon
  */
 @Service
+@AllArgsConstructor
+@Slf4j
 public class UserService {
     private final UserStorage userStorage;
 
