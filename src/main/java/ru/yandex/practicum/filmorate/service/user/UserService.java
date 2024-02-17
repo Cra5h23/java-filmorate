@@ -22,11 +22,6 @@ import static java.lang.String.format;
 public class UserService {
     private final UserStorage userStorage;
 
-    @Autowired
-    public UserService(UserStorage userStorage) {
-        this.userStorage = userStorage;
-    }
-
     /**
      * Метод добавления пользователя в друзья
      *
