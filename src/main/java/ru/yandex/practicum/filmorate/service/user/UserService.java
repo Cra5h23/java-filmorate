@@ -44,7 +44,6 @@ public class UserService {
 //        }
 
 
-
 //        if (userStorage.getUserById(userId) == null) {
 //            log.info("Нет юзера");
 //            throw new UserServiceException(format("Пользователь с id: %d не существует", userId)); //todo вынести в общий метод?
