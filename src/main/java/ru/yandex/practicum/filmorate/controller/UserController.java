@@ -46,21 +46,15 @@ public class UserController {
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
         return userStorage.updateUser(user);
-//        if (user.getName() == null || user.getName().isBlank()) {
-//            user.setName(user.getLogin());
-//        }
-//        int userId = user.getId();
-//        User u = userMap.get(userId);
-//        if (u == null) {
-//            log.warn("Нет пользователя с id: {}", userId);
-//            throw new ValidationException("Нет пользователя с id: " + userId);
-//        }
-//        u.setName(user.getName());
-//        u.setLogin(user.getLogin());
-//        u.setEmail(user.getEmail());
-//        u.setBirthday(user.getBirthday());
-//        log.info("Обновлён пользователь с id: {}", userId);
-//        return u;
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public ResponseEntity<?> addUserToFriends(
+            @PathVariable(name = "id") Integer userId, @PathVariable Integer friendId) {
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(userService.addingUserAsFriend(userId, friendId));
     }
 
 
