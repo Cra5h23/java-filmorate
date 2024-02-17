@@ -57,5 +57,13 @@ public class UserController {
                 .body(userService.addingUserAsFriend(userId, friendId));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable(required = false, name = "id") Integer userId) {
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(userStorage.getUserById(userId));
+    }
+
 
 }
