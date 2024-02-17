@@ -133,8 +133,28 @@ public class UserService {
 //                .collect(Collectors.toList());
     }
 
-    // Методы которые должны быть
-    // добавление в друзья
-    // удаление из друзей
-    // вывод списка общих друзей.
+//    private User checkUserId(Integer userId) {
+//        try {
+//            return userStorage.getUserById(userId);
+//        } catch (ValidationException e) {
+//            throw new UserServiceException(e.getMessage());
+//        }
+//    }
+
+    private User checkUser(Integer friendId, String... s) {
+        try {
+            return userStorage.getUserById(friendId);
+        } catch (UserStorageException e) {
+            throw new UserServiceException(format("Попытка %s несуществующего пользователя с id: %d",s[0], friendId));
+
+
+
+//            throw new UserServiceException(format("Попытка добавить в друзья несуществующего пользователя с id: %d", friendId));
+//            throw new UserServiceException(format("Попытка удалить из друзей несуществующего пользователя с id: %d", deletingFriendId));
+//            throw new ValidationException(format("Пользователь с id: %d, с которым вы хотите сравнить друзей не существует", otherUserId));
+//           "Попытка добавить друга для несуществующего пользователя с id: %d"
+
+
+        }
+    }
 }
