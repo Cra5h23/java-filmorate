@@ -33,4 +33,14 @@ public class ErrorHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("Неверно введены данные", e.getFieldError().getDefaultMessage()));
     }
+
+    @ExceptionHandler
+    public ResponseEntity<Map<String, String>> handlerUserServiceException(final UserServiceException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of(
+                        "Ошибка добавления пользователя в друзья", e.getMessage()));
+    }
+
 }
