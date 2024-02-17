@@ -51,4 +51,12 @@ public class ErrorHandler {
                 .body(Map.of("Произошла внутренняя ошибка сервера", e.getMessage()));
     }
 
+    @ExceptionHandler
+    public ResponseEntity<?> handlerFilmStorageException(final FilmStorageException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("Ошибка", e.getMessage()));
+    }
+
 }
