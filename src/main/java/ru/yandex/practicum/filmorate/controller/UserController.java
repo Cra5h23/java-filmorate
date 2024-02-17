@@ -65,5 +65,14 @@ public class UserController {
                 .body(userStorage.getUserById(userId));
     }
 
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public ResponseEntity<?> deleteFromUserFriends(
+            @PathVariable(name = "id") Integer userId, @PathVariable Integer friendId) {
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(userService.deletingFromUserFriends(userId, friendId));
+    }
+
 
 }
