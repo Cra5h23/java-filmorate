@@ -35,8 +35,8 @@ public class UserService {
      * @return
      */
     public String addingUserAsFriend(int userId, int friendId) {
-        var user = checkUser(userId,"добавить друга для");
-        var friend = checkUser(friendId,"добавить в друзья");
+        var user = checkUser(userId, "добавить друга для");
+        var friend = checkUser(friendId, "добавить в друзья");
         user.addFriend(friendId);
         friend.addFriend(userId);
         return String.format("Пользователь с id:%d добавил в друзья пользователя с id: %d", userId, friendId);
