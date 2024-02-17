@@ -1,8 +1,10 @@
 package ru.yandex.practicum.filmorate.service.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exeption.ValidationException;
+import ru.yandex.practicum.filmorate.exeption.UserServiceException;
+import ru.yandex.practicum.filmorate.exeption.UserStorageException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -27,18 +29,37 @@ public class UserService {
 
     /**
      * Метод добавления пользователя в друзья
+     *
      * @param userId
      * @param friendId
+     * @return
      */
-    public void addingUserAsFriend(int userId, int friendId) {
-        if (userStorage.getUserById(userId) == null) {
-            throw new ValidationException(format("Нет пользователя с id:%d", userId)); // todo заменить ошибку на отдельную в этом сервисе
-        }
-        if (userStorage.getUserById(friendId) == null) {
-            throw new ValidationException(format("Попытка добавить в друзья несуществующего пользователя с id:%d", friendId));
-        }
-        userStorage.getUserById(userId).addFriend(friendId);
-        userStorage.getUserById(friendId).addFriend(userId);
+    public String addingUserAsFriend(int userId, int friendId) {
+        var user = checkUser(userId,"добавить друга для");
+        var friend = checkUser(friendId,"добавить в друзья");
+        user.addFriend(friendId);
+        friend.addFriend(userId);
+        return String.format("Пользователь с id:%d добавил в друзья пользователя с id: %d", userId, friendId);
+
+//        User friend;
+//        try {
+//           friend = userStorage.getUserById(friendId);
+//        } catch (ValidationException e) {
+//            throw new UserServiceException(format("Попытка добавить в друзья несуществующего пользователя с id: %d", friendId));
+//        }
+
+
+
+//        if (userStorage.getUserById(userId) == null) {
+//            log.info("Нет юзера");
+//            throw new UserServiceException(format("Пользователь с id: %d не существует", userId)); //todo вынести в общий метод?
+//        }
+//        /*if (userStorage.getUserById(friendId) == null) {
+//            throw new UserServiceException(format("Попытка добавить в друзья несуществующего пользователя с id: %d", friendId));
+//        }*/
+//        userStorage.getUserById(userId).addFriend(friendId);
+//        userStorage.getUserById(friendId).addFriend(userId);
+//        return String.format("Пользователь с id:%d добавил в друзья пользователя с id: %d", userId, friendId);
     }
 
     public void deletingFromUserFriends(int userId, int deletingFriendId) {
