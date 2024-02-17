@@ -59,4 +59,11 @@ public class ErrorHandler {
                 .body(Map.of("Ошибка", e.getMessage()));
     }
 
+    @ExceptionHandler
+    public ResponseEntity<?> handlerUserStorageException(final UserStorageException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("Ошибка", e.getMessage()));
+    }
 }
