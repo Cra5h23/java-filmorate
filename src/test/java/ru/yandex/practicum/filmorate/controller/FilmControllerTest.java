@@ -336,4 +336,19 @@ public class FilmControllerTest {
         );
     }
 
+    @Test
+    void userLikesFilm() throws Exception{ //todo название теста
+        var requestBuilder = put("/films/1/like/1");
+
+        this.filmStorage.getFilmMap().put(1, new Film(1, "TestFilm1", "TestDescription1",
+                LocalDate.of(2000, 10, 10), 20));
+        this.userStorage.getUserMap().put(1, new User(1,"testEmail@test.com","testLogin", "testName",
+                LocalDate.of(1990,11,22)));
+
+        this.mockMvc.perform(requestBuilder).andExpectAll(
+                status().isOk(),
+                content().string("Пользователь с id:1 поставил лайк фильму с id:1")
+
+        );
+    }
 }
