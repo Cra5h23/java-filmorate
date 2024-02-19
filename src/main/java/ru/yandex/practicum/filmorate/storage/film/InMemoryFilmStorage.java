@@ -6,10 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exeption.FilmStorageException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -52,10 +49,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void deleteFilm(int id) {
+    public String deleteFilm(int id) {
         checkFilm(id);
         log.info("Удалён фильм с id: {}", id);
         filmMap.remove(id);
+        return String.format("Удалён фильм с id: %d",id);
     }
 
     private Film checkFilm(Integer id) {
