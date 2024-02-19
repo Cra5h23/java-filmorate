@@ -92,5 +92,11 @@ public class UserController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(userService.getListOfCommonFriends(userId, otherId));
     }
-
+    @DeleteMapping
+    public ResponseEntity<?> deleteFilm(@RequestParam int id) {
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(userStorage.deleteUser(id));
+    }
 }
