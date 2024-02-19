@@ -18,7 +18,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Collection<Film> getAllFilms() {
         log.info("Запрошен список всех фильмов");
-        return Collections.unmodifiableCollection(filmMap.values()); //todo должна ли быть неизменяемой?
+        return Collections.unmodifiableCollection(filmMap.values());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         checkFilm(id);
         log.info("Удалён фильм с id: {}", id);
         filmMap.remove(id);
-        return String.format("Удалён фильм с id: %d",id);
+        return String.format("Удалён фильм с id: %d", id);
     }
 
     private Film checkFilm(Integer id) {
