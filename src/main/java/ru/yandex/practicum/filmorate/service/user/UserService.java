@@ -35,25 +35,6 @@ public class UserService {
         user.addFriend(friendId);
         friend.addFriend(userId);
         return String.format("Пользователь с id:%d добавил в друзья пользователя с id: %d", userId, friendId);
-
-//        User friend;
-//        try {
-//           friend = userStorage.getUserById(friendId);
-//        } catch (ValidationException e) {
-//            throw new UserServiceException(format("Попытка добавить в друзья несуществующего пользователя с id: %d", friendId));
-//        }
-
-
-//        if (userStorage.getUserById(userId) == null) {
-//            log.info("Нет юзера");
-//            throw new UserServiceException(format("Пользователь с id: %d не существует", userId)); //todo вынести в общий метод?
-//        }
-//        /*if (userStorage.getUserById(friendId) == null) {
-//            throw new UserServiceException(format("Попытка добавить в друзья несуществующего пользователя с id: %d", friendId));
-//        }*/
-//        userStorage.getUserById(userId).addFriend(friendId);
-//        userStorage.getUserById(friendId).addFriend(userId);
-//        return String.format("Пользователь с id:%d добавил в друзья пользователя с id: %d", userId, friendId);
     }
 
     public String deletingFromUserFriends(int userId, int deletingFriendId) {
@@ -62,24 +43,6 @@ public class UserService {
         user.deletingFriend(deletingFriendId);
         deletingFriend.deletingFriend(userId);
         return String.format("Пользователь с id: %d удалил из друзей пользователя с id: %d", userId, deletingFriendId);
-
-//        User deletingFriend;
-//        try {
-//            deletingFriend = userStorage.getUserById(deletingFriendId);
-//        } catch (ValidationException e) {
-//            throw new UserServiceException(format("Попытка удалить из друзей несуществующего пользователя с id: %d", deletingFriendId));
-//        }
-
-
-//        /*if (userStorage.getUserById(userId) == null) {
-//            throw new UserServiceException(format("Пользователь с id: %d не существует", userId));
-//        }*/
-//        if (userStorage.getUserById(deletingFriendId) == null) {
-//            throw new UserServiceException(format("Попытка удалить из друзей несуществующего пользователя с id: %d", deletingFriendId));
-//        }
-//        userStorage.getUserById(userId).getFriends().remove(deletingFriendId);
-//        userStorage.getUserById(deletingFriendId).getFriends().remove(userId);
-//        return String.format("Пользователь с id: %d удалил из друзей пользователя с id: %d", userId, deletingFriendId);
     }
 
     public Collection<User> getUserFriends(int userId) {
@@ -87,14 +50,6 @@ public class UserService {
         return user.getFriends().stream()
                 .map(userStorage::getUserById)
                 .collect(Collectors.toList());
-
-
-//        /*if (userStorage.getUserById(userId) == null) {
-//            throw new ValidationException(format("Пользователь с id: %d не существует", userId));
-//        }*/
-//        return userStorage.getUserById(userId).getFriends().stream()
-//                .map(userStorage::getUserById)
-//                .collect(Collectors.toList());
     }
 
     public Collection<User> getListOfCommonFriends(int userId, int otherUserId) {
@@ -104,49 +59,13 @@ public class UserService {
                 .filter(id -> otherUser.getFriends().contains(id))
                 .map(userStorage::getUserById)
                 .collect(Collectors.toList());
-
-//        User otherUser;
-//        try {
-//            otherUser = userStorage.getUserById(otherUserId);
-//        } catch (ValidationException e) {
-//            throw new ValidationException(format("Пользователь с id: %d, с которым вы хотите сравнить друзей не существует", otherUserId));
-//        }
-
-
-//        /*if (userStorage.getUserById(userId) == null) {
-//            throw new ValidationException(format("Пользователь с id: %d не существует", userId));
-//        }*/
-//        if (userStorage.getUserById(otherUserId) == null) {
-//            throw new ValidationException(format("Пользователь с которым вы хотите сравнить друзей не существует id: %d", otherUserId));
-//        }
-//
-//        return userStorage.getUserById(userId).getFriends().stream()
-//                .filter(id -> userStorage.getUserById(otherUserId).getFriends().contains(id))
-//                .map(userStorage::getUserById)
-//                .collect(Collectors.toList());
     }
-
-//    private User checkUserId(Integer userId) {
-//        try {
-//            return userStorage.getUserById(userId);
-//        } catch (ValidationException e) {
-//            throw new UserServiceException(e.getMessage());
-//        }
-//    }
 
     private User checkUser(Integer friendId, String... s) {
         try {
             return userStorage.getUserById(friendId);
         } catch (UserStorageException e) {
             throw new UserServiceException(format("Попытка %s несуществующего пользователя с id: %d", s[0], friendId));
-
-
-//            throw new UserServiceException(format("Попытка добавить в друзья несуществующего пользователя с id: %d", friendId));
-//            throw new UserServiceException(format("Попытка удалить из друзей несуществующего пользователя с id: %d", deletingFriendId));
-//            throw new ValidationException(format("Пользователь с id: %d, с которым вы хотите сравнить друзей не существует", otherUserId));
-//           "Попытка добавить друга для несуществующего пользователя с id: %d"
-
-
         }
     }
 }
