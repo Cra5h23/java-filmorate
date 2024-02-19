@@ -13,5 +13,5 @@ public interface UserStorage {
 
     User getUserById(int id);
 
-    void deleteUser(int id);
+    String deleteUser(int id);
 }
