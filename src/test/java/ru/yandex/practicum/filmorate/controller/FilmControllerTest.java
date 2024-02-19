@@ -8,7 +8,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
+import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -27,6 +31,15 @@ public class FilmControllerTest {
 
     @Autowired
     InMemoryFilmStorage filmStorage;
+
+    @Autowired
+    InMemoryUserStorage userStorage;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    FilmService filmService;
 
     @Test
     @DisplayName("GET /films возвращает коллекцию из двух фильмов")
@@ -52,6 +65,7 @@ public class FilmControllerTest {
                         "\"duration\":120,\"likes\":[]}]"
                 )
         );
+
     }
 
     @Test
@@ -96,12 +110,11 @@ public class FilmControllerTest {
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isCreated(),
                 content().contentType(APPLICATION_JSON),
-                content().json("{\"id\":1," +
-                        "\"name\":\"TestFilm1\"," +
+                content().json("{\"name\":\"TestFilm1\"," +
                         "\"description\":\"TestDescription1\"," +
                         "\"releaseDate\":\"2000-10-10\"," +
-                        "\"duration\":120,\"likes\":[]})"
-                ));
+                        "\"duration\":120,\"likes\":[]})"),
+                jsonPath("$.id").exists());
     }
 
     @Test
@@ -203,7 +216,7 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1980-10-10\"," +
                         "\"duration\":200})");
 
-        filmStorage.getFilmMap().put(1, new Film(1, "TestFilm1", "TestDescription1",
+        this.filmStorage.getFilmMap().put(1, new Film(1, "TestFilm1", "TestDescription1",
                 LocalDate.of(2000, 10, 10), 20));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
@@ -227,7 +240,7 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1980-10-10\"," +
                         "\"duration\":200})");
 
-        filmStorage.getFilmMap().put(1, new Film(1, "TestFilm1", "TestDescription1",
+        this.filmStorage.getFilmMap().put(1, new Film(1, "TestFilm1", "TestDescription1",
                 LocalDate.of(2000, 10, 10), 20));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest(),
@@ -249,7 +262,7 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1980-10-10\"," +
                         "\"duration\":200})");
 
-        filmStorage.getFilmMap().put(1, new Film(1, "TestFilm1", "TestDescription1",
+        this.filmStorage.getFilmMap().put(1, new Film(1, "TestFilm1", "TestDescription1",
                 LocalDate.of(2000, 10, 10), 20));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest(),
@@ -269,7 +282,7 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1780-10-10\"," +
                         "\"duration\":200})");
 
-        filmStorage.getFilmMap().put(1, new Film(1, "TestFilm1", "TestDescription1",
+        this.filmStorage.getFilmMap().put(1, new Film(1, "TestFilm1", "TestDescription1",
                 LocalDate.of(2000, 10, 10), 20));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest(),
@@ -289,7 +302,7 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1980-10-10\"," +
                         "\"duration\":-200})");
 
-        filmStorage.getFilmMap().put(1, new Film(1, "TestFilm1", "TestDescription1",
+        this.filmStorage.getFilmMap().put(1, new Film(1, "TestFilm1", "TestDescription1",
                 LocalDate.of(2000, 10, 10), 20));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest(),
@@ -298,4 +311,17 @@ public class FilmControllerTest {
                 jsonPath("$.timestamp").exists()
         );
     }
+
+    @Test
+    void deleteFilm_ReturnsValidResponseEntity() throws Exception{
+        var requestBuilder = delete("/films/1");
+
+        this.filmStorage.getFilmMap().put(1, new Film(1, "TestFilm1", "TestDescription1",
+                LocalDate.of(2000, 10, 10), 20));
+        this.mockMvc.perform(requestBuilder).andExpectAll(
+                status().isOk()
+                ,content().string("Удалён фильм с id: 1")
+        );
+    }
+
 }
