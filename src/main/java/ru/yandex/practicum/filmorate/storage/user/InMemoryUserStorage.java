@@ -51,34 +51,12 @@ public class InMemoryUserStorage implements UserStorage {
         }
         var userId = user.getId();
         var u = checkUser(userId);
-//        var u = userMap.get(userId);
-//        if (u == null) {
-//            log.warn("Нет пользователя с id: {}", userId);
-//            throw new ValidationException("Нет пользователя с id: " + userId);
-//        }
         u.setName(user.getName());
         u.setLogin(user.getLogin());
         u.setEmail(user.getEmail());
         u.setBirthday(user.getBirthday());
         log.info("Обновлён пользователь с id: {}", userId);
         return u;
-
-
-//        if (user.getName() == null || user.getName().isBlank()) {
-//            user.setName(user.getLogin());
-//        }
-//        var userId = user.getId();
-//        var u = userMap.get(userId);
-//        if (u == null) {
-//            log.warn("Нет пользователя с id: {}", userId);
-//            throw new ValidationException("Нет пользователя с id: " + userId);
-//        }
-//        u.setName(user.getName());
-//        u.setLogin(user.getLogin());
-//        u.setEmail(user.getEmail());
-//        u.setBirthday(user.getBirthday());
-//        log.info("Обновлён пользователь с id: {}", userId);
-//        return u;
     }
 
     /**
@@ -87,11 +65,6 @@ public class InMemoryUserStorage implements UserStorage {
      */
     @Override
     public User getUserById(int id) {
-//        var user = userMap.get(id);
-//        if (user == null) {
-//            throw new ValidationException(String.format("Пользователь с id: %d не существует", id));
-//        }
-//        return user;
         var user = checkUser(id);
         log.info("Запрошен пользователь с id: {}", id);
         return user;
@@ -101,13 +74,11 @@ public class InMemoryUserStorage implements UserStorage {
      * @param id
      */
     @Override
-    public void deleteUser(int id) {
+    public String deleteUser(int id) {
         checkUser(id);
-//        if (!userMap.containsKey(id)) {
-//            throw new ValidationException(String.format("Нет пользователя с id:%d", id));
-//        }
         log.info("Удалён пользователь с id: {}", id);
         userMap.remove(id);
+        return String.format("Удалён пользователь с id: %d", id);
     }
 
     public User checkUser(Integer id) {
