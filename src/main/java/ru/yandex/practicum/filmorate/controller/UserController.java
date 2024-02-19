@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,19 +27,28 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public Collection<User> getAllUsers() {
-        return userStorage.getAllUsers();
+    public ResponseEntity<Collection<User>> getAllUsers() {
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(userStorage.getAllUsers());
     }
 
     @PostMapping
-    public User addNewUser(@Valid @RequestBody User user) {
-        return userStorage.addUser(user);
+    public ResponseEntity<User> addNewUser(@Valid @RequestBody User user) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(userStorage.addUser(user));
     }
 
 
     @PutMapping
-    public User updateUser(@Valid @RequestBody User user) {
-        return userStorage.updateUser(user);
+    public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(userStorage.updateUser(user));
     }
 
     @PutMapping("/{id}/friends/{friendId}")

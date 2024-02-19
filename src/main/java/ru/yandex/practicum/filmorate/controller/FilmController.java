@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,23 +35,35 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public Film getFilmById(@PathVariable(required = false) Integer id) {
-        return filmStorage.getFilmById(id);
+    public ResponseEntity<Film> getFilmById(@PathVariable(required = false) Integer id) {
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(filmStorage.getFilmById(id));
     }
 
     @PostMapping
-    public Film addNewFilm(@Valid @RequestBody Film film) {
-        return filmStorage.addFilm(film);
+    public ResponseEntity<Film> addNewFilm(@Valid @RequestBody Film film) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(filmStorage.addFilm(film));
     }
 
     @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film film) {
-        return filmStorage.updateFilm(film);
+    public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film film) {
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(filmStorage.updateFilm(film));
     }
 
     @DeleteMapping
-    public void deleteFilm(@RequestParam int id) {
-        filmStorage.deleteFilm(id);
+    public ResponseEntity<?> deleteFilm(@RequestParam int id) {
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(filmStorage.deleteFilm(id));
     }
 
     @PutMapping("/{id}/like/{userId}")
