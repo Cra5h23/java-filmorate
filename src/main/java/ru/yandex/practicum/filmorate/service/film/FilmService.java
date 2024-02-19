@@ -41,21 +41,6 @@ public class FilmService {
         film.addLike(userId);
         log.info("Ползователь с id:{} поставил лайк фильму с id:{}", userId, filmId);
         return String.format("Пользователь с id:%d поставил лайк фильму с id:%d", userId, filmId);
-
-        //var filmById = filmStorage.getFilmById(filmId);
-//        if (filmById == null) {
-//            throw new FilmServiceException(String.format("Попытка добавить лайк фильму с несуществующим id:%d", filmId));
-//        }
-//        if (userStorage.getUserById(userId) == null) {
-//            throw new FilmServiceException(String.format("Попытка добавить лайк фильму от несуществующего пользователя id:%d", userId));
-//        }
-//        if (filmById.getLikes().contains(userId)) {
-//            throw new FilmServiceException(String.format("Пользователь с id:%d уже поставил лайк фильму с id:%d", userId, filmId));
-//        }
-
-
-        //filmById.addLike(userId);
-
     }
 
     /**
@@ -70,17 +55,6 @@ public class FilmService {
         checkUser(userId, "удалить", "у фильма");
         film.deleteLike(userId);
         return String.format("Пользователь с id:%d удалил лайк у фильма с id:%d", userId, filmId);
-
-//        var filmById = filmStorage.getFilmById(filmId);
-//
-//        if (filmById == null) {
-//            throw new FilmServiceException(String.format("Попытка удалить лайк у фильма с несуществующим id:%d", filmId));
-//        }
-//        if (userStorage.getUserById(userId) == null) {
-//            throw new FilmServiceException(String.format("Попытка удалить лайк у фильма от несуществующего пользователя id:%d", userId));
-//        }
-//        filmById.deleteLike(userId);
-
     }
 
     /**
@@ -99,7 +73,6 @@ public class FilmService {
         try {
             return filmStorage.getFilmById(filmId);
         } catch (FilmStorageException e) {
-            //throw new FilmServiceException(String.format("Попытка добавить лайк фильму с несуществующим id:%d", filmId));
             throw new FilmServiceException(String.format("Попытка %s лайк %s с несуществующим id:%d", s[0], s[1], filmId));
         }
     }
@@ -108,7 +81,6 @@ public class FilmService {
         try {
             return userStorage.getUserById(userId);
         } catch (UserStorageException e) {
-            //throw new FilmServiceException(String.format("Попытка добавить лайк фильму от несуществующего пользователя id:%d", userId));
             throw new FilmServiceException(String.format("Попытка %s лайк %s от несуществующего пользователя c id:%d", s[0], s[1], userId));
         }
     }
