@@ -36,7 +36,8 @@ public class FilmService {
         var film = checkFilm(filmId, "добавить", "фильму");
         checkUser(userId, "добавить", "фильму");
         if (film.getLikes().contains(userId)) {
-            throw new FilmServiceException(String.format("Пользователь с id:%d уже поставил лайк фильму с id:%d", userId, filmId));
+            throw new FilmServiceException(String.format(
+                    "Пользователь с id:%d уже поставил лайк фильму с id:%d", userId, filmId));
         }
         film.addLike(userId);
         log.info("Ползователь с id:{} поставил лайк фильму с id:{}", userId, filmId);
@@ -73,7 +74,8 @@ public class FilmService {
         try {
             return filmStorage.getFilmById(filmId);
         } catch (FilmStorageException e) {
-            throw new FilmServiceException(String.format("Попытка %s лайк %s с несуществующим id:%d", s[0], s[1], filmId));
+            throw new FilmServiceException(
+                    String.format("Попытка %s лайк %s с несуществующим id:%d", s[0], s[1], filmId));
         }
     }
 
@@ -81,7 +83,8 @@ public class FilmService {
         try {
             return userStorage.getUserById(userId);
         } catch (UserStorageException e) {
-            throw new FilmServiceException(String.format("Попытка %s лайк %s от несуществующего пользователя c id:%d", s[0], s[1], userId));
+            throw new FilmServiceException(
+                    String.format("Попытка %s лайк %s от несуществующего пользователя c id:%d", s[0], s[1], userId));
         }
     }
 }
