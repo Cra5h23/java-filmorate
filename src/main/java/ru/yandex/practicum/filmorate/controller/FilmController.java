@@ -58,18 +58,16 @@ public class FilmController {
                 .body(filmStorage.updateFilm(film));
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteFilm(@RequestParam int id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteFilm(@PathVariable int id) {
         return ResponseEntity
                 .ok()
-                .contentType(MediaType.APPLICATION_JSON)
                 .body(filmStorage.deleteFilm(id));
     }
 
     @PutMapping("/{id}/like/{userId}")
     public ResponseEntity<?> userLikesFilm(@PathVariable(name = "id") Integer filmId, @PathVariable Integer userId) { //todo (id-> filmId)
         return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
                 .body(filmService.addLikeFilm(filmId, userId));
     }
 
