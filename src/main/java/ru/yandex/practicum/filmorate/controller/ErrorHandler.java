@@ -6,8 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.yandex.practicum.filmorate.exeption.*;
+import ru.yandex.practicum.filmorate.exeption.FilmServiceException;
+import ru.yandex.practicum.filmorate.exeption.FilmStorageException;
+import ru.yandex.practicum.filmorate.exeption.UserServiceException;
+import ru.yandex.practicum.filmorate.exeption.UserStorageException;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
@@ -23,7 +27,8 @@ public class ErrorHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("Неверно введены данные", e.getMessage()));
+                .body(Map.of("timestamp", LocalDateTime.now().toString()
+                        , "Ошибка установки лайка", e.getMessage()));
     }
 
     @ExceptionHandler
@@ -31,7 +36,8 @@ public class ErrorHandler {
         return ResponseEntity
                 .badRequest()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("Неверно введены данные", e.getFieldError().getDefaultMessage()));
+                .body(Map.of("timestamp", LocalDateTime.now().toString()
+                        , "Ошибка ввода данных", e.getFieldError().getDefaultMessage()));
     }
 
     @ExceptionHandler
@@ -39,16 +45,17 @@ public class ErrorHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of(
+                .body(Map.of("timestamp", LocalDateTime.now().toString(),
                         "Ошибка добавления пользователя в друзья", e.getMessage()));
     }
 
     @ExceptionHandler
-    public ResponseEntity<?> handlerThrowable(Throwable e) { //Todo
+    public ResponseEntity<?> handlerThrowable(Throwable e) {
         return ResponseEntity
                 .internalServerError()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("Произошла внутренняя ошибка сервера", e.getMessage()));
+                .body(Map.of("timestamp", LocalDateTime.now().toString()
+                        , "Произошла внутренняя ошибка сервера", e.getMessage()));
     }
 
     @ExceptionHandler
@@ -56,7 +63,8 @@ public class ErrorHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("Ошибка", e.getMessage()));
+                .body(Map.of("timestamp", LocalDateTime.now().toString()
+                        , "Ошибка получения фильма", e.getMessage()));
     }
 
     @ExceptionHandler
@@ -64,6 +72,7 @@ public class ErrorHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("Ошибка", e.getMessage()));
+                .body(Map.of("timestamp", LocalDateTime.now().toString()
+                        , "Ошибка получения пользователя", e.getMessage()));
     }
 }
