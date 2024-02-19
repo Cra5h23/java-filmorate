@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.validator.MinReleaseData;
@@ -25,6 +26,7 @@ import java.util.Set;
  */
 @Data
 @Builder(toBuilder = true)
+@AllArgsConstructor
 public class Film {
     /**
      * Индификатор фильма
