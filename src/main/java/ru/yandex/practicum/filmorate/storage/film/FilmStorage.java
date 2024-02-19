@@ -13,5 +13,5 @@ public interface FilmStorage {
 
     Film getFilmById(int id);
 
-    void deleteFilm(int id);
+    String deleteFilm(int id);
 }
