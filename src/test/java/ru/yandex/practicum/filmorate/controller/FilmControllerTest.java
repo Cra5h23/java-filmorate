@@ -324,4 +324,16 @@ public class FilmControllerTest {
         );
     }
 
+    @Test
+    void deleteFilm_ReturnsNotValidResponseEntity() throws Exception{
+        var requestBuilder = delete("/films/1");
+
+        this.mockMvc.perform(requestBuilder).andExpectAll(
+                status().isNotFound(),
+                content().contentType(APPLICATION_JSON)
+                ,content().json("{\"Ошибка получения фильма\":\"Фильм с id: 1 не существует\"}")
+                ,jsonPath("$.timestamp").exists()
+        );
+    }
+
 }
