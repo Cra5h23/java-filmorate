@@ -34,11 +34,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film updateFilm(Film film) {
         var filmId = film.getId();
         var f = checkFilm(filmId);
-//        Film f = filmMap.get(filmId);
-//        if (f == null) {
-//            log.warn("Нет фильма с id:" + filmId);
-//            throw new ValidationException(String.format("Нет фильма с id:%d", filmId));
-//        }
         f.setName(film.getName());
         f.setDescription(film.getDescription());
         f.setReleaseDate(film.getReleaseDate());
@@ -49,11 +44,6 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(int id) {
-//        var film = filmMap.get(id);
-//        if (film == null) {
-//            throw new ValidationException(String.format("Нет фильма с id:%d", id));
-//        }
-//        return film;
         var f = checkFilm(id);
         log.info("Получен фильм с id: {}", id);
         return f;
@@ -62,9 +52,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public void deleteFilm(int id) {
         checkFilm(id);
-//        if (!filmMap.containsKey(id)) {
-//            throw new ValidationException(String.format("Нет фильма с id:%s", id));
-//        }
         log.info("Удалён фильм с id: {}", id);
         filmMap.remove(id);
     }
