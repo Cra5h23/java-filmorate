@@ -25,19 +25,21 @@ public class UserService {
     /**
      * Метод добавления пользователя в друзья
      *
-     * @param userId
-     * @param friendId
-     * @return
+     * @param userId индификационный номер пользователя которому хотите добавить друга
+     * @param friendId индификационный номер друга которого ходите добавить
+     * @return строку с ответом
      */
     public String addingUserAsFriend(int userId, int friendId) {
+        checkId(userId, friendId, "добавить в друзья самого себя");
         var user = checkUser(userId, "добавить друга для");
         var friend = checkUser(friendId, "добавить в друзья");
         user.addFriend(friendId);
         friend.addFriend(userId);
-        return String.format("Пользователь с id:%d добавил в друзья пользователя с id: %d", userId, friendId);
+        return String.format("Пользователь с id: %d добавил в друзья пользователя с id: %d", userId, friendId);
     }
 
     public String deletingFromUserFriends(int userId, int deletingFriendId) {
+        checkId(userId,deletingFriendId, "удалить из друзей самого себя");
         var user = checkUser(userId, "удалить друга для");
         var deletingFriend = checkUser(deletingFriendId, "удалить из друзей");
         user.deletingFriend(deletingFriendId);
@@ -53,6 +55,7 @@ public class UserService {
     }
 
     public Collection<User> getListOfCommonFriends(int userId, int otherUserId) {
+        checkId(userId, otherUserId, "получить список общих друзей самим с собой");
         var user = checkUser(userId, "получить список общих друзей для");
         var otherUser = checkUser(otherUserId, "получить список общих друзей");
         return user.getFriends().stream()
@@ -66,6 +69,12 @@ public class UserService {
             return userStorage.getUserById(friendId);
         } catch (UserStorageException e) {
             throw new UserServiceException(format("Попытка %s несуществующего пользователя с id: %d", s[0], friendId));
+        }
+    }
+
+    private void checkId(Integer userId, Integer friendId, String s) {
+        if (userId.equals(friendId)) {
+            throw new UserServiceException(String.format("Нельзя %s", s));
         }
     }
 }
