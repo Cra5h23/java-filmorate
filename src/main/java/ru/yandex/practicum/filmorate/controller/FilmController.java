@@ -60,28 +60,21 @@ public class FilmController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFilm(@PathVariable int id) {
-        return ResponseEntity
-                .ok()
-                .body(filmStorage.deleteFilm(id));
+        return ResponseEntity.ok(filmStorage.deleteFilm(id));
     }
 
-    @PutMapping("/{id}/like/{userId}")
-    public ResponseEntity<?> userLikesFilm(@PathVariable(name = "id") Integer filmId, @PathVariable Integer userId) { //todo (id-> filmId)
-        return ResponseEntity.ok()
-                .body(filmService.addLikeFilm(filmId, userId));
+    @PutMapping("/{filmId}/like/{userId}")
+    public ResponseEntity<?> userLikesFilm(@PathVariable Integer filmId, @PathVariable Integer userId) {
+        return ResponseEntity.ok(filmService.addLikeFilm(filmId, userId));
     }
 
-    @DeleteMapping("/{id}/like/{userId}")
-    public ResponseEntity<?> userRemoveLikeFromFilm(@PathVariable(name = "id") Integer filmId, @PathVariable Integer userId) {
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(filmService.deleteLikeFilm(filmId, userId));
+    @DeleteMapping("/{filmId}/like/{userId}")
+    public ResponseEntity<?> userRemoveLikeFromFilm(@PathVariable Integer filmId, @PathVariable Integer userId) {
+        return ResponseEntity.ok(filmService.deleteLikeFilm(filmId, userId));
     }
 
     @GetMapping("/popular")
     public ResponseEntity<?> getListOfMostPopularFilms(@RequestParam(defaultValue = "10") Integer count) {
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(filmService.getMostPopularFilm(count));
+        return ResponseEntity.ok(filmService.getMostPopularFilm(count));
     }
 }
