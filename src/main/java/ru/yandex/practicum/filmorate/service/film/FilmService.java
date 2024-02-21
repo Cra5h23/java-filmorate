@@ -16,6 +16,8 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 
 /**
+ * Сервис добавления удаления лайков фильмам
+ *
  * @author Nikolay Radzivon
  */
 @Service
@@ -28,11 +30,11 @@ public class FilmService {
     /**
      * Метод добавления лайка фильму
      *
-     * @param filmId
-     * @param userId
-     * @return
+     * @param filmId Индификационный номер фильма
+     * @param userId Индификационный номер пользователя
+     * @return Возвращает строку с ответом
      */
-    public String addLikeFilm(Integer filmId, Integer userId) { //todo
+    public String addLikeFilm(Integer filmId, Integer userId) {
         var film = checkFilm(filmId, "добавить", "фильму");
         checkUser(userId, "добавить", "фильму");
         if (film.getLikes().contains(userId)) {
@@ -47,9 +49,9 @@ public class FilmService {
     /**
      * Метод удаления лайка из фильма
      *
-     * @param filmId
-     * @param userId
-     * @return
+     * @param filmId Индификационный номер фильма
+     * @param userId Индификационный номер пользователя
+     * @return Возвращает строку с ответом
      */
     public String deleteLikeFilm(Integer filmId, Integer userId) {
         var film = checkFilm(filmId, "удалить", "у фильма");
@@ -59,8 +61,10 @@ public class FilmService {
     }
 
     /**
-     * @param count
-     * @return
+     * Метод получения списка самых популярных фильмов
+     *
+     * @param count колличество фильмов в списке самых популярных фильмов
+     * @return список самых популярных фильмаов
      */
     public Collection<Film> getMostPopularFilm(Integer count) {
         log.info("Запрошен список из {} самых популярных фильмов", count);
