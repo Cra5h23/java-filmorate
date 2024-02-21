@@ -27,8 +27,8 @@ public class ErrorHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("timestamp", LocalDateTime.now().toString()
-                        , "Ошибка установки лайка", e.getMessage()));
+                .body(Map.of("timestamp", LocalDateTime.now().toString(),
+                        "Ошибка установки лайка", e.getMessage()));
     }
 
     @ExceptionHandler
@@ -36,8 +36,8 @@ public class ErrorHandler {
         return ResponseEntity
                 .badRequest()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("timestamp", LocalDateTime.now().toString()
-                        , "Ошибка ввода данных", e.getFieldError().getDefaultMessage()));
+                .body(Map.of("timestamp", LocalDateTime.now().toString(),
+                        "Ошибка ввода данных", e.getFieldError().getDefaultMessage()));
     }
 
     @ExceptionHandler
@@ -54,8 +54,8 @@ public class ErrorHandler {
         return ResponseEntity
                 .internalServerError()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("timestamp", LocalDateTime.now().toString()
-                        , "Произошла внутренняя ошибка сервера", e.getMessage()));
+                .body(Map.of("timestamp", LocalDateTime.now().toString(),
+                        "Произошла внутренняя ошибка сервера", e.getMessage()));
     }
 
     @ExceptionHandler
@@ -63,8 +63,8 @@ public class ErrorHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("timestamp", LocalDateTime.now().toString()
-                        , "Ошибка получения фильма", e.getMessage()));
+                .body(Map.of("timestamp", LocalDateTime.now().toString(),
+                        "Ошибка получения фильма", e.getMessage()));
     }
 
     @ExceptionHandler
@@ -72,7 +72,7 @@ public class ErrorHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("timestamp", LocalDateTime.now().toString()
-                        , "Ошибка получения пользователя", e.getMessage()));
+                .body(Map.of("timestamp", LocalDateTime.now().toString(),
+                        "Ошибка получения пользователя", e.getMessage()));
     }
 }
