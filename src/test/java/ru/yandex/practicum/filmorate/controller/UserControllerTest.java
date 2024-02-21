@@ -40,9 +40,9 @@ class UserControllerTest {
         userStorage.getUserMap().putAll(generatorUserMap(2));
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk()
-                , content().contentType(APPLICATION_JSON)
-                , content().json("[{\"id\":1" +
+                status().isOk(),
+                content().contentType(APPLICATION_JSON),
+                content().json("[{\"id\":1" +
                         ",\"email\":\"testEmail@test.com1\"" +
                         ",\"login\":\"testLogin1\"" +
                         ",\"name\":\"testName1\"" +
@@ -87,10 +87,10 @@ class UserControllerTest {
                         ",\"name\":\"validUserName\"}");
 
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isBadRequest()
-                , content().contentType(APPLICATION_JSON)
-                , content().json("{\"Ошибка ввода данных\":\"must be a well-formed email address\"}")
-                , jsonPath("$.timestamp").exists()
+                status().isBadRequest(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"Ошибка ввода данных\":\"must be a well-formed email address\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
@@ -104,10 +104,10 @@ class UserControllerTest {
                         ",\"name\":\"validUserName\"}");
 
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isBadRequest()
-                , content().contentType(APPLICATION_JSON)
-                , content().json("{\"Ошибка ввода данных\":\"Логин пользователя не должен быть пустым\"}")
-                , jsonPath("$.timestamp").exists()
+                status().isBadRequest(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"Ошибка ввода данных\":\"Логин пользователя не должен быть пустым\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
@@ -141,10 +141,10 @@ class UserControllerTest {
                         ",\"name\":\"validUserName\"}", LocalDate.now().plusDays(1)));
 
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isBadRequest()
-                ,content().contentType(APPLICATION_JSON)
-                ,content().json("{\"Ошибка ввода данных\":\"Дата рождения не должна быть в будущем\"}")
-                ,jsonPath("$.timestamp").exists()
+                status().isBadRequest(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"Ошибка ввода данных\":\"Дата рождения не должна быть в будущем\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
@@ -159,9 +159,9 @@ class UserControllerTest {
                         ",\"name\":\"validUserNameUpdate\"}");
         userStorage.getUserMap().putAll(generatorUserMap(1));
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk()
-                ,content().contentType(APPLICATION_JSON)
-                ,content().json("{\"id\":1" +
+                status().isOk(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"id\":1" +
                         ",\"email\":\"validuserUpdate@test.com\"" +
                         ",\"login\":\"validUserLoginUpdate\"" +
                         ",\"name\":\"validUserNameUpdate\"" +
@@ -182,10 +182,10 @@ class UserControllerTest {
 
         userStorage.getUserMap().putAll(generatorUserMap(1));
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isBadRequest()
-                , content().contentType(APPLICATION_JSON)
-                , content().json("{\"Ошибка ввода данных\":\"must be a well-formed email address\"}")
-                , jsonPath("$.timestamp").exists()
+                status().isBadRequest(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"Ошибка ввода данных\":\"must be a well-formed email address\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
@@ -200,10 +200,10 @@ class UserControllerTest {
                         ",\"name\":\"validUserNameUpdate\"}");
         userStorage.getUserMap().putAll(generatorUserMap(1));
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isBadRequest()
-                , content().contentType(APPLICATION_JSON)
-                , content().json("{\"Ошибка ввода данных\":\"Логин пользователя не должен быть пустым\"}")
-                , jsonPath("$.timestamp").exists()
+                status().isBadRequest(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"Ошибка ввода данных\":\"Логин пользователя не должен быть пустым\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
@@ -218,9 +218,9 @@ class UserControllerTest {
                         ",\"name\":\"\"}");
         userStorage.getUserMap().putAll(generatorUserMap(1));
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk()
-                ,content().contentType(APPLICATION_JSON)
-                ,content().json("{\"id\":1" +
+                status().isOk(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"id\":1" +
                         ",\"email\":\"validuserUpdate@test.com\"" +
                         ",\"login\":\"validUserLoginUpdate\"" +
                         ",\"name\":\"validUserLoginUpdate\"" +
@@ -237,64 +237,64 @@ class UserControllerTest {
                         ",\"email\":\"validuserUpdate@test.com\"" +
                         ",\"birthday\":\"%s\"" +
                         ",\"login\":\"validUserLoginUpdate\"" +
-                        ",\"name\":\"validUserNameUpdate\"}",LocalDate.now().plusDays(1)));
+                        ",\"name\":\"validUserNameUpdate\"}", LocalDate.now().plusDays(1)));
         userStorage.getUserMap().putAll(generatorUserMap(1));
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isBadRequest()
-                , content().contentType(APPLICATION_JSON)
-                , content().json("{\"Ошибка ввода данных\":\"Дата рождения не должна быть в будущем\"}")
-                , jsonPath("$.timestamp").exists()
+                status().isBadRequest(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"Ошибка ввода данных\":\"Дата рождения не должна быть в будущем\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
     @Test
     @DisplayName("PUT /users/1/friends/2 пользователь 1 добавляет в друзья пользователя 2")
-    void addUserToFriendsTest_User1AddToFriendsUser2() throws Exception{
-        var requestBuilder= put("/users/1/friends/2");
+    void addUserToFriendsTest_User1AddToFriendsUser2() throws Exception {
+        var requestBuilder = put("/users/1/friends/2");
 
         userStorage.getUserMap().putAll(generatorUserMap(2));
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk()
-                ,content().string("Пользователь с id: 1 добавил в друзья пользователя с id: 2")
+                status().isOk(),
+                content().string("Пользователь с id: 1 добавил в друзья пользователя с id: 2")
         );
     }
 
     @Test
     @DisplayName("PUT /users/1/friends/2 пользователь 2 не существует")
-    void addUserToFriendsTest_User1NotExists() throws Exception{
-        var requestBuilder= put("/users/1/friends/2");
+    void addUserToFriendsTest_User1NotExists() throws Exception {
+        var requestBuilder = put("/users/1/friends/2");
         userStorage.getUserMap().putAll(generatorUserMap(1));
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isNotFound()
-                ,content().json("{\"Ошибка добавления пользователя в друзья\"" +
-                        ":\"Попытка добавить в друзья несуществующего пользователя с id: 2\"}")
-                ,jsonPath("$.timestamp").exists()
+                status().isNotFound(),
+                content().json("{\"Ошибка добавления пользователя в друзья\"" +
+                        ":\"Попытка добавить в друзья несуществующего пользователя с id: 2\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
     @Test
     @DisplayName("PUT /users/1/friends/2 пользователь 1 не существует")
-    void addUserToFriendsTest_User2NotExists() throws Exception{
-        var requestBuilder= put("/users/1/friends/2");
+    void addUserToFriendsTest_User2NotExists() throws Exception {
+        var requestBuilder = put("/users/1/friends/2");
 
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isNotFound()
-                ,content().json("{\"Ошибка добавления пользователя в друзья\"" +
-                        ":\"Попытка добавить друга для несуществующего пользователя с id: 1\"}")
-                ,jsonPath("$.timestamp").exists()
+                status().isNotFound(),
+                content().json("{\"Ошибка добавления пользователя в друзья\"" +
+                        ":\"Попытка добавить друга для несуществующего пользователя с id: 1\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
     @Test
     @DisplayName("GET /users/1 возвращает пользователя с id 1")
-    void getUserByIdTest_GetUser1() throws Exception{
-        var requestBuilder= get("/users/1");
+    void getUserByIdTest_GetUser1() throws Exception {
+        var requestBuilder = get("/users/1");
 
         userStorage.getUserMap().putAll(generatorUserMap(1));
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk()
-                ,content().contentType(APPLICATION_JSON)
-                ,content().json("{\"id\":1" +
+                status().isOk(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"id\":1" +
                         ",\"email\":\"testEmail@test.com1\"" +
                         ",\"login\":\"testLogin1\"" +
                         ",\"name\":\"testName1\"" +
@@ -305,55 +305,55 @@ class UserControllerTest {
 
     @Test
     @DisplayName("GET /users/1 не возвращает не существующего пользователя с id 1")
-    void getUserByIdTest_GetUser1NotExists() throws Exception{
-        var requestBuilder= get("/users/1");
+    void getUserByIdTest_GetUser1NotExists() throws Exception {
+        var requestBuilder = get("/users/1");
 
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isNotFound()
-                ,content().contentType(APPLICATION_JSON)
-                ,content().json("{\"Ошибка получения пользователя\":\"Пользователь с id: 1 не существует\"}")
-                ,jsonPath("$.timestamp").exists()
+                status().isNotFound(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"Ошибка получения пользователя\":\"Пользователь с id: 1 не существует\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
     @Test
     @DisplayName("DELETE /users/1 удаляет пользователя с id 1")
-    void deleteFromUserFriendsTest_DeleteUser1() throws Exception{
-        var requestBuilder= delete("/users/1");
+    void deleteFromUserFriendsTest_DeleteUser1() throws Exception {
+        var requestBuilder = delete("/users/1");
 
         userStorage.getUserMap().putAll(generatorUserMap(1));
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk()
-                ,content().string("Удалён пользователь с id: 1")
+                status().isOk(),
+                content().string("Удалён пользователь с id: 1")
 
         );
     }
 
     @Test
     @DisplayName("DELETE /users/1 не удаляет несуществующего пользователя с id 1")
-    void deleteFromUserFriendsTest_DeleteUser1NotExists() throws Exception{
-        var requestBuilder= delete("/users/1");
+    void deleteFromUserFriendsTest_DeleteUser1NotExists() throws Exception {
+        var requestBuilder = delete("/users/1");
 
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isNotFound()
-                ,content().contentType(APPLICATION_JSON)
-                ,content().json("{\"Ошибка получения пользователя\":\"Пользователь с id: 1 не существует\"}")
-                ,jsonPath("$.timestamp").exists()
+                status().isNotFound(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"Ошибка получения пользователя\":\"Пользователь с id: 1 не существует\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
     @Test
     @DisplayName("GET /users/1/friends возвращает список друзей для пользователя с id 1")
     void getUsersFriendsTest_ReturnListFriends() throws Exception {
-        var requestBuilder= get("/users/1/friends");
+        var requestBuilder = get("/users/1/friends");
 
         userStorage.getUserMap().putAll(generatorUserMap(3));
-        userService.addingUserAsFriend(1,2);
-        userService.addingUserAsFriend(1,3);
+        userService.addingUserAsFriend(1, 2);
+        userService.addingUserAsFriend(1, 3);
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk()
-                ,content().contentType(APPLICATION_JSON)
-                ,content().json("[{\"id\":2" +
+                status().isOk(),
+                content().contentType(APPLICATION_JSON),
+                content().json("[{\"id\":2" +
                         ",\"email\":\"testEmail@test.com2\"" +
                         ",\"login\":\"testLogin2\"" +
                         ",\"name\":\"testName2\"" +
@@ -371,32 +371,32 @@ class UserControllerTest {
     @Test
     @DisplayName("GET /users/1/friends не возвращает список друзей для несуществующего пользователя с id 1")
     void getUsersFriendsTest_User1NotExists() throws Exception {
-        var requestBuilder= get("/users/1/friends");
+        var requestBuilder = get("/users/1/friends");
 
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isNotFound()
-                ,content().contentType(APPLICATION_JSON)
-                ,content().json("{\"Ошибка добавления пользователя в друзья\"" +
-                        ":\"Попытка получить список друзей для несуществующего пользователя с id: 1\"}")
-                ,jsonPath("$.timestamp").exists()
+                status().isNotFound(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"Ошибка добавления пользователя в друзья\"" +
+                        ":\"Попытка получить список друзей для несуществующего пользователя с id: 1\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
     @Test
     @DisplayName("GET /users/1/friends/common/2 возвращает список общих друзей для пользователя с id 1 и пользователя с id 2")
     void getUsersCommonFriendsTest_ReturnsListCommonFriends() throws Exception {
-        var requestBuilder= get("/users/1/friends/common/2");
+        var requestBuilder = get("/users/1/friends/common/2");
 
         userStorage.getUserMap().putAll(generatorUserMap(5));
-        userService.addingUserAsFriend(1,3);
-        userService.addingUserAsFriend(1,4);
-        userService.addingUserAsFriend(1,5);
-        userService.addingUserAsFriend(2,4);
-        userService.addingUserAsFriend(2,5);
+        userService.addingUserAsFriend(1, 3);
+        userService.addingUserAsFriend(1, 4);
+        userService.addingUserAsFriend(1, 5);
+        userService.addingUserAsFriend(2, 4);
+        userService.addingUserAsFriend(2, 5);
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk()
-                ,content().contentType(APPLICATION_JSON)
-                ,content().json("[{\"id\":4" +
+                status().isOk(),
+                content().contentType(APPLICATION_JSON),
+                content().json("[{\"id\":4" +
                         ",\"email\":\"testEmail@test.com4\"" +
                         ",\"login\":\"testLogin4\"" +
                         ",\"name\":\"testName4\"" +
@@ -414,14 +414,14 @@ class UserControllerTest {
     @Test
     @DisplayName("GET /users/1/friends/common/2 не возвращает список общих друзей для несуществующего пользователя с id 1")
     void getUsersCommonFriendsTest_User1NotExists() throws Exception {
-        var requestBuilder= get("/users/1/friends/common/2");
+        var requestBuilder = get("/users/1/friends/common/2");
 
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isNotFound()
-                ,content().contentType(APPLICATION_JSON)
-                ,content().json("{\"Ошибка добавления пользователя в друзья\"" +
-                        ":\"Попытка получить список общих друзей для несуществующего пользователя с id: 1\"}")
-                ,jsonPath("$.timestamp").exists()
+                status().isNotFound(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"Ошибка добавления пользователя в друзья\"" +
+                        ":\"Попытка получить список общих друзей для несуществующего пользователя с id: 1\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
@@ -429,93 +429,97 @@ class UserControllerTest {
     @DisplayName("GET /users/1/friends/common/2 не возвращает список общих друзей для пользователя с id 1 " +
             " и не существующего пользователя с id 2")
     void getUsersCommonFriendsTest_User2NotExists() throws Exception {
-        var requestBuilder= get("/users/1/friends/common/2");
+        var requestBuilder = get("/users/1/friends/common/2");
 
         userStorage.getUserMap().putAll(generatorUserMap(1));
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isNotFound()
-                ,content().contentType(APPLICATION_JSON)
-                ,content().json("{\"Ошибка добавления пользователя в друзья\":\"Попытка получить список общих друзей несуществующего пользователя с id: 2\"}")
-                ,jsonPath("$.timestamp").exists()
+                status().isNotFound(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"Ошибка добавления пользователя в друзья\":" +
+                        "\"Попытка получить список общих друзей несуществующего пользователя с id: 2\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
     @Test
     @DisplayName("DELETE /users/1 удаляет пользователя с id 1")
     void deleteUserTest() throws Exception {
-        var requestBuilder= delete("/users/1");
+        var requestBuilder = delete("/users/1");
 
         userStorage.getUserMap().putAll(generatorUserMap(1));
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk()
-                ,content().string("Удалён пользователь с id: 1")
+                status().isOk(),
+                content().string("Удалён пользователь с id: 1")
         );
     }
 
     @Test
     @DisplayName("DELETE /users/1 не удаляет несуществующего пользователя с id 1")
     void deleteUserTest_User1NotExists() throws Exception {
-        var requestBuilder= delete("/users/1");
+        var requestBuilder = delete("/users/1");
 
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isNotFound()
-                ,content().contentType(APPLICATION_JSON)
-                ,content().json("{\"Ошибка получения пользователя\":\"Пользователь с id: 1 не существует\"}")
-                ,jsonPath("$.timestamp").exists()
+                status().isNotFound(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"Ошибка получения пользователя\":\"Пользователь с id: 1 не существует\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
     @Test
     @DisplayName("DELETE /users/1/friends/1 не удаляет из друзей самого себя")
-    void deleteFromUserFriendsTest_Delete() throws Exception{
+    void deleteFromUserFriendsTest_Delete() throws Exception {
         var requestBuilder = delete("/users/1/friends/1");
 
         userStorage.getUserMap().putAll(generatorUserMap(1));
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isNotFound()
-                ,content().contentType(APPLICATION_JSON)
-                ,content().json("{\"Ошибка добавления пользователя в друзья\":\"Нельзя удалить из друзей самого себя\"}")
-                ,jsonPath("$.timestamp").exists()
+                status().isNotFound(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"Ошибка добавления пользователя в друзья\":" +
+                        "\"Нельзя удалить из друзей самого себя\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
     @Test
     @DisplayName("DELETE /users/1/friends/1 не удаляет из друзей у несуществующего пользователя с id 1")
-    void deleteFromUserFriendsTest_User1NotExists() throws Exception{
+    void deleteFromUserFriendsTest_User1NotExists() throws Exception {
         var requestBuilder = delete("/users/1/friends/2");
 
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isNotFound()
-                ,content().contentType(APPLICATION_JSON)
-                ,content().json("{\"Ошибка добавления пользователя в друзья\":\"Попытка удалить друга для несуществующего пользователя с id: 1\"}")
-                ,jsonPath("$.timestamp").exists()
+                status().isNotFound(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"Ошибка добавления пользователя в друзья\":" +
+                        "\"Попытка удалить друга для несуществующего пользователя с id: 1\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
     @Test
     @DisplayName("DELETE /users/1/friends/1 не удаляет из друзей у несуществующего пользователя с id 1")
-    void deleteFromUserFriendsTest_User2NotExists() throws Exception{
+    void deleteFromUserFriendsTest_User2NotExists() throws Exception {
         var requestBuilder = delete("/users/1/friends/2");
         userStorage.getUserMap().putAll(generatorUserMap(1));
 
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isNotFound()
-                ,content().contentType(APPLICATION_JSON)
-                ,content().json("{\"Ошибка добавления пользователя в друзья\":\"Попытка удалить из друзей несуществующего пользователя с id: 2\"}")
-                ,jsonPath("$.timestamp").exists()
+                status().isNotFound(),
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"Ошибка добавления пользователя в друзья\":" +
+                        "\"Попытка удалить из друзей несуществующего пользователя с id: 2\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
     @Test
     @DisplayName("DELETE /users/1/friends/1 удаляет из друзей у пользователя с id 1 пользователя с id 2")
-    void deleteFromUserFriendsTest() throws Exception{
+    void deleteFromUserFriendsTest() throws Exception {
         var requestBuilder = delete("/users/1/friends/2");
         userStorage.getUserMap().putAll(generatorUserMap(2));
-        userService.addingUserAsFriend(1,2);
+        userService.addingUserAsFriend(1, 2);
 
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk()
-                ,content().string("Пользователь с id: 1 удалил из друзей пользователя с id: 2")
+                status().isOk(),
+                content().string("Пользователь с id: 1 удалил из друзей пользователя с id: 2")
         );
     }
 
