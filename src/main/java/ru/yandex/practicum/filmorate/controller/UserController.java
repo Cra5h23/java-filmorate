@@ -51,52 +51,44 @@ public class UserController {
                 .body(userStorage.updateUser(user));
     }
 
-    @PutMapping("/{id}/friends/{friendId}")
+    @PutMapping("/{userId}/friends/{friendId}")
     public ResponseEntity<?> addUserToFriends(
-            @PathVariable(name = "id") Integer userId, @PathVariable Integer friendId) {
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(userService.addingUserAsFriend(userId, friendId));
+            @PathVariable Integer userId, @PathVariable Integer friendId) {
+        return ResponseEntity.ok(userService.addingUserAsFriend(userId, friendId));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable(required = false, name = "id") Integer userId) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getUserById(@PathVariable(required = false) Integer userId) {
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(userStorage.getUserById(userId));
     }
 
-    @DeleteMapping("/{id}/friends/{friendId}")
+    @DeleteMapping("/{userId}/friends/{friendId}")
     public ResponseEntity<?> deleteFromUserFriends(
-            @PathVariable(name = "id") Integer userId, @PathVariable Integer friendId) {
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(userService.deletingFromUserFriends(userId, friendId));
+            @PathVariable Integer userId, @PathVariable Integer friendId) {
+        return ResponseEntity.ok(userService.deletingFromUserFriends(userId, friendId));
     }
 
-    @GetMapping("/{id}/friends")
-    public ResponseEntity<?> getUsersFriends(@PathVariable(name = "id") Integer userId) {
+    @GetMapping("/{userId}/friends")
+    public ResponseEntity<?> getUsersFriends(@PathVariable Integer userId) {
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(userService.getUserFriends(userId));
     }
 
-    @GetMapping("{id}/friends/common/{otherId}")
+    @GetMapping("{userId}/friends/common/{otherId}")
     public ResponseEntity<?> getUsersCommonFriends(
-            @PathVariable(name = "id") Integer userId, @PathVariable Integer otherId) {
+            @PathVariable Integer userId, @PathVariable Integer otherId) {
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(userService.getListOfCommonFriends(userId, otherId));
     }
-    @DeleteMapping
-    public ResponseEntity<?> deleteFilm(@RequestParam int id) {
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(userStorage.deleteUser(id));
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable(required = false) int userId) {
+        return ResponseEntity.ok(userStorage.deleteUser(userId));
     }
 }
