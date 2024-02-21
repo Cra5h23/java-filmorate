@@ -316,8 +316,8 @@ public class FilmControllerTest {
 
         this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk()
-                , content().string("Удалён фильм с id: 1")
+                status().isOk(),
+                content().string("Удалён фильм с id: 1")
         );
     }
 
@@ -328,9 +328,9 @@ public class FilmControllerTest {
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
-                content().contentType(APPLICATION_JSON)
-                , content().json("{\"Ошибка получения фильма\":\"Фильм с id: 1 не существует\"}")
-                , jsonPath("$.timestamp").exists()
+                content().contentType(APPLICATION_JSON),
+                content().json("{\"Ошибка получения фильма\":\"Фильм с id: 1 не существует\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
@@ -391,8 +391,8 @@ public class FilmControllerTest {
         this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
         this.userStorage.getUserMap().putAll(generatorUserMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk()
-                , content().string("Пользователь с id:1 удалил лайк у фильма с id:1")
+                status().isOk(),
+                content().string("Пользователь с id:1 удалил лайк у фильма с id:1")
         );
     }
 
@@ -404,10 +404,10 @@ public class FilmControllerTest {
 
         this.userStorage.getUserMap().putAll(generatorUserMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
-                status().isNotFound()
-                , content().json("{\"Ошибка установки лайка\":" +
-                        "\"Попытка удалить лайк у фильма с несуществующим id:1\"}")
-                , jsonPath("$.timestamp").exists()
+                status().isNotFound(),
+                content().json("{\"Ошибка установки лайка\":" +
+                        "\"Попытка удалить лайк у фильма с несуществующим id:1\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
@@ -419,10 +419,10 @@ public class FilmControllerTest {
 
         this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
-                status().isNotFound()
-                , content().json("{\"Ошибка установки лайка\":" +
-                        "\"Попытка удалить лайк у фильма от несуществующего пользователя c id:1\"}")
-                , jsonPath("$.timestamp").exists()
+                status().isNotFound(),
+                content().json("{\"Ошибка установки лайка\":" +
+                        "\"Попытка удалить лайк у фильма от несуществующего пользователя c id:1\"}"),
+                jsonPath("$.timestamp").exists()
         );
     }
 
@@ -445,19 +445,29 @@ public class FilmControllerTest {
         IntStream.range(6, 11).forEach(i -> this.filmService.addLikeFilm(10, i));
         IntStream.range(1, 10).forEach(i -> this.filmService.addLikeFilm(11, i));
         this.mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk()
-                , content().contentType(APPLICATION_JSON)
-                , content().json(
-                        "[{\"id\":1,\"name\":\"TestFilm1\",\"description\":\"TestDescription1\",\"releaseDate\":\"1900-01-02\",\"duration\":2,\"likes\":[1,2,3,4,5,6,7,8,9,10]}" +
-                                ",{\"id\":11,\"name\":\"TestFilm11\",\"description\":\"TestDescription11\",\"releaseDate\":\"1900-01-12\",\"duration\":12,\"likes\":[1,2,3,4,5,6,7,8,9]}" +
-                                ",{\"id\":4,\"name\":\"TestFilm4\",\"description\":\"TestDescription4\",\"releaseDate\":\"1900-01-05\",\"duration\":5,\"likes\":[3,4,5,6,7,8,9,10]}" +
-                                ",{\"id\":5,\"name\":\"TestFilm5\",\"description\":\"TestDescription5\",\"releaseDate\":\"1900-01-06\",\"duration\":6,\"likes\":[1,2,3,4,5,6,7]}" +
-                                ",{\"id\":7,\"name\":\"TestFilm7\",\"description\":\"TestDescription7\",\"releaseDate\":\"1900-01-08\",\"duration\":8,\"likes\":[1,2,3,4,5,6,7]}" +
-                                ",{\"id\":9,\"name\":\"TestFilm9\",\"description\":\"TestDescription9\",\"releaseDate\":\"1900-01-10\",\"duration\":10,\"likes\":[2,3,4,5,6,7]}" +
-                                ",{\"id\":10,\"name\":\"TestFilm10\",\"description\":\"TestDescription10\",\"releaseDate\":\"1900-01-11\",\"duration\":11,\"likes\":[6,7,8,9,10]}" +
-                                ",{\"id\":6,\"name\":\"TestFilm6\",\"description\":\"TestDescription6\",\"releaseDate\":\"1900-01-07\",\"duration\":7,\"likes\":[4,5,6,7]}" +
-                                ",{\"id\":8,\"name\":\"TestFilm8\",\"description\":\"TestDescription8\",\"releaseDate\":\"1900-01-09\",\"duration\":9,\"likes\":[5,6,7]}" +
-                                ",{\"id\":3,\"name\":\"TestFilm3\",\"description\":\"TestDescription3\",\"releaseDate\":\"1900-01-04\",\"duration\":4,\"likes\":[1,2]}]"
+                status().isOk(),
+                content().contentType(APPLICATION_JSON),
+                content().json(
+                        "[{\"id\":1,\"name\":\"TestFilm1\",\"description\":\"TestDescription1\"" +
+                                ",\"releaseDate\":\"1900-01-02\",\"duration\":2,\"likes\":[1,2,3,4,5,6,7,8,9,10]}" +
+                                ",{\"id\":11,\"name\":\"TestFilm11\",\"description\":\"TestDescription11\"" +
+                                ",\"releaseDate\":\"1900-01-12\",\"duration\":12,\"likes\":[1,2,3,4,5,6,7,8,9]}" +
+                                ",{\"id\":4,\"name\":\"TestFilm4\",\"description\":\"TestDescription4\"" +
+                                ",\"releaseDate\":\"1900-01-05\",\"duration\":5,\"likes\":[3,4,5,6,7,8,9,10]}" +
+                                ",{\"id\":5,\"name\":\"TestFilm5\",\"description\":\"TestDescription5\"" +
+                                ",\"releaseDate\":\"1900-01-06\",\"duration\":6,\"likes\":[1,2,3,4,5,6,7]}" +
+                                ",{\"id\":7,\"name\":\"TestFilm7\",\"description\":\"TestDescription7\"" +
+                                ",\"releaseDate\":\"1900-01-08\",\"duration\":8,\"likes\":[1,2,3,4,5,6,7]}" +
+                                ",{\"id\":9,\"name\":\"TestFilm9\",\"description\":\"TestDescription9\"" +
+                                ",\"releaseDate\":\"1900-01-10\",\"duration\":10,\"likes\":[2,3,4,5,6,7]}" +
+                                ",{\"id\":10,\"name\":\"TestFilm10\",\"description\":\"TestDescription10\"" +
+                                ",\"releaseDate\":\"1900-01-11\",\"duration\":11,\"likes\":[6,7,8,9,10]}" +
+                                ",{\"id\":6,\"name\":\"TestFilm6\",\"description\":\"TestDescription6\"" +
+                                ",\"releaseDate\":\"1900-01-07\",\"duration\":7,\"likes\":[4,5,6,7]}" +
+                                ",{\"id\":8,\"name\":\"TestFilm8\",\"description\":\"TestDescription8\"" +
+                                ",\"releaseDate\":\"1900-01-09\",\"duration\":9,\"likes\":[5,6,7]}" +
+                                ",{\"id\":3,\"name\":\"TestFilm3\",\"description\":\"TestDescription3\"" +
+                                ",\"releaseDate\":\"1900-01-04\",\"duration\":4,\"likes\":[1,2]}]"
                 ));
     }
 
@@ -480,9 +490,9 @@ public class FilmControllerTest {
         IntStream.range(6, 11).forEach(i -> this.filmService.addLikeFilm(10, i));
         IntStream.range(1, 10).forEach(i -> this.filmService.addLikeFilm(11, i));
         this.mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk()
-                , content().contentType(APPLICATION_JSON)
-                , content().json(
+                status().isOk(),
+                content().contentType(APPLICATION_JSON),
+                content().json(
                         "[{\"id\":1,\"name\":\"TestFilm1\",\"description\":\"TestDescription1\"" +
                                 ",\"releaseDate\":\"1900-01-02\",\"duration\":2,\"likes\":[1,2,3,4,5,6,7,8,9,10]}" +
                                 ",{\"id\":11,\"name\":\"TestFilm11\",\"description\":\"TestDescription11\"" +
@@ -527,9 +537,9 @@ public class FilmControllerTest {
         IntStream.range(6, 11).forEach(i -> this.filmService.addLikeFilm(10, i));
         IntStream.range(1, 10).forEach(i -> this.filmService.addLikeFilm(11, i));
         this.mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk()
-                , content().contentType(APPLICATION_JSON)
-                , content().json(
+                status().isOk(),
+                content().contentType(APPLICATION_JSON),
+                content().json(
                         "[{\"id\":1,\"name\":\"TestFilm1\",\"description\":\"TestDescription1\"" +
                                 ",\"releaseDate\":\"1900-01-02\",\"duration\":2,\"likes\":[1,2,3,4,5,6,7,8,9,10]}]"
                 ));
