@@ -61,7 +61,7 @@ public class Film {
     @Positive(message = "Продолжительность фильма должна быть положительной")
     private int duration;
 
-    private final Set<Integer> likes = new HashSet<>(); //todo сделать отдельным классом?
+    private final Set<Integer> likes = new HashSet<>();
 
     public void addLike(Integer userId) {
         this.likes.add(userId);
