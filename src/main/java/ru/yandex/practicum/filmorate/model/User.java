@@ -8,6 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import ru.yandex.practicum.filmorate.validator.EmptyName;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -25,6 +26,7 @@ import java.util.Set;
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
+@EmptyName
 public class User {
     /**
      * Индификатор пользователя
