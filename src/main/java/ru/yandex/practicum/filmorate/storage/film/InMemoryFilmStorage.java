@@ -3,17 +3,16 @@ package ru.yandex.practicum.filmorate.storage.film;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exeption.FilmStorageException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+@Getter
 @Component
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
-    @Getter
     private final Map<Integer, Film> filmMap = new HashMap<>();
-    private int generatorFilmId = 0;
 
     @Override
     public Collection<Film> getAllFilms() {
@@ -22,38 +21,27 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film addFilm(Film film) {
-        film.setId(++generatorFilmId);
-        filmMap.put(film.getId(), film);
+    public void addFilm(Film film) {
         log.info("Добавлен фильм {}", film);
-        return film;
+        filmMap.put(film.getId(), film);
     }
 
     @Override
-    public Film updateFilm(Film film) {
-        var filmId = film.getId();
-        var f = checkFilm(filmId);
-        f.setName(film.getName());
-        f.setDescription(film.getDescription());
-        f.setReleaseDate(film.getReleaseDate());
-        f.setDuration(film.getDuration());
-        log.info("Обновлён фильм с id: {}", filmId);
-        return f;
+    public void updateFilm(Film film) {
+        log.info("Обновлён фильм с id: {}", film.getId());
+        filmMap.put(film.getId(), film);
     }
 
     @Override
-    public Film getFilmById(int id) {
-        var f = checkFilm(id);
-        log.info("Получен фильм с id: {}", id);
-        return f;
+    public Optional<Film> getFilmById(int id) {
+        log.info("Запрошен фильм с id: {}", id);
+        return Optional.ofNullable(filmMap.get(id));
     }
 
     @Override
-    public String deleteFilm(int id) {
-        checkFilm(id);
+    public void deleteFilm(int id) {
         log.info("Удалён фильм с id: {}", id);
         filmMap.remove(id);
-        return String.format("Удалён фильм с id: %d", id);
     }
 
     private Film checkFilm(Integer id) {
