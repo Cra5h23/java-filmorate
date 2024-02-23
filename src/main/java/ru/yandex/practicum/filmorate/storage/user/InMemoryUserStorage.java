@@ -35,7 +35,7 @@ public class InMemoryUserStorage implements UserStorage {
      * @param user
      */
     @Override
-    public void updateUser(User user) { //todo проверить
+    public void updateUser(User user) {
         userMap.put(user.getId(), user);
         log.info("Обновлён пользователь с id: {}", user.getId());
     }

@@ -531,5 +531,4 @@ class UserControllerTest {
         }
         return userMap;
     }
-
 }
