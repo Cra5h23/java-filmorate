@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.yandex.practicum.filmorate.exeption.FilmServiceException;
-import ru.yandex.practicum.filmorate.exeption.FilmStorageException;
-import ru.yandex.practicum.filmorate.exeption.UserServiceException;
-import ru.yandex.practicum.filmorate.exeption.UserStorageException;
+import ru.yandex.practicum.filmorate.exeption.*;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -36,15 +33,17 @@ public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<?> handlerFilmServiceException(final FilmServiceException e) {
+        log.warn("Ошибка работы с фильмами:" + e.fillInStackTrace());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("timestamp", LocalDateTime.now().toString(),
-                        "Ошибка установки лайка", e.getMessage()));
+                        "Ошибка работы с фильмами", e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<?> handlerMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+        log.warn("Ошибка валидации" + e.getAllErrors());
         return ResponseEntity
                 .badRequest()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -53,38 +52,32 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<Map<String, String>> handlerUserServiceException(final UserServiceException e) {
+    public ResponseEntity<Map<String, String>> handlerUserFriendServiceException(final UserFriendServiceException e) {
+        log.warn("Ошибка работы с друзьями:" + e.fillInStackTrace());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("timestamp", LocalDateTime.now().toString(),
-                        "Ошибка добавления пользователя в друзья", e.getMessage()));
+                        "Ошибка работы с друзьями", e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Map<String, String>> handlerUserServiceException(final UserServiceException e) {
+        log.warn("Ошибка работы с пользователями:" + e.fillInStackTrace());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("timestamp", LocalDateTime.now().toString(),
+                        "Ошибка работы с пользователями", e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<?> handlerThrowable(Throwable e) {
+        log.warn("Внутренняя ошибка сервера" + e.fillInStackTrace());
         return ResponseEntity
                 .internalServerError()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("timestamp", LocalDateTime.now().toString(),
                         "Произошла внутренняя ошибка сервера", e.getMessage()));
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<?> handlerFilmStorageException(final FilmStorageException e) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("timestamp", LocalDateTime.now().toString(),
-                        "Ошибка получения фильма", e.getMessage()));
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<?> handlerUserStorageException(final UserStorageException e) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("timestamp", LocalDateTime.now().toString(),
-                        "Ошибка получения пользователя", e.getMessage()));
     }
 }
