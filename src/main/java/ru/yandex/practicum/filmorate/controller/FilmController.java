@@ -1,14 +1,14 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.film.FilmLikeService;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -21,9 +21,9 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/films")
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class FilmController {
-    private final FilmStorage filmStorage;
+    private final FilmLikeService filmLikeService;
     private final FilmService filmService;
 
     @GetMapping
@@ -31,7 +31,7 @@ public class FilmController {
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(filmStorage.getAllFilms());
+                .body(filmService.getFilms());
     }
 
     @GetMapping("/{id}")
@@ -39,7 +39,7 @@ public class FilmController {
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(filmStorage.getFilmById(id));
+                .body(filmService.getFilmById(id));
     }
 
     @PostMapping
@@ -47,7 +47,7 @@ public class FilmController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(filmStorage.addFilm(film));
+                .body(filmService.addFilm(film));
     }
 
     @PutMapping
@@ -55,26 +55,26 @@ public class FilmController {
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(filmStorage.updateFilm(film));
+                .body(filmService.updateFilm(film));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFilm(@PathVariable int id) {
-        return ResponseEntity.ok(filmStorage.deleteFilm(id));
+        return ResponseEntity.ok(filmService.deleteFilmById(id));
     }
 
     @PutMapping("/{filmId}/like/{userId}")
     public ResponseEntity<?> userLikesFilm(@PathVariable Integer filmId, @PathVariable Integer userId) {
-        return ResponseEntity.ok(filmService.addLikeFilm(filmId, userId));
+        return ResponseEntity.ok(filmLikeService.addLikeFilm(filmId, userId));
     }
 
     @DeleteMapping("/{filmId}/like/{userId}")
     public ResponseEntity<?> userRemoveLikeFromFilm(@PathVariable Integer filmId, @PathVariable Integer userId) {
-        return ResponseEntity.ok(filmService.deleteLikeFilm(filmId, userId));
+        return ResponseEntity.ok(filmLikeService.deleteLikeFilm(filmId, userId));
     }
 
     @GetMapping("/popular")
     public ResponseEntity<?> getListOfMostPopularFilms(@RequestParam(defaultValue = "10") Integer count) {
-        return ResponseEntity.ok(filmService.getMostPopularFilm(count));
+        return ResponseEntity.ok(filmLikeService.getMostPopularFilm(count));
     }
 }
