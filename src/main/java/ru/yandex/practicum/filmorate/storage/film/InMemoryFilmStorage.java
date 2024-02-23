@@ -44,11 +44,14 @@ public class InMemoryFilmStorage implements FilmStorage {
         filmMap.remove(id);
     }
 
-    private Film checkFilm(Integer id) {
-        if (!filmMap.containsKey(id)) {
-            log.warn("Фильм с id: {} не существует", id);
-            throw new FilmStorageException(String.format("Фильм с id: %d не существует", id));
-        }
-        return filmMap.get(id);
+    /**
+     * @param comparator
+     * @param count
+     * @return
+     */
+    @Override
+    public Collection<Film> getSortedFilms(Comparator<Film> comparator, Integer count) {
+        log.info("Запрошен сортированный список с {} элементами", count);
+        return filmMap.values().stream().sorted(comparator).limit(count).collect(Collectors.toList());
     }
 }
