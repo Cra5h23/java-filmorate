@@ -29,7 +29,7 @@ import java.util.Set;
 @EmptyName
 public class User {
     /**
-     * Индификатор пользователя
+     * Идентификатор пользователя
      */
     @Builder.Default
     private int id = 0;
