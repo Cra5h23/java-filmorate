@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,18 @@ import java.util.Map;
  * @author Nikolay Radzivon
  */
 @ControllerAdvice("ru.yandex.practicum.filmorate")
+@Slf4j
 public class ErrorHandler {
+
+    @ExceptionHandler
+    public ResponseEntity<?> handlerFilmLikeServiceException(final FilmLikeServiceException e) {
+        log.warn("Ошибка работы с лайками:" + e.fillInStackTrace());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("timestamp", LocalDateTime.now().toString(),
+                        "Ошибка работы с лайками", e.getMessage()));
+    }
 
     @ExceptionHandler
     public ResponseEntity<?> handlerFilmServiceException(final FilmServiceException e) {
