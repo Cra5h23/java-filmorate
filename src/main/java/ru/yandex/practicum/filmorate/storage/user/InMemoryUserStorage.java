@@ -3,20 +3,15 @@ package ru.yandex.practicum.filmorate.storage.user;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exeption.UserStorageException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+@Getter
 @Component
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
-    @Getter
     private final Map<Integer, User> userMap = new HashMap<>();
-    private int generatorUserId = 0;
 
     /**
      * @return
@@ -29,30 +24,20 @@ public class InMemoryUserStorage implements UserStorage {
 
     /**
      * @param user
-     * @return
      */
     @Override
-    public User addUser(User user) {
-        user.setId(++generatorUserId);
+    public void addUser(User user) {
         userMap.put(user.getId(), user);
         log.info("Добавлен пользователь {}", user);
-        return user;
     }
 
     /**
      * @param user
-     * @return
      */
     @Override
-    public User updateUser(User user) {
-        var userId = user.getId();
-        var u = checkUser(userId);
-        u.setName(user.getName());
-        u.setLogin(user.getLogin());
-        u.setEmail(user.getEmail());
-        u.setBirthday(user.getBirthday());
-        log.info("Обновлён пользователь с id: {}", userId);
-        return u;
+    public void updateUser(User user) { //todo проверить
+        userMap.put(user.getId(), user);
+        log.info("Обновлён пользователь с id: {}", user.getId());
     }
 
     /**
@@ -60,28 +45,17 @@ public class InMemoryUserStorage implements UserStorage {
      * @return
      */
     @Override
-    public User getUserById(int id) {
-        var user = checkUser(id);
+    public Optional<User> getUserById(int id) {
         log.info("Запрошен пользователь с id: {}", id);
-        return user;
+        return Optional.ofNullable(userMap.get(id));
     }
 
     /**
      * @param id
      */
     @Override
-    public String deleteUser(int id) {
-        checkUser(id);
+    public void deleteUser(int id) {
         log.info("Удалён пользователь с id: {}", id);
         userMap.remove(id);
-        return String.format("Удалён пользователь с id: %d", id);
-    }
-
-    public User checkUser(Integer id) {
-        if (!userMap.containsKey(id)) {
-            log.warn("Пользователь с id: {} не существует", id);
-            throw new UserStorageException(String.format("Пользователь с id: %d не существует", id));
-        }
-        return userMap.get(id);
     }
 }
