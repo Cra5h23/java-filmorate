@@ -9,7 +9,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.film.FilmService;
+import ru.yandex.practicum.filmorate.service.film.FilmLikeService;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
@@ -37,7 +37,7 @@ public class FilmControllerTest {
     InMemoryUserStorage userStorage;
 
     @Autowired
-    FilmService filmService;
+    FilmLikeService filmLikeService;
 
     @Test
     @DisplayName("GET /films возвращает коллекцию из двух фильмов")
@@ -91,7 +91,7 @@ public class FilmControllerTest {
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
                 content().contentType(APPLICATION_JSON),
-                content().json("{\"Ошибка получения фильма\":\"Фильм с id: 1 не существует\"}"),
+                content().json("{\"Ошибка работы с фильмами\":\"Попытка получить фильм с несуществующим id: 1\"}"),
                 jsonPath("$.timestamp").exists());
     }
 
@@ -329,7 +329,7 @@ public class FilmControllerTest {
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
                 content().contentType(APPLICATION_JSON),
-                content().json("{\"Ошибка получения фильма\":\"Фильм с id: 1 не существует\"}"),
+                content().json("{\"Ошибка работы с фильмами\":\"Попытка удалить фильм с несуществующим id: 1\"}"),
                 jsonPath("$.timestamp").exists()
         );
     }
@@ -345,7 +345,7 @@ public class FilmControllerTest {
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
-                content().string("Пользователь с id:1 поставил лайк фильму с id:1")
+                content().string("Пользователь с id: 1 поставил лайк фильму с id: 1")
         );
     }
 
@@ -359,8 +359,8 @@ public class FilmControllerTest {
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
                 content().contentType(APPLICATION_JSON),
-                content().json("{\"Ошибка установки лайка\":" +
-                        "\"Попытка добавить лайк фильму с несуществующим id:1\"}"),
+                content().json("{\"Ошибка работы с лайками\":" +
+                        "\"Попытка добавить лайк фильму с несуществующим id: 1\"}"),
                 jsonPath("$.timestamp").exists()
         );
     }
@@ -376,8 +376,8 @@ public class FilmControllerTest {
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
                 content().contentType(APPLICATION_JSON),
-                content().json("{\"Ошибка установки лайка\":" +
-                        "\"Попытка добавить лайк фильму от несуществующего пользователя c id:1\"}"),
+                content().json("{\"Ошибка работы с лайками\":" +
+                        "\"Попытка добавить лайк фильму от несуществующего пользователя c id: 1\"}"),
                 jsonPath("$.timestamp").exists()
         );
     }
@@ -392,7 +392,7 @@ public class FilmControllerTest {
         this.userStorage.getUserMap().putAll(generatorUserMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
-                content().string("Пользователь с id:1 удалил лайк у фильма с id:1")
+                content().string("Пользователь с id: 1 удалил лайк у фильма с id: 1")
         );
     }
 
@@ -405,8 +405,8 @@ public class FilmControllerTest {
         this.userStorage.getUserMap().putAll(generatorUserMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
-                content().json("{\"Ошибка установки лайка\":" +
-                        "\"Попытка удалить лайк у фильма с несуществующим id:1\"}"),
+                content().json("{\"Ошибка работы с лайками\":" +
+                        "\"Попытка удалить лайк у фильма с несуществующим id: 1\"}"),
                 jsonPath("$.timestamp").exists()
         );
     }
@@ -420,8 +420,8 @@ public class FilmControllerTest {
         this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
-                content().json("{\"Ошибка установки лайка\":" +
-                        "\"Попытка удалить лайк у фильма от несуществующего пользователя c id:1\"}"),
+                content().json("{\"Ошибка работы с лайками\":" +
+                        "\"Попытка удалить лайк у фильма от несуществующего пользователя c id: 1\"}"),
                 jsonPath("$.timestamp").exists()
         );
     }
@@ -433,17 +433,17 @@ public class FilmControllerTest {
 
         this.filmStorage.getFilmMap().putAll(generatorFilmMap(11));
         this.userStorage.getUserMap().putAll(generatorUserMap(10));
-        IntStream.range(1, 11).forEach(i -> this.filmService.addLikeFilm(1, i));
-        IntStream.range(1, 1).forEach(i -> this.filmService.addLikeFilm(2, i));
-        IntStream.range(1, 3).forEach(i -> this.filmService.addLikeFilm(3, i));
-        IntStream.range(3, 11).forEach(i -> this.filmService.addLikeFilm(4, i));
-        IntStream.range(1, 8).forEach(i -> this.filmService.addLikeFilm(5, i));
-        IntStream.range(4, 8).forEach(i -> this.filmService.addLikeFilm(6, i));
-        IntStream.range(1, 8).forEach(i -> this.filmService.addLikeFilm(7, i));
-        IntStream.range(5, 8).forEach(i -> this.filmService.addLikeFilm(8, i));
-        IntStream.range(2, 8).forEach(i -> this.filmService.addLikeFilm(9, i));
-        IntStream.range(6, 11).forEach(i -> this.filmService.addLikeFilm(10, i));
-        IntStream.range(1, 10).forEach(i -> this.filmService.addLikeFilm(11, i));
+        IntStream.range(1, 11).forEach(i -> this.filmLikeService.addLikeFilm(1, i));
+        IntStream.range(1, 1).forEach(i -> this.filmLikeService.addLikeFilm(2, i));
+        IntStream.range(1, 3).forEach(i -> this.filmLikeService.addLikeFilm(3, i));
+        IntStream.range(3, 11).forEach(i -> this.filmLikeService.addLikeFilm(4, i));
+        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(5, i));
+        IntStream.range(4, 8).forEach(i -> this.filmLikeService.addLikeFilm(6, i));
+        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(7, i));
+        IntStream.range(5, 8).forEach(i -> this.filmLikeService.addLikeFilm(8, i));
+        IntStream.range(2, 8).forEach(i -> this.filmLikeService.addLikeFilm(9, i));
+        IntStream.range(6, 11).forEach(i -> this.filmLikeService.addLikeFilm(10, i));
+        IntStream.range(1, 10).forEach(i -> this.filmLikeService.addLikeFilm(11, i));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
@@ -478,17 +478,17 @@ public class FilmControllerTest {
 
         this.filmStorage.getFilmMap().putAll(generatorFilmMap(11));
         this.userStorage.getUserMap().putAll(generatorUserMap(10));
-        IntStream.range(1, 11).forEach(i -> this.filmService.addLikeFilm(1, i));
-        IntStream.range(1, 1).forEach(i -> this.filmService.addLikeFilm(2, i));
-        IntStream.range(1, 3).forEach(i -> this.filmService.addLikeFilm(3, i));
-        IntStream.range(3, 11).forEach(i -> this.filmService.addLikeFilm(4, i));
-        IntStream.range(1, 8).forEach(i -> this.filmService.addLikeFilm(5, i));
-        IntStream.range(4, 8).forEach(i -> this.filmService.addLikeFilm(6, i));
-        IntStream.range(1, 8).forEach(i -> this.filmService.addLikeFilm(7, i));
-        IntStream.range(5, 8).forEach(i -> this.filmService.addLikeFilm(8, i));
-        IntStream.range(2, 8).forEach(i -> this.filmService.addLikeFilm(9, i));
-        IntStream.range(6, 11).forEach(i -> this.filmService.addLikeFilm(10, i));
-        IntStream.range(1, 10).forEach(i -> this.filmService.addLikeFilm(11, i));
+        IntStream.range(1, 11).forEach(i -> this.filmLikeService.addLikeFilm(1, i));
+        IntStream.range(1, 1).forEach(i -> this.filmLikeService.addLikeFilm(2, i));
+        IntStream.range(1, 3).forEach(i -> this.filmLikeService.addLikeFilm(3, i));
+        IntStream.range(3, 11).forEach(i -> this.filmLikeService.addLikeFilm(4, i));
+        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(5, i));
+        IntStream.range(4, 8).forEach(i -> this.filmLikeService.addLikeFilm(6, i));
+        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(7, i));
+        IntStream.range(5, 8).forEach(i -> this.filmLikeService.addLikeFilm(8, i));
+        IntStream.range(2, 8).forEach(i -> this.filmLikeService.addLikeFilm(9, i));
+        IntStream.range(6, 11).forEach(i -> this.filmLikeService.addLikeFilm(10, i));
+        IntStream.range(1, 10).forEach(i -> this.filmLikeService.addLikeFilm(11, i));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
@@ -525,17 +525,17 @@ public class FilmControllerTest {
 
         this.filmStorage.getFilmMap().putAll(generatorFilmMap(11));
         this.userStorage.getUserMap().putAll(generatorUserMap(10));
-        IntStream.range(1, 11).forEach(i -> this.filmService.addLikeFilm(1, i));
-        IntStream.range(1, 1).forEach(i -> this.filmService.addLikeFilm(2, i));
-        IntStream.range(1, 3).forEach(i -> this.filmService.addLikeFilm(3, i));
-        IntStream.range(3, 11).forEach(i -> this.filmService.addLikeFilm(4, i));
-        IntStream.range(1, 8).forEach(i -> this.filmService.addLikeFilm(5, i));
-        IntStream.range(4, 8).forEach(i -> this.filmService.addLikeFilm(6, i));
-        IntStream.range(1, 8).forEach(i -> this.filmService.addLikeFilm(7, i));
-        IntStream.range(5, 8).forEach(i -> this.filmService.addLikeFilm(8, i));
-        IntStream.range(2, 8).forEach(i -> this.filmService.addLikeFilm(9, i));
-        IntStream.range(6, 11).forEach(i -> this.filmService.addLikeFilm(10, i));
-        IntStream.range(1, 10).forEach(i -> this.filmService.addLikeFilm(11, i));
+        IntStream.range(1, 11).forEach(i -> this.filmLikeService.addLikeFilm(1, i));
+        IntStream.range(1, 1).forEach(i -> this.filmLikeService.addLikeFilm(2, i));
+        IntStream.range(1, 3).forEach(i -> this.filmLikeService.addLikeFilm(3, i));
+        IntStream.range(3, 11).forEach(i -> this.filmLikeService.addLikeFilm(4, i));
+        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(5, i));
+        IntStream.range(4, 8).forEach(i -> this.filmLikeService.addLikeFilm(6, i));
+        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(7, i));
+        IntStream.range(5, 8).forEach(i -> this.filmLikeService.addLikeFilm(8, i));
+        IntStream.range(2, 8).forEach(i -> this.filmLikeService.addLikeFilm(9, i));
+        IntStream.range(6, 11).forEach(i -> this.filmLikeService.addLikeFilm(10, i));
+        IntStream.range(1, 10).forEach(i -> this.filmLikeService.addLikeFilm(11, i));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
