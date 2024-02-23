@@ -29,8 +29,9 @@ import java.util.Set;
 @AllArgsConstructor
 public class Film {
     /**
-     * Индификатор фильма
+     * Идентификатор фильма
      */
+
     @Builder.Default
     private int id = 0;
 
