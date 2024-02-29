@@ -5,14 +5,18 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import ru.yandex.practicum.filmorate.validator.EmptyName;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * User
@@ -21,9 +25,11 @@ import java.time.LocalDate;
  */
 @Data
 @Builder(toBuilder = true)
+@AllArgsConstructor
+@EmptyName
 public class User {
     /**
-     * Индификатор пользователя
+     * Идентификатор пользователя
      */
     @Builder.Default
     private int id = 0;
@@ -55,4 +61,14 @@ public class User {
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthday;
+
+    private final Set<Integer> friends = new HashSet<>();
+
+    public void addFriend(Integer friendId) {
+        friends.add(friendId);
+    }
+
+    public void deletingFriend(Integer deletingFriendId) {
+        friends.remove(deletingFriendId);
+    }
 }

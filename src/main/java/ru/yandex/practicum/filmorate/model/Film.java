@@ -5,14 +5,19 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import ru.yandex.practicum.filmorate.model.validator.MinReleaseData;
+import ru.yandex.practicum.filmorate.validator.MinReleaseData;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Film.
@@ -21,10 +26,12 @@ import java.time.LocalDate;
  */
 @Data
 @Builder(toBuilder = true)
+@AllArgsConstructor
 public class Film {
     /**
-     * Индификатор фильма
+     * Идентификатор фильма
      */
+
     @Builder.Default
     private int id = 0;
 
@@ -54,4 +61,18 @@ public class Film {
      */
     @Positive(message = "Продолжительность фильма должна быть положительной")
     private int duration;
+
+    private final Set<Integer> likes = new HashSet<>();
+
+    public void addLike(Integer userId) {
+        this.likes.add(userId);
+    }
+
+    public Collection<Integer> getLikes() {
+        return Collections.unmodifiableCollection(likes);
+    }
+
+    public void deleteLike(Integer userId) {
+        likes.remove(userId);
+    }
 }
