@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.dao.LikeDao;
 @Component
 public class LikeDaoImpl implements LikeDao {
     private final JdbcTemplate jdbcTemplate;
+
     @Override
     public void saveLike(Integer filmId, Integer userId) {
         var sql = "insert into likes(film_id, user_id) values(?, ?)";

@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.service.film.FilmLikeService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.Collection;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class FilmLikeServiceDbImpl implements FilmLikeService {
     @Qualifier("filmDbStorage")
     private final FilmStorage filmStorage;
     private final LikeDao likeDao;
+
     @Override
     public String addLikeFilm(Integer filmId, Integer userId) {
         likeDao.saveLike(filmId, userId);

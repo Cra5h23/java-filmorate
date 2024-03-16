@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -33,9 +34,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class FilmControllerTest {
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    FilmController filmController;
+
     @MockBean
     FilmService filmService;
     @MockBean
+    @Qualifier("filmLikeServiceDbImpl")
     FilmLikeService filmLikeService;
     @Autowired
     ObjectMapper objectMapper;
@@ -70,36 +76,13 @@ public class FilmControllerTest {
         }
         return films;
 
-
-        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(2));
-//        this.mockMvc.perform(requestBuilder).andExpectAll(
-//                status().isOk(),
-//                content().contentType(APPLICATION_JSON),
-//                content().json("[{\"id\":1" +
-//                        ",\"name\":\"TestFilm1\"" +
-//                        ",\"description\":\"TestDescription1\"" +
-//                        ",\"releaseDate\":\"1900-01-02\"" +
-//                        ",\"duration\":2" +
-//                        ",\"likes\":[]}" +
-//                        ",{\"id\":2" +
-//                        ",\"name\":\"TestFilm2\"" +
-//                        ",\"description\":\"TestDescription2\"" +
-//                        ",\"releaseDate\":\"1900-01-03\"" +
-//                        ",\"duration\":3" +
-//                        ",\"likes\":[]}]"
-//                )
-        //       );
-
     }
 
     @Test
     @DisplayName("GET /films/1 возвращает фильм")
     void getUserById_ReturnsValidResponseEntity() throws Exception {
         var requestBuilder = get("/films/1");
-        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
         Mockito.when(filmService.getFilmById(1)).thenReturn(generatorFilmList(1).get(0));
-
-
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
@@ -149,10 +132,7 @@ public class FilmControllerTest {
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isCreated(),
                 content().contentType(APPLICATION_JSON),
-                content().json("{\"name\":\"TestFilm1\"," +
-                        "\"description\":\"TestDescription1\"," +
-                        "\"releaseDate\":\"2000-10-10\"," +
-                        "\"duration\":120,\"likes\":[]})"),
+                content().json("{\"id\":1,\"name\":\"testName\",\"description\":\"testDescription\",\"releaseDate\":\"1989-05-02\",\"duration\":120,\"likes\":[],\"mpa\":{\"id\":1},\"genres\":[{\"id\":1}]}"),
                 jsonPath("$.id").exists());
     }
 
@@ -357,6 +337,7 @@ public class FilmControllerTest {
         var requestBuilder = delete("/films/1");
 
         //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
+        Mockito.when()
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().string("Удалён фильм с id: 1")
