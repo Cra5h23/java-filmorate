@@ -23,6 +23,7 @@ public class GenreController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(genreService.getAllGenre());
     }
+
     @GetMapping("/{genreId}")
     public ResponseEntity<?> getGenreById(@PathVariable(required = false) Integer genreId) {
         return ResponseEntity.ok()
