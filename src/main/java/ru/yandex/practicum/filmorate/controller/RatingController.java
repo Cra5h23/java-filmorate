@@ -23,6 +23,7 @@ public class RatingController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(ratingService.getAllRatings());
     }
+
     @GetMapping("/{genreId}")
     public ResponseEntity<?> getGenreById(@PathVariable(required = false) Integer genreId) {
         return ResponseEntity.ok()
