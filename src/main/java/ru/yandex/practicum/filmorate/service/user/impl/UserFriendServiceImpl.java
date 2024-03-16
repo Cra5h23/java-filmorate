@@ -1,10 +1,12 @@
-package ru.yandex.practicum.filmorate.service.user;
+package ru.yandex.practicum.filmorate.service.user.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.UserFriendServiceException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.user.UserFriendService;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
@@ -20,6 +22,7 @@ import static java.lang.String.format;
 @AllArgsConstructor
 @Slf4j
 public class UserFriendServiceImpl implements UserFriendService {
+    @Qualifier("inMemoryUserStorage")
     private final UserStorage userStorage;
 
     /**
@@ -29,25 +32,29 @@ public class UserFriendServiceImpl implements UserFriendService {
      * @param friendId индификационный номер друга которого ходите добавить
      * @return строку с ответом
      */
-    public String addingUserAsFriend(int userId, int friendId) {
+    public String addingUserAsFriend(Integer userId, Integer friendId) {
         checkId(userId, friendId, "добавить в друзья самого себя");
         var user = checkUser(userId, "добавить друга для");
         var friend = checkUser(friendId, "добавить в друзья");
-        user.addFriend(friendId);
-        friend.addFriend(userId);
+//        user.addFriend(friendId);
+        user.getFriends().add(friendId);
+        friend.getFriends().add(friendId);
+//        friend.addFriend(userId);
         return String.format("Пользователь с id: %d добавил в друзья пользователя с id: %d", userId, friendId);
     }
 
-    public String deletingFromUserFriends(int userId, int deletingFriendId) {
+    public String deletingFromUserFriends(Integer userId, Integer deletingFriendId) {
         checkId(userId, deletingFriendId, "удалить из друзей самого себя");
         var user = checkUser(userId, "удалить друга для");
         var deletingFriend = checkUser(deletingFriendId, "удалить из друзей");
-        user.deletingFriend(deletingFriendId);
-        deletingFriend.deletingFriend(userId);
+        //user.deletingFriend(deletingFriendId);
+        user.getFriends().remove(deletingFriendId);
+        deletingFriend.getFriends().remove(userId);
+        //deletingFriend.deletingFriend(userId);
         return String.format("Пользователь с id: %d удалил из друзей пользователя с id: %d", userId, deletingFriendId);
     }
 
-    public Collection<User> getUserFriends(int userId) {
+    public Collection<User> getUserFriends(Integer userId) {
         var user = checkUser(userId, "получить список друзей для");
         return user.getFriends().stream()
                 .map(userStorage::getUserById)
@@ -56,7 +63,7 @@ public class UserFriendServiceImpl implements UserFriendService {
                 .collect(Collectors.toList());
     }
 
-    public Collection<User> getListOfCommonFriends(int userId, int otherUserId) {
+    public Collection<User> getListOfCommonFriends(Integer userId, Integer otherUserId) {
         checkId(userId, otherUserId, "получить список общих друзей самим с собой");
         var user = checkUser(userId, "получить список общих друзей для");
         var otherUser = checkUser(otherUserId, "получить список общих друзей");
