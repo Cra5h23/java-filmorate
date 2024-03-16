@@ -5,11 +5,11 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.Collection;
 
 public interface UserFriendService {
-    String addingUserAsFriend(int userId, int friendId);
+    String addingUserAsFriend(Integer userId, Integer friendId);
 
-    String deletingFromUserFriends(int userId, int deletingFriendId);
+    String deletingFromUserFriends(Integer userId, Integer deletingFriendId);
 
-    Collection<User> getUserFriends(int userId);
+    Collection<?> getUserFriends(Integer userId);
 
-    Collection<User> getListOfCommonFriends(int userId, int otherUserId);
+    Collection<User> getListOfCommonFriends(Integer userId, Integer otherUserId);
 }
