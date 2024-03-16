@@ -14,9 +14,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -62,17 +62,12 @@ public class Film {
     @Positive(message = "Продолжительность фильма должна быть положительной")
     private int duration;
 
-    private final Set<Integer> likes = new HashSet<>();
+    @Builder.Default
+    private Set<Integer> likes = new HashSet<>();
 
-    public void addLike(Integer userId) {
-        this.likes.add(userId);
-    }
+    @Builder.Default
+    private Mpa mpa = new Mpa();
 
-    public Collection<Integer> getLikes() {
-        return Collections.unmodifiableCollection(likes);
-    }
-
-    public void deleteLike(Integer userId) {
-        likes.remove(userId);
-    }
+    @Builder.Default
+    private List<Genres> genres = new ArrayList<>();
 }
