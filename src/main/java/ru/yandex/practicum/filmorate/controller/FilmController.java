@@ -65,7 +65,9 @@ public class FilmController {
 
     @PutMapping("/{filmId}/like/{userId}")
     public ResponseEntity<?> userLikesFilm(@PathVariable Integer filmId, @PathVariable Integer userId) {
-        return ResponseEntity.ok(filmLikeService.addLikeFilm(filmId, userId));
+        log.info("PUT userLikesFilm  film {} user {}",filmId,userId);
+        filmLikeService.addLikeFilm(filmId, userId);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{filmId}/like/{userId}")
@@ -75,6 +77,7 @@ public class FilmController {
 
     @GetMapping("/popular")
     public ResponseEntity<?> getListOfMostPopularFilms(@RequestParam(defaultValue = "10") Integer count) {
+        log.info("GET getListOfMostPopularFilms");
         return ResponseEntity.ok(filmLikeService.getMostPopularFilm(count));
     }
 }
