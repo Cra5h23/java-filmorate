@@ -62,13 +62,6 @@ public class User {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthday;
 
-    private final Set<Integer> friends = new HashSet<>();
-
-    public void addFriend(Integer friendId) {
-        friends.add(friendId);
-    }
-
-    public void deletingFriend(Integer deletingFriendId) {
-        friends.remove(deletingFriendId);
-    }
+    @Builder.Default
+    private Set<Integer> friends = new HashSet<>();
 }
