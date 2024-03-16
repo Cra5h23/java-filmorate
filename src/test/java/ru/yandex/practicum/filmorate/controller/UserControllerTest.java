@@ -9,11 +9,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserFriendService;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.impl.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -527,7 +528,7 @@ class UserControllerTest {
         Map<Integer, User> userMap = new HashMap<>();
         for (int i = 1; i <= userQuantity; i++) {
             userMap.put(i, new User(i, "testEmail@test.com" + i, "testLogin" + i, "testName" + i,
-                    LocalDate.of(1990, 1, 1).plusDays(i)));
+                    LocalDate.of(1990, 1, 1).plusDays(i), Set.of()));
         }
         return userMap;
     }

@@ -1,67 +1,94 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.yandex.practicum.filmorate.exeption.FilmServiceException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.Genres;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.film.FilmLikeService;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.IntStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+
+@WebMvcTest(controllers = FilmController.class)
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class FilmControllerTest {
-
     @Autowired
     MockMvc mockMvc;
-
-    @Autowired
-    InMemoryFilmStorage filmStorage;
-
-    @Autowired
-    InMemoryUserStorage userStorage;
-
-    @Autowired
+    @MockBean
+    FilmService filmService;
+    @MockBean
     FilmLikeService filmLikeService;
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Test
     @DisplayName("GET /films возвращает коллекцию из двух фильмов")
     void getAllFilmsTest_ReturnsValidResponseEntity() throws Exception {
         var requestBuilder = get("/films");
+        Mockito.when(filmService.getFilms()).thenReturn(generatorFilmList(2));
 
-        this.filmStorage.getFilmMap().putAll(generatorFilmMap(2));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
-                content().json("[{\"id\":1" +
-                        ",\"name\":\"TestFilm1\"" +
-                        ",\"description\":\"TestDescription1\"" +
-                        ",\"releaseDate\":\"1900-01-02\"" +
-                        ",\"duration\":2" +
-                        ",\"likes\":[]}" +
-                        ",{\"id\":2" +
-                        ",\"name\":\"TestFilm2\"" +
-                        ",\"description\":\"TestDescription2\"" +
-                        ",\"releaseDate\":\"1900-01-03\"" +
-                        ",\"duration\":3" +
-                        ",\"likes\":[]}]"
-                )
+                content().json("[{\"id\":1,\"name\":\"testName1\",\"description\":\"testDescription1\",\"releaseDate\":\"1989-05-02\",\"duration\":121,\"likes\":[],\"mpa\":{\"id\":1},\"genres\":[]},{\"id\":2,\"name\":\"testName2\",\"description\":\"testDescription2\",\"releaseDate\":\"1989-05-02\",\"duration\":122,\"likes\":[],\"mpa\":{\"id\":1},\"genres\":[]}] ")
         );
+    }
+
+    private List<Film> generatorFilmList(int count) {
+        ArrayList<Film> films = new ArrayList<>();
+        for (int i = 1; i <= count; i++) {
+            var f = Film.builder()
+                    .id(i)
+                    .name("testName" + i)
+                    .description("testDescription" + i)
+                    .mpa(new Mpa(1))
+                    .duration(120 + i)
+                    .likes(Set.of())
+                    .releaseDate(LocalDate.of(1989, 5, 1).plusDays(1))
+                    .genres(List.of())
+                    .build();
+            films.add(f);
+        }
+        return films;
+
+
+        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(2));
+//        this.mockMvc.perform(requestBuilder).andExpectAll(
+//                status().isOk(),
+//                content().contentType(APPLICATION_JSON),
+//                content().json("[{\"id\":1" +
+//                        ",\"name\":\"TestFilm1\"" +
+//                        ",\"description\":\"TestDescription1\"" +
+//                        ",\"releaseDate\":\"1900-01-02\"" +
+//                        ",\"duration\":2" +
+//                        ",\"likes\":[]}" +
+//                        ",{\"id\":2" +
+//                        ",\"name\":\"TestFilm2\"" +
+//                        ",\"description\":\"TestDescription2\"" +
+//                        ",\"releaseDate\":\"1900-01-03\"" +
+//                        ",\"duration\":3" +
+//                        ",\"likes\":[]}]"
+//                )
+        //       );
 
     }
 
@@ -69,17 +96,14 @@ public class FilmControllerTest {
     @DisplayName("GET /films/1 возвращает фильм")
     void getUserById_ReturnsValidResponseEntity() throws Exception {
         var requestBuilder = get("/films/1");
-        this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
+        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
+        Mockito.when(filmService.getFilmById(1)).thenReturn(generatorFilmList(1).get(0));
+
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
-                content().json("{\"id\":1" +
-                        ",\"name\":\"TestFilm1\"" +
-                        ",\"description\":\"TestDescription1\"" +
-                        ",\"releaseDate\":\"1900-01-02\"" +
-                        ",\"duration\":2" +
-                        ",\"likes\":[]}"
+                content().json("{\"id\":1,\"name\":\"testName1\",\"description\":\"testDescription1\",\"releaseDate\":\"1989-05-02\",\"duration\":121,\"likes\":[],\"mpa\":{\"id\":1},\"genres\":[]}"
                 ));
     }
 
@@ -87,6 +111,7 @@ public class FilmControllerTest {
     @DisplayName("GET /films/1 возвращает статус 404 и тело ошибки")
     void getUserById_ReturnsNotValidResponseEntity() throws Exception {
         var requestBuilder = get("/films/1");
+        Mockito.when(filmService.getFilmById(1)).thenThrow(new FilmServiceException("Попытка получить фильм с несуществующим id: 1"));
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
@@ -98,11 +123,28 @@ public class FilmControllerTest {
     @Test
     @DisplayName("POST /films создаёт новый фильм, возвращает статус 201")
     void addNewFilmTestValid() throws Exception {
+//        var requestBuilder = post("/films")
+//                .contentType(APPLICATION_JSON).content("{\"name\":\"TestFilm1\"," +
+//                        "\"description\":\"TestDescription1\"," +
+//                        "\"releaseDate\":\"2000-10-10\"," +
+//                        "\"duration\":120})");
+        var f = Film.builder()
+                .name("testName")
+                .description("testDescription" )
+                .mpa(new Mpa(1))
+                .duration(120 )
+                .likes(null)
+                .releaseDate(LocalDate.of(1989, 5, 1).plusDays(1))
+                .genres(List.of(new Genres(1L)))
+                .build();
+        String s = objectMapper.writeValueAsString(f);
+        f.setId(1);
+        f.setLikes(Set.of());
         var requestBuilder = post("/films")
-                .contentType(APPLICATION_JSON).content("{\"name\":\"TestFilm1\"," +
-                        "\"description\":\"TestDescription1\"," +
-                        "\"releaseDate\":\"2000-10-10\"," +
-                        "\"duration\":120})");
+                .contentType(APPLICATION_JSON).content(s);
+
+        Mockito.when(filmService.addFilm(Mockito.any())).thenReturn(f);
+
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isCreated(),
@@ -216,7 +258,7 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1980-10-10\"," +
                         "\"duration\":200})");
 
-        this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
+        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
@@ -239,7 +281,7 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1980-10-10\"," +
                         "\"duration\":200})");
 
-        this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
+        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest(),
                 content().contentType(APPLICATION_JSON),
@@ -260,7 +302,7 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1980-10-10\"," +
                         "\"duration\":200})");
 
-        this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
+        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest(),
                 content().contentType(APPLICATION_JSON),
@@ -280,7 +322,7 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1780-10-10\"," +
                         "\"duration\":200})");
 
-        this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
+        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest(),
                 content().contentType(APPLICATION_JSON),
@@ -299,7 +341,7 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1980-10-10\"," +
                         "\"duration\":-200})");
 
-        this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
+        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest(),
                 content().contentType(APPLICATION_JSON),
@@ -314,7 +356,7 @@ public class FilmControllerTest {
     void deleteFilmTest_ReturnsValidResponseEntity() throws Exception {
         var requestBuilder = delete("/films/1");
 
-        this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
+        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().string("Удалён фильм с id: 1")
@@ -340,8 +382,8 @@ public class FilmControllerTest {
     void userLikesFilmTest_ReturnsValidResponseEntity() throws Exception {
         var requestBuilder = put("/films/1/like/1");
 
-        this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
-        this.userStorage.getUserMap().putAll(generatorUserMap(1));
+        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
+        //this.userStorage.getUserMap().putAll(generatorUserMap(1));
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
@@ -355,7 +397,7 @@ public class FilmControllerTest {
     void userLikesFilmTest_NotExistsFilm() throws Exception {
         var requestBuilder = put("/films/1/like/1");
 
-        this.userStorage.getUserMap().putAll(generatorUserMap(1));
+        //this.userStorage.getUserMap().putAll(generatorUserMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
                 content().contentType(APPLICATION_JSON),
@@ -371,7 +413,7 @@ public class FilmControllerTest {
     void userLikesFilmTest_NotExistsUser() throws Exception {
         var requestBuilder = put("/films/1/like/1");
 
-        this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
+        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
@@ -388,8 +430,8 @@ public class FilmControllerTest {
     void userRemoveLikeFromFilmTestValid() throws Exception {
         var requestBuilder = delete("/films/1/like/1");
 
-        this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
-        this.userStorage.getUserMap().putAll(generatorUserMap(1));
+        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
+        //this.userStorage.getUserMap().putAll(generatorUserMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().string("Пользователь с id: 1 удалил лайк у фильма с id: 1")
@@ -402,7 +444,7 @@ public class FilmControllerTest {
     void userRemoveLikeFromFilmTest_NotExistsFilm() throws Exception {
         var requestBuilder = delete("/films/1/like/1");
 
-        this.userStorage.getUserMap().putAll(generatorUserMap(1));
+        //this.userStorage.getUserMap().putAll(generatorUserMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
                 content().json("{\"Ошибка работы с лайками\":" +
@@ -417,7 +459,7 @@ public class FilmControllerTest {
     void userRemoveLikeFromFilmTest_NotExistsUser() throws Exception {
         var requestBuilder = delete("/films/1/like/1");
 
-        this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
+        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
                 content().json("{\"Ошибка работы с лайками\":" +
@@ -431,19 +473,19 @@ public class FilmControllerTest {
     void getListOfMostPopularFilmsTest_ReturnsDefaultListMostPopularFilms() throws Exception {
         var requestBuilder = get("/films/popular");
 
-        this.filmStorage.getFilmMap().putAll(generatorFilmMap(11));
-        this.userStorage.getUserMap().putAll(generatorUserMap(10));
-        IntStream.range(1, 11).forEach(i -> this.filmLikeService.addLikeFilm(1, i));
-        IntStream.range(1, 1).forEach(i -> this.filmLikeService.addLikeFilm(2, i));
-        IntStream.range(1, 3).forEach(i -> this.filmLikeService.addLikeFilm(3, i));
-        IntStream.range(3, 11).forEach(i -> this.filmLikeService.addLikeFilm(4, i));
-        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(5, i));
-        IntStream.range(4, 8).forEach(i -> this.filmLikeService.addLikeFilm(6, i));
-        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(7, i));
-        IntStream.range(5, 8).forEach(i -> this.filmLikeService.addLikeFilm(8, i));
-        IntStream.range(2, 8).forEach(i -> this.filmLikeService.addLikeFilm(9, i));
-        IntStream.range(6, 11).forEach(i -> this.filmLikeService.addLikeFilm(10, i));
-        IntStream.range(1, 10).forEach(i -> this.filmLikeService.addLikeFilm(11, i));
+//        this.filmStorage.getFilmMap().putAll(generatorFilmMap(11));
+//        this.userStorage.getUserMap().putAll(generatorUserMap(10));
+//        IntStream.range(1, 11).forEach(i -> this.filmLikeService.addLikeFilm(1, i));
+//        IntStream.range(1, 1).forEach(i -> this.filmLikeService.addLikeFilm(2, i));
+//        IntStream.range(1, 3).forEach(i -> this.filmLikeService.addLikeFilm(3, i));
+//        IntStream.range(3, 11).forEach(i -> this.filmLikeService.addLikeFilm(4, i));
+//        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(5, i));
+//        IntStream.range(4, 8).forEach(i -> this.filmLikeService.addLikeFilm(6, i));
+//        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(7, i));
+//        IntStream.range(5, 8).forEach(i -> this.filmLikeService.addLikeFilm(8, i));
+//        IntStream.range(2, 8).forEach(i -> this.filmLikeService.addLikeFilm(9, i));
+//        IntStream.range(6, 11).forEach(i -> this.filmLikeService.addLikeFilm(10, i));
+//        IntStream.range(1, 10).forEach(i -> this.filmLikeService.addLikeFilm(11, i));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
@@ -476,19 +518,19 @@ public class FilmControllerTest {
     void getListOfMostPopularFilmsTest_ReturnsList11MostPopularFilms() throws Exception {
         var requestBuilder = get("/films/popular?count=11");
 
-        this.filmStorage.getFilmMap().putAll(generatorFilmMap(11));
-        this.userStorage.getUserMap().putAll(generatorUserMap(10));
-        IntStream.range(1, 11).forEach(i -> this.filmLikeService.addLikeFilm(1, i));
-        IntStream.range(1, 1).forEach(i -> this.filmLikeService.addLikeFilm(2, i));
-        IntStream.range(1, 3).forEach(i -> this.filmLikeService.addLikeFilm(3, i));
-        IntStream.range(3, 11).forEach(i -> this.filmLikeService.addLikeFilm(4, i));
-        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(5, i));
-        IntStream.range(4, 8).forEach(i -> this.filmLikeService.addLikeFilm(6, i));
-        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(7, i));
-        IntStream.range(5, 8).forEach(i -> this.filmLikeService.addLikeFilm(8, i));
-        IntStream.range(2, 8).forEach(i -> this.filmLikeService.addLikeFilm(9, i));
-        IntStream.range(6, 11).forEach(i -> this.filmLikeService.addLikeFilm(10, i));
-        IntStream.range(1, 10).forEach(i -> this.filmLikeService.addLikeFilm(11, i));
+//        this.filmStorage.getFilmMap().putAll(generatorFilmMap(11));
+//        this.userStorage.getUserMap().putAll(generatorUserMap(10));
+//        IntStream.range(1, 11).forEach(i -> this.filmLikeService.addLikeFilm(1, i));
+//        IntStream.range(1, 1).forEach(i -> this.filmLikeService.addLikeFilm(2, i));
+//        IntStream.range(1, 3).forEach(i -> this.filmLikeService.addLikeFilm(3, i));
+//        IntStream.range(3, 11).forEach(i -> this.filmLikeService.addLikeFilm(4, i));
+//        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(5, i));
+//        IntStream.range(4, 8).forEach(i -> this.filmLikeService.addLikeFilm(6, i));
+//        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(7, i));
+//        IntStream.range(5, 8).forEach(i -> this.filmLikeService.addLikeFilm(8, i));
+//        IntStream.range(2, 8).forEach(i -> this.filmLikeService.addLikeFilm(9, i));
+//        IntStream.range(6, 11).forEach(i -> this.filmLikeService.addLikeFilm(10, i));
+//        IntStream.range(1, 10).forEach(i -> this.filmLikeService.addLikeFilm(11, i));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
@@ -523,19 +565,19 @@ public class FilmControllerTest {
     void getListOfMostPopularFilmsTest_ReturnsList1MostPopularFilms() throws Exception {
         var requestBuilder = get("/films/popular?count=1");
 
-        this.filmStorage.getFilmMap().putAll(generatorFilmMap(11));
-        this.userStorage.getUserMap().putAll(generatorUserMap(10));
-        IntStream.range(1, 11).forEach(i -> this.filmLikeService.addLikeFilm(1, i));
-        IntStream.range(1, 1).forEach(i -> this.filmLikeService.addLikeFilm(2, i));
-        IntStream.range(1, 3).forEach(i -> this.filmLikeService.addLikeFilm(3, i));
-        IntStream.range(3, 11).forEach(i -> this.filmLikeService.addLikeFilm(4, i));
-        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(5, i));
-        IntStream.range(4, 8).forEach(i -> this.filmLikeService.addLikeFilm(6, i));
-        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(7, i));
-        IntStream.range(5, 8).forEach(i -> this.filmLikeService.addLikeFilm(8, i));
-        IntStream.range(2, 8).forEach(i -> this.filmLikeService.addLikeFilm(9, i));
-        IntStream.range(6, 11).forEach(i -> this.filmLikeService.addLikeFilm(10, i));
-        IntStream.range(1, 10).forEach(i -> this.filmLikeService.addLikeFilm(11, i));
+//        this.filmStorage.getFilmMap().putAll(generatorFilmMap(11));
+//        this.userStorage.getUserMap().putAll(generatorUserMap(10));
+//        IntStream.range(1, 11).forEach(i -> this.filmLikeService.addLikeFilm(1, i));
+//        IntStream.range(1, 1).forEach(i -> this.filmLikeService.addLikeFilm(2, i));
+//        IntStream.range(1, 3).forEach(i -> this.filmLikeService.addLikeFilm(3, i));
+//        IntStream.range(3, 11).forEach(i -> this.filmLikeService.addLikeFilm(4, i));
+//        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(5, i));
+//        IntStream.range(4, 8).forEach(i -> this.filmLikeService.addLikeFilm(6, i));
+//        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(7, i));
+//        IntStream.range(5, 8).forEach(i -> this.filmLikeService.addLikeFilm(8, i));
+//        IntStream.range(2, 8).forEach(i -> this.filmLikeService.addLikeFilm(9, i));
+//        IntStream.range(6, 11).forEach(i -> this.filmLikeService.addLikeFilm(10, i));
+//        IntStream.range(1, 10).forEach(i -> this.filmLikeService.addLikeFilm(11, i));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
@@ -544,23 +586,32 @@ public class FilmControllerTest {
                                 ",\"releaseDate\":\"1900-01-02\",\"duration\":2,\"likes\":[1,2,3,4,5,6,7,8,9,10]}]"
                 ));
     }
-
-
-    private Map<Integer, Film> generatorFilmMap(int filmQuantity) {
-        Map<Integer, Film> filmMap = new HashMap<>();
-        for (int i = 1; i <= filmQuantity; i++) {
-            filmMap.put(i, new Film(i, "TestFilm" + i, "TestDescription" + i,
-                    LocalDate.of(1900, 1, 1).plusDays(i), i + 1));
-        }
-        return filmMap;
-    }
-
-    private Map<Integer, User> generatorUserMap(int userQuantity) {
-        Map<Integer, User> userMap = new HashMap<>();
-        for (int i = 1; i <= userQuantity; i++) {
-            userMap.put(i, new User(i, "testEmail@tesr.com" + i, "testLogin" + i, "testName" + i,
-                    LocalDate.of(1990, 1, 1).plusDays(i)));
-        }
-        return userMap;
-    }
 }
+//private List<Film> generatorFilmList(int count) {
+//    ArrayList<Film> films = new ArrayList<>();
+//    for (int i = 0; i < count; i++) {
+//        Film f = new Film(i, "TestFilm" + i, "TestDescription" + i,
+//                LocalDate.of(1900, 1, 1).plusDays(i), i + 1, Set.of(), new Mpa(), List.of());
+//        films.add(f);
+//    }
+//    return films;
+//}
+//
+//private Map<Integer, Film> generatorFilmMap(int filmQuantity) {
+//    Map<Integer, Film> filmMap = new HashMap<>();
+//    for (int i = 1; i <= filmQuantity; i++) {
+//        filmMap.put(i, new Film(i, "TestFilm" + i, "TestDescription" + i,
+//                LocalDate.of(1900, 1, 1).plusDays(i), i + 1, Set.of(), new Mpa(1), List.of()));
+//    }
+//    return filmMap;
+//}
+//
+//private Map<Integer, User> generatorUserMap(int userQuantity) {
+//    Map<Integer, User> userMap = new HashMap<>();
+//    for (int i = 1; i <= userQuantity; i++) {
+//        userMap.put(i, new User(i, "testEmail@tesr.com" + i, "testLogin" + i, "testName" + i,
+//                LocalDate.of(1990, 1, 1).plusDays(i), Set.of()));
+//    }
+//    return userMap;
+//}
+
