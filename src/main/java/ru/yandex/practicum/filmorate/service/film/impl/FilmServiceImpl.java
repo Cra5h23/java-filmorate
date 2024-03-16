@@ -1,10 +1,12 @@
-package ru.yandex.practicum.filmorate.service.film;
+package ru.yandex.practicum.filmorate.service.film.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.FilmServiceException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.Collection;
@@ -15,8 +17,9 @@ import static java.lang.String.format;
 @Slf4j
 @RequiredArgsConstructor
 public class FilmServiceImpl implements FilmService {
+    @Qualifier("filmDbStorage")
     private final FilmStorage filmStorage;
-    private int generatorFilmId = 0;
+    //private int generatorFilmId = 0;
 
     /**
      * Метод получения списка всех фильмов
@@ -45,10 +48,9 @@ public class FilmServiceImpl implements FilmService {
      */
     @Override
     public Film addFilm(Film film) {
-        film.setId(++generatorFilmId);
-        filmStorage.addFilm(film);
+        //film.setId(++generatorFilmId);
         log.info("Добавлен фильм {}", film);
-        return film;
+        return filmStorage.addFilm(film);
     }
 
     /**
@@ -59,13 +61,15 @@ public class FilmServiceImpl implements FilmService {
     public Film updateFilm(Film film) {
         var f = checkFilm(film.getId(), "обновить");
 
-        f.setName(film.getName());
-        f.setDescription(film.getDescription());
-        f.setReleaseDate(film.getReleaseDate());
-        f.setDuration(film.getDuration());
-        filmStorage.updateFilm(f);
+//        f.setName(film.getName());
+//        f.setDescription(film.getDescription());
+//        f.setReleaseDate(film.getReleaseDate());
+//        f.setDuration(film.getDuration());
+//        filmStorage.updateFilm(f);
+//        log.info("Обновлён фильм с id: {}", film.getId());
+//        return f;
         log.info("Обновлён фильм с id: {}", film.getId());
-        return f;
+        return filmStorage.updateFilm(film);
     }
 
     /**
