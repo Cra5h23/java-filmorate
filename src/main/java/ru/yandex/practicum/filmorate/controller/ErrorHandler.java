@@ -80,4 +80,14 @@ public class ErrorHandler {
                 .body(Map.of("timestamp", LocalDateTime.now().toString(),
                         "Произошла внутренняя ошибка сервера", e.getMessage()));
     }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handlerGenreServiceException(GenreServiceException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("timestamp", LocalDateTime.now().toString(),
+                        "Ошибка работы с жанрами", e.getMessage()));
+    }
+
 }
