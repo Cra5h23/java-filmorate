@@ -90,4 +90,12 @@ public class ErrorHandler {
                         "Ошибка работы с жанрами", e.getMessage()));
     }
 
+    @ExceptionHandler
+    public ResponseEntity<?> handlerRatingServiceException(RatingServiceException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("timestamp", LocalDateTime.now().toString(),
+                        "Ошибка работы с рейтингами", e.getMessage()));
+    }
 }
