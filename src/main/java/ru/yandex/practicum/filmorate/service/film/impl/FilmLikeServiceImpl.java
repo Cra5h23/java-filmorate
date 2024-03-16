@@ -1,17 +1,18 @@
-package ru.yandex.practicum.filmorate.service.film;
+package ru.yandex.practicum.filmorate.service.film.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.FilmSort;
 import ru.yandex.practicum.filmorate.exeption.FilmLikeServiceException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.film.FilmLikeService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
-
-import static java.util.Comparator.comparingInt;
 
 /**
  * Сервис добавления удаления лайков фильмам
@@ -22,7 +23,9 @@ import static java.util.Comparator.comparingInt;
 @Slf4j
 @RequiredArgsConstructor
 public class FilmLikeServiceImpl implements FilmLikeService {
+    @Qualifier("inMemoryFilmStorage")
     private final FilmStorage filmStorage;
+    @Qualifier("inMemoryUserStorage")
     private final UserStorage userStorage;
 
     /**
@@ -39,7 +42,7 @@ public class FilmLikeServiceImpl implements FilmLikeService {
             throw new FilmLikeServiceException(String.format(
                     "Пользователь с id: %d уже поставил лайк фильму с id: %d", userId, filmId));
         }
-        film.addLike(userId);
+        film.getLikes().add(userId);
         log.info("Пользователь с id: {} поставил лайк фильму с id: {}", userId, filmId);
         return String.format("Пользователь с id: %d поставил лайк фильму с id: %d", userId, filmId);
     }
@@ -54,7 +57,7 @@ public class FilmLikeServiceImpl implements FilmLikeService {
     public String deleteLikeFilm(Integer filmId, Integer userId) {
         var film = checkFilm(filmId, "удалить", "у фильма");
         checkUser(userId, "удалить", "у фильма");
-        film.deleteLike(userId);
+        film.getLikes().remove(userId);
         return String.format("Пользователь с id: %d удалил лайк у фильма с id: %d", userId, filmId);
     }
 
@@ -66,7 +69,7 @@ public class FilmLikeServiceImpl implements FilmLikeService {
      */
     public Collection<Film> getMostPopularFilm(Integer count) {
         log.info("Запрошен список из {} самых популярных фильмов", count);
-        return filmStorage.getSortedFilms(comparingInt(f -> (f.getLikes().size() * -1)), count);
+        return filmStorage.getSortedFilms(FilmSort.POPULAR_FILMS_DESC, count);
     }
 
     private Film checkFilm(Integer filmId, String... s) {
