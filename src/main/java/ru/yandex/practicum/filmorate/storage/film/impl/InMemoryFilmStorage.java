@@ -1,18 +1,21 @@
-package ru.yandex.practicum.filmorate.storage.film;
+package ru.yandex.practicum.filmorate.storage.film.impl;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.FilmSort;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
-@Component
+@Component("inMemoryFilmStorage")
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Integer, Film> filmMap = new HashMap<>();
+    private int generatorFilmId = 0;
 
     @Override
     public Collection<Film> getAllFilms() {
@@ -21,15 +24,32 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void addFilm(Film film) {
-        log.info("Добавлен фильм {}", film);
+    public Film addFilm(Film film) {
+        film.setId(++generatorFilmId);
         filmMap.put(film.getId(), film);
+        log.info("Добавлен фильм {}", film);
+        return film;
     }
 
     @Override
-    public void updateFilm(Film film) {
+    public Film updateFilm(Film film) {
+        int id = film.getId();
+        Film f = filmMap.get(id);
+
         log.info("Обновлён фильм с id: {}", film.getId());
-        filmMap.put(film.getId(), film);
+//        filmMap.put(film.getId(), film);
+//
+        f.setName(film.getName());
+        f.setDescription(film.getDescription());
+        f.setReleaseDate(film.getReleaseDate());
+        f.setDuration(film.getDuration());
+        //f.setMpa(film.getMpa());
+        //f.setGenres(film.getGenres());
+        f.setLikes(film.getLikes());
+        return f;
+//
+//
+//        return film;
     }
 
     @Override
@@ -50,8 +70,8 @@ public class InMemoryFilmStorage implements FilmStorage {
      * @return
      */
     @Override
-    public Collection<Film> getSortedFilms(Comparator<Film> comparator, Integer count) {
+    public Collection<Film> getSortedFilms(FilmSort sort, Integer count) {
         log.info("Запрошен сортированный список с {} элементами", count);
-        return filmMap.values().stream().sorted(comparator).limit(count).collect(Collectors.toList());
+        return filmMap.values().stream().sorted(sort.getComparator()).limit(count).collect(Collectors.toList());
     }
 }

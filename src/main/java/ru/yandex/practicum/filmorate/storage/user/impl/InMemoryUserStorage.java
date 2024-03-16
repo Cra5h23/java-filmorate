@@ -1,9 +1,10 @@
-package ru.yandex.practicum.filmorate.storage.user;
+package ru.yandex.practicum.filmorate.storage.user.impl;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.*;
 
@@ -11,8 +12,9 @@ import java.util.*;
 @Component
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
-    private final Map<Integer, User> userMap = new HashMap<>();
 
+    private final Map<Integer, User> userMap = new HashMap<>();
+    private int generatorUserId = 0;
     /**
      * @return
      */
@@ -24,20 +26,29 @@ public class InMemoryUserStorage implements UserStorage {
 
     /**
      * @param user
+     * @return
      */
     @Override
-    public void addUser(User user) {
+    public User addUser(User user) {
+        user.setId(++generatorUserId);
         userMap.put(user.getId(), user);
         log.info("Добавлен пользователь {}", user);
+        return user;
     }
 
     /**
      * @param user
      */
     @Override
-    public void updateUser(User user) {
-        userMap.put(user.getId(), user);
+    public User updateUser(User user) {
+        var id = user.getId();
+        var u = userMap.get(id);
+        u.setName(user.getName());
+        u.setLogin(user.getLogin());
+        u.setEmail(user.getEmail());
+        u.setBirthday(user.getBirthday());
         log.info("Обновлён пользователь с id: {}", user.getId());
+        return u;
     }
 
     /**
