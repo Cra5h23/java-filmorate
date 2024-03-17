@@ -18,14 +18,14 @@ public class RatingController {
     private final RatingService ratingService;
 
     @GetMapping
-    public ResponseEntity<?> getAllGenres() {
+    public ResponseEntity<?> getAllRatings() {
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(ratingService.getAllRatings());
     }
 
     @GetMapping("/{genreId}")
-    public ResponseEntity<?> getGenreById(@PathVariable(required = false) Integer genreId) {
+    public ResponseEntity<?> getRatingById(@PathVariable(required = false) Integer genreId) {
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(ratingService.getRatingById(genreId));
