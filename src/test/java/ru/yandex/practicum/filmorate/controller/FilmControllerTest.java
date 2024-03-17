@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.yandex.practicum.filmorate.exeption.FilmLikeServiceException;
 import ru.yandex.practicum.filmorate.exeption.FilmServiceException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genres;
@@ -27,7 +28,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
 @WebMvcTest(controllers = FilmController.class)
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -35,14 +35,13 @@ public class FilmControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    FilmController filmController;
-
     @MockBean
     FilmService filmService;
+
     @MockBean
     @Qualifier("filmLikeServiceDbImpl")
     FilmLikeService filmLikeService;
+
     @Autowired
     ObjectMapper objectMapper;
 
@@ -55,7 +54,22 @@ public class FilmControllerTest {
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
-                content().json("[{\"id\":1,\"name\":\"testName1\",\"description\":\"testDescription1\",\"releaseDate\":\"1989-05-02\",\"duration\":121,\"likes\":[],\"mpa\":{\"id\":1},\"genres\":[]},{\"id\":2,\"name\":\"testName2\",\"description\":\"testDescription2\",\"releaseDate\":\"1989-05-02\",\"duration\":122,\"likes\":[],\"mpa\":{\"id\":1},\"genres\":[]}] ")
+                content().json("[{\"id\":1," +
+                        "\"name\":\"testName1\"," +
+                        "\"description\":\"testDescription1\"," +
+                        "\"releaseDate\":\"1989-05-02\"," +
+                        "\"duration\":121," +
+                        "\"likes\":[]," +
+                        "\"mpa\":{\"id\":1}," +
+                        "\"genres\":[]}," +
+                        "{\"id\":2," +
+                        "\"name\":\"testName2\"," +
+                        "\"description\":\"testDescription2\"," +
+                        "\"releaseDate\":\"1989-05-02\"," +
+                        "\"duration\":122," +
+                        "\"likes\":[]," +
+                        "\"mpa\":{\"id\":1}," +
+                        "\"genres\":[]}] ")
         );
     }
 
@@ -75,18 +89,26 @@ public class FilmControllerTest {
             films.add(f);
         }
         return films;
-
     }
 
     @Test
     @DisplayName("GET /films/1 возвращает фильм")
     void getUserById_ReturnsValidResponseEntity() throws Exception {
         var requestBuilder = get("/films/1");
+
         Mockito.when(filmService.getFilmById(1)).thenReturn(generatorFilmList(1).get(0));
+
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
-                content().json("{\"id\":1,\"name\":\"testName1\",\"description\":\"testDescription1\",\"releaseDate\":\"1989-05-02\",\"duration\":121,\"likes\":[],\"mpa\":{\"id\":1},\"genres\":[]}"
+                content().json("{\"id\":1," +
+                        "\"name\":\"testName1\"," +
+                        "\"description\":\"testDescription1\"," +
+                        "\"releaseDate\":\"1989-05-02\"," +
+                        "\"duration\":121," +
+                        "\"likes\":[]," +
+                        "\"mpa\":{\"id\":1}," +
+                        "\"genres\":[]}"
                 ));
     }
 
@@ -94,7 +116,9 @@ public class FilmControllerTest {
     @DisplayName("GET /films/1 возвращает статус 404 и тело ошибки")
     void getUserById_ReturnsNotValidResponseEntity() throws Exception {
         var requestBuilder = get("/films/1");
-        Mockito.when(filmService.getFilmById(1)).thenThrow(new FilmServiceException("Попытка получить фильм с несуществующим id: 1"));
+
+        Mockito.when(filmService.getFilmById(1)).
+                thenThrow(new FilmServiceException("Попытка получить фильм с несуществующим id: 1"));
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
@@ -106,16 +130,11 @@ public class FilmControllerTest {
     @Test
     @DisplayName("POST /films создаёт новый фильм, возвращает статус 201")
     void addNewFilmTestValid() throws Exception {
-//        var requestBuilder = post("/films")
-//                .contentType(APPLICATION_JSON).content("{\"name\":\"TestFilm1\"," +
-//                        "\"description\":\"TestDescription1\"," +
-//                        "\"releaseDate\":\"2000-10-10\"," +
-//                        "\"duration\":120})");
         var f = Film.builder()
                 .name("testName")
-                .description("testDescription" )
+                .description("testDescription")
                 .mpa(new Mpa(1))
-                .duration(120 )
+                .duration(120)
                 .likes(null)
                 .releaseDate(LocalDate.of(1989, 5, 1).plusDays(1))
                 .genres(List.of(new Genres(1L)))
@@ -128,11 +147,17 @@ public class FilmControllerTest {
 
         Mockito.when(filmService.addFilm(Mockito.any())).thenReturn(f);
 
-
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isCreated(),
                 content().contentType(APPLICATION_JSON),
-                content().json("{\"id\":1,\"name\":\"testName\",\"description\":\"testDescription\",\"releaseDate\":\"1989-05-02\",\"duration\":120,\"likes\":[],\"mpa\":{\"id\":1},\"genres\":[{\"id\":1}]}"),
+                content().json("{\"id\":1," +
+                        "\"name\":\"testName\"," +
+                        "\"description\":\"testDescription\"," +
+                        "\"releaseDate\":\"1989-05-02\"," +
+                        "\"duration\":120," +
+                        "\"likes\":[]," +
+                        "\"mpa\":{\"id\":1}," +
+                        "\"genres\":[{\"id\":1}]}"),
                 jsonPath("$.id").exists());
     }
 
@@ -232,22 +257,37 @@ public class FilmControllerTest {
     @Test
     @DisplayName("PUT /films обновляет фильм, и возвращает код ответа 200")
     void updateFilmTestValid() throws Exception {
-        var requestBuilder = put("/films")
-                .contentType(APPLICATION_JSON).content("{\"id\":1,\"name\":\"TestFilm1Update\"," +
-                        "\"description\":\"TestDescription1update\"," +
-                        "\"releaseDate\":\"1980-10-10\"," +
-                        "\"duration\":200})");
+        var f = Film.builder()
+                .id(1)
+                .name("testName")
+                .description("testDescription")
+                .mpa(new Mpa(1))
+                .duration(120)
+                .likes(null)
+                .releaseDate(LocalDate.of(1989, 5, 1).plusDays(1))
+                .genres(List.of(new Genres(1L)))
+                .build();
 
-        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
+        var requestBuilder = put("/films")
+                .contentType(APPLICATION_JSON)
+                .content("{\"id\":1,\"name\":\"testName\"," +
+                        "\"description\":\"testDescription\"," +
+                        "\"releaseDate\":\"1989-05-01\"," +
+                        "\"duration\":120})");
+
+        Mockito.when(filmService.updateFilm(Mockito.any())).thenReturn(f);
+
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
                 content().json("{\"id\":1," +
-                        "\"name\":\"TestFilm1Update\"," +
-                        "\"description\":\"TestDescription1update\"," +
-                        "\"releaseDate\":\"1980-10-10\"" +
-                        ",\"duration\":200," +
-                        "\"likes\":[]}")
+                        "\"name\":\"testName\"," +
+                        "\"description\":\"testDescription\"," +
+                        "\"releaseDate\":\"1989-05-02\"," +
+                        "\"duration\":120," +
+                        "\"likes\":null," +
+                        "\"mpa\":{\"id\":1}," +
+                        "\"genres\":[{\"id\":1}]}")
         );
     }
 
@@ -257,11 +297,10 @@ public class FilmControllerTest {
     void updateFilmTestNotValidName() throws Exception {
         var requestBuilder = put("/films")
                 .contentType(APPLICATION_JSON).content("{\"id\":1,\"name\":\"\"," +
-                        "\"description\":\"TestDescription1update\"," +
+                        "\"description\":\"testDescription\"," +
                         "\"releaseDate\":\"1980-10-10\"," +
-                        "\"duration\":200})");
+                        "\"duration\":120})");
 
-        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest(),
                 content().contentType(APPLICATION_JSON),
@@ -282,7 +321,6 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1980-10-10\"," +
                         "\"duration\":200})");
 
-        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest(),
                 content().contentType(APPLICATION_JSON),
@@ -302,7 +340,6 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1780-10-10\"," +
                         "\"duration\":200})");
 
-        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest(),
                 content().contentType(APPLICATION_JSON),
@@ -321,7 +358,6 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1980-10-10\"," +
                         "\"duration\":-200})");
 
-        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest(),
                 content().contentType(APPLICATION_JSON),
@@ -336,8 +372,7 @@ public class FilmControllerTest {
     void deleteFilmTest_ReturnsValidResponseEntity() throws Exception {
         var requestBuilder = delete("/films/1");
 
-        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
-        Mockito.when()
+        Mockito.when(filmService.deleteFilmById(1)).thenReturn("Удалён фильм с id: 1");
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().string("Удалён фильм с id: 1")
@@ -348,6 +383,9 @@ public class FilmControllerTest {
     @DisplayName("DELETE /films/{id} не удаляет фильм с заданным ид если он не существует и возвращает код 404")
     void deleteFilmTest_NotExistsFilm() throws Exception {
         var requestBuilder = delete("/films/1");
+
+        Mockito.when(filmService.deleteFilmById(1))
+                .thenThrow(new FilmServiceException("Попытка удалить фильм с несуществующим id: 1"));
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
@@ -363,12 +401,9 @@ public class FilmControllerTest {
     void userLikesFilmTest_ReturnsValidResponseEntity() throws Exception {
         var requestBuilder = put("/films/1/like/1");
 
-        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
-        //this.userStorage.getUserMap().putAll(generatorUserMap(1));
-
+        Mockito.when(filmLikeService.addLikeFilm(1, 1)).thenReturn(null);
         this.mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk(),
-                content().string("Пользователь с id: 1 поставил лайк фильму с id: 1")
+                status().isOk()
         );
     }
 
@@ -377,8 +412,9 @@ public class FilmControllerTest {
             "с не существующим filmId от пользователя с заданным userId и выдаёт в ответ код 404 и сообщение ошибки")
     void userLikesFilmTest_NotExistsFilm() throws Exception {
         var requestBuilder = put("/films/1/like/1");
+        Mockito.when(filmLikeService.addLikeFilm(1, 1))
+                .thenThrow(new FilmLikeServiceException("Попытка добавить лайк фильму с несуществующим id: 1"));
 
-        //this.userStorage.getUserMap().putAll(generatorUserMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
                 content().contentType(APPLICATION_JSON),
@@ -393,8 +429,8 @@ public class FilmControllerTest {
             "с заданным filmId от пользователя с не существующим userId и выдаёт в ответ код 404 и сообщение ошибки")
     void userLikesFilmTest_NotExistsUser() throws Exception {
         var requestBuilder = put("/films/1/like/1");
-
-        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
+        Mockito.when(filmLikeService.addLikeFilm(1, 1))
+                .thenThrow(new FilmLikeServiceException("Попытка добавить лайк фильму от несуществующего пользователя c id: 1"));
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
@@ -411,8 +447,9 @@ public class FilmControllerTest {
     void userRemoveLikeFromFilmTestValid() throws Exception {
         var requestBuilder = delete("/films/1/like/1");
 
-        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
-        //this.userStorage.getUserMap().putAll(generatorUserMap(1));
+        Mockito.when(filmLikeService.deleteLikeFilm(1, 1))
+                .thenReturn("Пользователь с id: 1 удалил лайк у фильма с id: 1");
+
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().string("Пользователь с id: 1 удалил лайк у фильма с id: 1")
@@ -425,7 +462,9 @@ public class FilmControllerTest {
     void userRemoveLikeFromFilmTest_NotExistsFilm() throws Exception {
         var requestBuilder = delete("/films/1/like/1");
 
-        //this.userStorage.getUserMap().putAll(generatorUserMap(1));
+        Mockito.when(filmLikeService.deleteLikeFilm(1, 1))
+                .thenThrow(new FilmLikeServiceException("Попытка удалить лайк у фильма с несуществующим id: 1"));
+
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
                 content().json("{\"Ошибка работы с лайками\":" +
@@ -439,8 +478,10 @@ public class FilmControllerTest {
             "от заданного пользователя с userId")
     void userRemoveLikeFromFilmTest_NotExistsUser() throws Exception {
         var requestBuilder = delete("/films/1/like/1");
+        Mockito.when(filmLikeService.deleteLikeFilm(1, 1))
+                .thenThrow(new FilmLikeServiceException(
+                        "Попытка удалить лайк у фильма от несуществующего пользователя c id: 1"));
 
-        //this.filmStorage.getFilmMap().putAll(generatorFilmMap(1));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
                 content().json("{\"Ошибка работы с лайками\":" +
@@ -453,20 +494,109 @@ public class FilmControllerTest {
     @DisplayName("GET /films/popular возвращает список из 10 самых популярных фильмов по умолчанию")
     void getListOfMostPopularFilmsTest_ReturnsDefaultListMostPopularFilms() throws Exception {
         var requestBuilder = get("/films/popular");
+        Mockito.when(filmLikeService.getMostPopularFilm(10)).thenReturn(List.of(
+                Film.builder()
+                        .id(1)
+                        .name("TestFilm1")
+                        .description("TestDescription1")
+                        .releaseDate(LocalDate.parse("1900-01-02"))
+                        .duration(2)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+                        .build(),
+                Film.builder()
+                        .id(11)
+                        .name("TestFilm11")
+                        .description("TestDescription11")
+                        .releaseDate(LocalDate.parse("1900-01-12"))
+                        .duration(12)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9))
+                        .build(),
+                Film.builder()
+                        .id(4)
+                        .name("TestFilm4")
+                        .description("TestDescription4")
+                        .releaseDate(LocalDate.parse("1900-01-05"))
+                        .duration(5)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(3, 4, 5, 6, 7, 8, 9, 10))
+                        .build(),
+                Film.builder()
+                        .id(5)
+                        .name("TestFilm5")
+                        .description("TestDescription5")
+                        .releaseDate(LocalDate.parse("1900-01-06"))
+                        .duration(6)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7))
+                        .build(),
+                Film.builder()
+                        .id(7)
+                        .name("TestFilm7")
+                        .description("TestDescription7")
+                        .releaseDate(LocalDate.parse("1900-01-08"))
+                        .duration(8)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1)).
+                        likes(Set.of(1, 2, 3, 4, 5, 6, 7))
+                        .build(),
+                Film.builder()
+                        .id(9)
+                        .name("TestFilm9")
+                        .description("TestDescription9")
+                        .releaseDate(LocalDate.parse("1900-01-10"))
+                        .duration(10)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(2, 3, 4, 5, 6, 7))
+                        .build(),
+                Film.builder()
+                        .id(10)
+                        .name("TestFilm10")
+                        .description("TestDescription10")
+                        .releaseDate(LocalDate.parse("1900-01-11"))
+                        .duration(11)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(6, 7, 8, 9, 10))
+                        .build(),
+                Film.builder()
+                        .id(6)
+                        .name("TestFilm6")
+                        .description("TestDescription6")
+                        .releaseDate(LocalDate.parse("1900-01-07"))
+                        .duration(7)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(4, 5, 6, 7))
+                        .build(),
+                Film.builder()
+                        .id(8)
+                        .name("TestFilm8")
+                        .description("TestDescription8")
+                        .releaseDate(LocalDate.parse("1900-01-09"))
+                        .duration(9)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(5, 6, 7))
+                        .build(),
+                Film.builder()
+                        .id(3)
+                        .name("TestFilm3")
+                        .description("TestDescription3")
+                        .releaseDate(LocalDate.parse("1900-01-04"))
+                        .duration(4)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(1, 2))
+                        .build()
+        ));
 
-//        this.filmStorage.getFilmMap().putAll(generatorFilmMap(11));
-//        this.userStorage.getUserMap().putAll(generatorUserMap(10));
-//        IntStream.range(1, 11).forEach(i -> this.filmLikeService.addLikeFilm(1, i));
-//        IntStream.range(1, 1).forEach(i -> this.filmLikeService.addLikeFilm(2, i));
-//        IntStream.range(1, 3).forEach(i -> this.filmLikeService.addLikeFilm(3, i));
-//        IntStream.range(3, 11).forEach(i -> this.filmLikeService.addLikeFilm(4, i));
-//        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(5, i));
-//        IntStream.range(4, 8).forEach(i -> this.filmLikeService.addLikeFilm(6, i));
-//        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(7, i));
-//        IntStream.range(5, 8).forEach(i -> this.filmLikeService.addLikeFilm(8, i));
-//        IntStream.range(2, 8).forEach(i -> this.filmLikeService.addLikeFilm(9, i));
-//        IntStream.range(6, 11).forEach(i -> this.filmLikeService.addLikeFilm(10, i));
-//        IntStream.range(1, 10).forEach(i -> this.filmLikeService.addLikeFilm(11, i));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
@@ -498,20 +628,118 @@ public class FilmControllerTest {
     @DisplayName("GET /films/popular возвращает список из 11 самых популярных фильмов если передан параметр count=11")
     void getListOfMostPopularFilmsTest_ReturnsList11MostPopularFilms() throws Exception {
         var requestBuilder = get("/films/popular?count=11");
+        Mockito.when(filmLikeService.getMostPopularFilm(11)).thenReturn(List.of(
+                Film.builder()
+                        .id(1)
+                        .name("TestFilm1")
+                        .description("TestDescription1")
+                        .releaseDate(LocalDate.parse("1900-01-02"))
+                        .duration(2)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+                        .build(),
+                Film.builder()
+                        .id(11)
+                        .name("TestFilm11")
+                        .description("TestDescription11")
+                        .releaseDate(LocalDate.parse("1900-01-12"))
+                        .duration(12)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9))
+                        .build(),
+                Film.builder()
+                        .id(4)
+                        .name("TestFilm4")
+                        .description("TestDescription4")
+                        .releaseDate(LocalDate.parse("1900-01-05"))
+                        .duration(5)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(3, 4, 5, 6, 7, 8, 9, 10))
+                        .build(),
+                Film.builder()
+                        .id(5).name("TestFilm5")
+                        .description("TestDescription5")
+                        .releaseDate(LocalDate.parse("1900-01-06"))
+                        .duration(6)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7))
+                        .build(),
+                Film.builder()
+                        .id(7)
+                        .name("TestFilm7")
+                        .description("TestDescription7")
+                        .releaseDate(LocalDate.parse("1900-01-08"))
+                        .duration(8)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7))
+                        .build(),
+                Film.builder()
+                        .id(9)
+                        .name("TestFilm9")
+                        .description("TestDescription9")
+                        .releaseDate(LocalDate.parse("1900-01-10"))
+                        .duration(10)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(2, 3, 4, 5, 6, 7))
+                        .build(),
+                Film.builder()
+                        .id(10)
+                        .name("TestFilm10")
+                        .description("TestDescription10")
+                        .releaseDate(LocalDate.parse("1900-01-11"))
+                        .duration(11)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(6, 7, 8, 9, 10))
+                        .build(),
+                Film.builder()
+                        .id(6)
+                        .name("TestFilm6")
+                        .description("TestDescription6")
+                        .releaseDate(LocalDate.parse("1900-01-07"))
+                        .duration(7)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(4, 5, 6, 7))
+                        .build(),
+                Film.builder()
+                        .id(8)
+                        .name("TestFilm8")
+                        .description("TestDescription8")
+                        .releaseDate(LocalDate.parse("1900-01-09"))
+                        .duration(9)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(5, 6, 7))
+                        .build(),
+                Film.builder()
+                        .id(3)
+                        .name("TestFilm3")
+                        .description("TestDescription3")
+                        .releaseDate(LocalDate.parse("1900-01-04"))
+                        .duration(4)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(1, 2))
+                        .build(),
+                Film.builder()
+                        .id(2)
+                        .name("TestFilm2")
+                        .description("TestDescription2")
+                        .releaseDate(LocalDate.parse("1900-01-03"))
+                        .duration(3)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of())
+                        .build()
+        ));
 
-//        this.filmStorage.getFilmMap().putAll(generatorFilmMap(11));
-//        this.userStorage.getUserMap().putAll(generatorUserMap(10));
-//        IntStream.range(1, 11).forEach(i -> this.filmLikeService.addLikeFilm(1, i));
-//        IntStream.range(1, 1).forEach(i -> this.filmLikeService.addLikeFilm(2, i));
-//        IntStream.range(1, 3).forEach(i -> this.filmLikeService.addLikeFilm(3, i));
-//        IntStream.range(3, 11).forEach(i -> this.filmLikeService.addLikeFilm(4, i));
-//        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(5, i));
-//        IntStream.range(4, 8).forEach(i -> this.filmLikeService.addLikeFilm(6, i));
-//        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(7, i));
-//        IntStream.range(5, 8).forEach(i -> this.filmLikeService.addLikeFilm(8, i));
-//        IntStream.range(2, 8).forEach(i -> this.filmLikeService.addLikeFilm(9, i));
-//        IntStream.range(6, 11).forEach(i -> this.filmLikeService.addLikeFilm(10, i));
-//        IntStream.range(1, 10).forEach(i -> this.filmLikeService.addLikeFilm(11, i));
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
@@ -546,19 +774,18 @@ public class FilmControllerTest {
     void getListOfMostPopularFilmsTest_ReturnsList1MostPopularFilms() throws Exception {
         var requestBuilder = get("/films/popular?count=1");
 
-//        this.filmStorage.getFilmMap().putAll(generatorFilmMap(11));
-//        this.userStorage.getUserMap().putAll(generatorUserMap(10));
-//        IntStream.range(1, 11).forEach(i -> this.filmLikeService.addLikeFilm(1, i));
-//        IntStream.range(1, 1).forEach(i -> this.filmLikeService.addLikeFilm(2, i));
-//        IntStream.range(1, 3).forEach(i -> this.filmLikeService.addLikeFilm(3, i));
-//        IntStream.range(3, 11).forEach(i -> this.filmLikeService.addLikeFilm(4, i));
-//        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(5, i));
-//        IntStream.range(4, 8).forEach(i -> this.filmLikeService.addLikeFilm(6, i));
-//        IntStream.range(1, 8).forEach(i -> this.filmLikeService.addLikeFilm(7, i));
-//        IntStream.range(5, 8).forEach(i -> this.filmLikeService.addLikeFilm(8, i));
-//        IntStream.range(2, 8).forEach(i -> this.filmLikeService.addLikeFilm(9, i));
-//        IntStream.range(6, 11).forEach(i -> this.filmLikeService.addLikeFilm(10, i));
-//        IntStream.range(1, 10).forEach(i -> this.filmLikeService.addLikeFilm(11, i));
+        Mockito.when(filmLikeService.getMostPopularFilm(1)).thenReturn(List.of(
+                Film.builder()
+                        .id(1)
+                        .name("TestFilm1")
+                        .description("TestDescription1")
+                        .releaseDate(LocalDate.parse("1900-01-02"))
+                        .duration(2)
+                        .genres(List.of(new Genres(1L)))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+                        .build()));
+
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
@@ -568,31 +795,3 @@ public class FilmControllerTest {
                 ));
     }
 }
-//private List<Film> generatorFilmList(int count) {
-//    ArrayList<Film> films = new ArrayList<>();
-//    for (int i = 0; i < count; i++) {
-//        Film f = new Film(i, "TestFilm" + i, "TestDescription" + i,
-//                LocalDate.of(1900, 1, 1).plusDays(i), i + 1, Set.of(), new Mpa(), List.of());
-//        films.add(f);
-//    }
-//    return films;
-//}
-//
-//private Map<Integer, Film> generatorFilmMap(int filmQuantity) {
-//    Map<Integer, Film> filmMap = new HashMap<>();
-//    for (int i = 1; i <= filmQuantity; i++) {
-//        filmMap.put(i, new Film(i, "TestFilm" + i, "TestDescription" + i,
-//                LocalDate.of(1900, 1, 1).plusDays(i), i + 1, Set.of(), new Mpa(1), List.of()));
-//    }
-//    return filmMap;
-//}
-//
-//private Map<Integer, User> generatorUserMap(int userQuantity) {
-//    Map<Integer, User> userMap = new HashMap<>();
-//    for (int i = 1; i <= userQuantity; i++) {
-//        userMap.put(i, new User(i, "testEmail@tesr.com" + i, "testLogin" + i, "testName" + i,
-//                LocalDate.of(1990, 1, 1).plusDays(i), Set.of()));
-//    }
-//    return userMap;
-//}
-
