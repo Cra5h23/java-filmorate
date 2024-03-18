@@ -117,8 +117,8 @@ public class FilmControllerTest {
     void getUserById_ReturnsNotValidResponseEntity() throws Exception {
         var requestBuilder = get("/films/1");
 
-        Mockito.when(filmService.getFilmById(1)).
-                thenThrow(new FilmServiceException("Попытка получить фильм с несуществующим id: 1"));
+        Mockito.when(filmService.getFilmById(1))
+                .thenThrow(new FilmServiceException("Попытка получить фильм с несуществующим id: 1"));
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
@@ -542,8 +542,8 @@ public class FilmControllerTest {
                         .releaseDate(LocalDate.parse("1900-01-08"))
                         .duration(8)
                         .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1)).
-                        likes(Set.of(1, 2, 3, 4, 5, 6, 7))
+                        .mpa(new Mpa(1))
+                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7))
                         .build(),
                 Film.builder()
                         .id(9)
