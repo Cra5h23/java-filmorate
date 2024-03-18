@@ -36,7 +36,11 @@ public class FilmDbStorage implements FilmStorage {
                 "LEFT JOIN FILM_GENRES fg ON f.FILM_ID = fg.FILM_ID \n" +
                 "LEFT JOIN LIKES l ON f.FILM_ID =l.FILM_ID \n" +
                 "GROUP BY f.FILM_ID";
-        return jdbcTemplate.query(sql, (this::makeFilm));
+        try {
+            return jdbcTemplate.query(sql, (this::makeFilm));
+        }catch (EmptyResultDataAccessException e) {
+            return List.of();
+        }
     }
 
     @Override
@@ -66,7 +70,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film updateFilm(Film film) {
         var sql = "update films set name=?, description=?, release_date=?, duration=? where film_id=?";
-        jdbcTemplate.update(sql, film.getName(), film.getDescription(),film.getReleaseDate(),film.getDuration(), film.getId());
+        jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getId());
         return film;
     }
 
@@ -98,11 +102,11 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getSortedFilms(FilmSort sort, Integer count) {
-        List<Film> query = jdbcTemplate.query(sort.getSql(), this::makeFilm, count);
-        if (query == null) {
+
+        try {
+            return jdbcTemplate.query(sort.getSql(), this::makeFilm, count);
+        } catch (EmptyResultDataAccessException e) {
             return List.of();
-        } else {
-            return query;
         }
     }
 
@@ -114,7 +118,6 @@ public class FilmDbStorage implements FilmStorage {
                 .releaseDate(rs.getDate("release_date").toLocalDate())
                 .duration(rs.getInt("duration"))
                 .mpa(new Mpa(rs.getInt("rating_id")))
-
                 .genres(rs.getString("genres") != null ?
                         Arrays.stream(rs.getString("genres").split(", "))
                                 .map(Long::parseLong)
