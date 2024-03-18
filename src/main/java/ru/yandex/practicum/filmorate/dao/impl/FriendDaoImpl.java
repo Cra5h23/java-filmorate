@@ -32,9 +32,8 @@ public class FriendDaoImpl implements FriendDao {
     }
 
     @Override
-    public Collection<?> getUserFriends(Integer userId) {
+    public Collection<User> getUserFriends(Integer userId) {
         var sql = "select u.* from friends f left join users u on f.friend_id = u.user_id where f.user_id =?";
-        //jdbcTemplate.queryForObject(sql, this::makeUser,userId);
         try {
             return jdbcTemplate.query(sql, this::makeUser, userId);
         } catch (EmptyResultDataAccessException e) {
