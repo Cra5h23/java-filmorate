@@ -2,29 +2,16 @@
 Template repository for Filmorate project.
 # Стуруктура базы данных для приложения Filmorate.
 ## Содержание:
-1. [Схема базы данных.](https://github.com/Cra5h23/Sprint11DataBase/edit/main/README.md#%D1%81%D1%85%D0%B5%D0%BC%D0%B0-%D0%B1%D0%B0%D0%B7%D1%8B-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85)
+1. [Схема базы данных.]
 
-2. [Краткое описание всех таблиц.](https://github.com/Cra5h23/Sprint11DataBase/edit/main/README.md#%D0%BA%D1%80%D0%B0%D1%82%D0%BA%D0%BE%D0%B5-%D0%BE%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B2%D1%81%D0%B5%D1%85-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86)
-    - [Таблица films](https://github.com/Cra5h23/Sprint11DataBase/edit/main/README.md#%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-films-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D0%B5%D1%82%D1%81%D1%8F-%D0%B4%D0%BB%D1%8F-%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B2%D1%81%D0%B5%D1%85-%D1%84%D0%B8%D0%BB%D1%8C%D0%BC%D0%BE%D0%B2)
-    - [Таблица users](https://github.com/Cra5h23/Sprint11DataBase/edit/main/README.md#%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-users-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D0%B5%D1%82%D1%81%D1%8F-%D0%B4%D0%BB%D1%8F-%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B2%D1%81%D0%B5%D1%85-%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D0%B5%D0%B9)
-    - [Таблица likes](https://github.com/Cra5h23/Sprint11DataBase/edit/main/README.md#%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-likes-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D0%B5%D1%82%D1%81%D1%8F-%D0%B4%D0%BB%D1%8F-%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BB%D0%B0%D0%B9%D0%BA%D0%BE%D0%B2-%D0%BA%D0%BE%D1%82%D0%BE%D1%80%D1%8B%D0%B5-%D0%BF%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D0%BB%D0%B8-%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D0%B8-%D1%84%D0%B8%D0%BB%D1%8C%D0%BC%D0%B0%D0%BC)
-    - [Таблица film_ganre](https://github.com/Cra5h23/Sprint11DataBase/edit/main/README.md#%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-film_ganre-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D0%B5%D1%82%D1%81%D1%8F-%D0%B4%D0%BB%D1%8F-%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B6%D0%B0%D0%BD%D1%80%D0%BE%D0%B2-%D0%BA%D0%BE%D1%82%D0%BE%D1%80%D1%8B%D0%BC-%D0%BF%D1%80%D0%B8%D0%BD%D0%B0%D0%B4%D0%BB%D0%B5%D0%B6%D0%B8%D1%82-%D1%84%D0%B8%D0%BB%D1%8C%D0%BC)
-    - [Таблица genre](https://github.com/Cra5h23/Sprint11DataBase/edit/main/README.md#%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-genre-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D0%B5%D1%82%D1%81%D1%8F-%D0%B4%D0%BB%D1%8F-%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BD%D0%B0%D0%B7%D0%B2%D0%B0%D0%BD%D0%B8%D0%B9-%D0%B6%D0%B0%D0%BD%D1%80%D0%BE%D0%B2)
-    - [Таблица rating](https://github.com/Cra5h23/Sprint11DataBase/edit/main/README.md#%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-rating-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D0%B5%D1%82%D1%81%D1%8F-%D0%B4%D0%BB%D1%8F-%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BD%D0%B0%D0%B7%D0%B2%D0%B0%D0%BD%D0%B8%D0%B9-%D1%80%D0%B5%D0%B9%D1%82%D0%B8%D0%BD%D0%B3%D0%BE%D0%B2)
-    - [Таблица friends](https://github.com/Cra5h23/Sprint11DataBase/edit/main/README.md#%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-friends-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D0%B5%D1%82%D1%81%D1%8F-%D0%B4%D0%BB%D1%8F-%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B4%D1%80%D1%83%D0%B7%D0%B5%D0%B9-%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D0%B5%D0%B9)
-    - [Таблица friend](https://github.com/Cra5h23/Sprint11DataBase/edit/main/README.md#%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-friend-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D0%B5%D1%82%D1%81%D1%8F-%D0%B4%D0%BB%D1%8F-%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F-%D1%81%D1%82%D0%B0%D1%82%D1%83%D1%81%D0%B0-%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B2-%D0%B4%D1%80%D1%83%D0%B7%D1%8C%D1%8F)
-    - [Таблица status](https://github.com/Cra5h23/Sprint11DataBase/edit/main/README.md#%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0-status-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D1%83%D0%B5%D1%82%D1%81%D1%8F-%D0%B4%D0%BB%D1%8F-%D1%85%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BD%D0%B0%D0%B7%D0%B2%D0%B0%D0%BD%D0%B8%D0%B9-%D1%81%D1%82%D0%B0%D1%82%D1%83%D1%81%D0%BE%D0%B2-%D0%B4%D1%80%D1%83%D0%B7%D0%B5%D0%B9)
+2. [Краткое описание всех таблиц.]
 
-3. [Примеры запросов.](https://github.com/Cra5h23/Sprint11DataBase/edit/main/README.md#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B-%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2)
-    - [Получение всех фильмов](https://github.com/Cra5h23/Sprint11DataBase/blob/main/README.md#%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B2%D1%81%D0%B5%D1%85-%D1%84%D0%B8%D0%BB%D1%8C%D0%BC%D0%BE%D0%B2)
-    - [Получение фильма по id](https://github.com/Cra5h23/Sprint11DataBase/edit/main/README.md#%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D1%84%D0%B8%D0%BB%D1%8C%D0%BC%D0%B0-%D0%BF%D0%BE-id)
-    - [Получение списка самых популярных фильмов, c колличеством фильмов count](https://github.com/Cra5h23/Sprint11DataBase/edit/main/README.md#%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81%D0%BF%D0%B8%D1%81%D0%BA%D0%B0-%D1%81%D0%B0%D0%BC%D1%8B%D1%85-%D0%BF%D0%BE%D0%BF%D1%83%D0%BB%D1%8F%D1%80%D0%BD%D1%8B%D1%85-%D1%84%D0%B8%D0%BB%D1%8C%D0%BC%D0%BE%D0%B2-c-%D0%BA%D0%BE%D0%BB%D0%BB%D0%B8%D1%87%D0%B5%D1%81%D1%82%D0%B2%D0%BE%D0%BC-%D1%84%D0%B8%D0%BB%D1%8C%D0%BC%D0%BE%D0%B2-count)
-    - [Получение всех пользователей](https://github.com/Cra5h23/Sprint11DataBase/edit/main/README.md#%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B2%D1%81%D0%B5%D1%85-%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D0%B5%D0%B9)
-    - [Получение пользователя по id](https://github.com/Cra5h23/Sprint11DataBase/edit/main/README.md#%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F-%D0%BF%D0%BE-id)
+3. [Примеры запросов.]
 
 ### Схема базы данных.
 
-![Sprint11DataBase.png](resources/Sprint11DataBase.png)
+![Sprint11DataBAse drawio (2)](https://github.com/Cra5h23/java-filmorate/assets/145023705/d0bdb2d4-cf4d-4073-9655-e60b4f14e9ff)
+
 
 ### Краткое описание всех таблиц.
 - #### Таблица films используется для хранения всех фильмов.
@@ -50,54 +37,79 @@ Template repository for Filmorate project.
     * Поле film_id идентификационный номер фильма.
     * Поле genre_id идентификационный номер жанра.
 
-- ##### Таблица genre используется для хранения названий жанров.
+- ##### Таблица genres используется для хранения названий жанров.
     * Поле genre_id идентификационный номер жанра.
-    * Поле name название жанра.
+    * Поле genre_name название жанра.
 
-- ##### Таблица rating используется для хранения названий рейтингов.
+- ##### Таблица ratings используется для хранения названий рейтингов.
     * Поле rating_id первичный ключ таблицы, содержит идентификационный номер рейтинга.
-    * Поле name содержит название рейтинга.
+    * Поле rating_name содержит название рейтинга.
 
 - ##### Таблица friends используется для хранения друзей пользователей.
     * Поле user_id идентификационный номер пользователя.
     * Поле friend_id идентификационный номер друга.
+    * Поле status хранит статус запроса дружбы
 
-- ##### Таблица friend используется для хранения статуса добавления в друзья.
-    * Поле	friend_id первичный ключ таблицы, содержит идентификационный номер друга.
-    * Поле	user_id внешний ключ для связи с таблицей users.
-    * Поле	status_id внешний ключ для связи с таблицей status.
-
-- #### Таблица status используется для хранения названий статусов друзей.
-    * Поле status_id первичный ключ таблицы.
-    * Поле name название статуса.
 
 ### Примеры запросов.
 - #### Получение всех фильмов.
   ```SQL
-  SELECT *
-  FROM films
+  SELECT
+  f.*,
+  STRING_AGG(fg.GENRE_ID, ', ') genres,
+  STRING_AGG(l.USER_ID, ', ') likes
+  FROM FILMS f
+  LEFT JOIN FILM_GENRES fg ON f.FILM_ID = fg.FILM_ID
+  LEFT JOIN LIKES l ON f.FILM_ID =l.FILM_ID
+  GROUP BY f.FILM_ID
   ```
 - #### Получение фильма по id.
   ```SQL
-  SELECT *
-  FROM films f
-  WHERE f.film_id = id
+  SELECT
+  f.*,
+  STRING_AGG(fg.genre_id, ', ') genres,
+  STRING_AGG(l.user_id, ', ') likes
+  FROM films f 
+  LEFT JOIN film_genres fg on f.film_id = fg.film_id
+  LEFT JOIN likes l on f.film_id = l.film_id
+  WHERE f.film_id = ? 
+  GROUP BY f.film_id"
   ```
 - #### Получение списка самых популярных фильмов, c колличеством фильмов count
   ```SQL
-  SELECT *
-  FROM films f
-  JOIN likes l ON f.film_id = l.film_id
-  GROUP BY f.film_id
-  ORDER BY SUM(l.user_id) DESC
-  LIMIT count
+  SELECT
+  f.*,
+  STRING_AGG(fg.GENRE_ID, ', ') genres,
+  STRING_AGG(l.USER_ID, ', ') likes
+  FROM FILMS
+  LEFT JOIN FILM_GENRES fg ON f.FILM_ID = fg.FILM_ID
+  LEFT JOIN LIKES l ON f.FILM_ID =l.FILM_ID
+  GROUP BY f.FILM_ID
+  ORDER BY count(l.user_id) DESC
+  limit ?
   ```
 
 - #### Получение всех пользователей.
   ```SQL
-  SELECT *
-  FROM users
+  SELECT
+  a.*
+  FROM (SELECT
+  u.*,
+  STRING_AGG(f.friend_id, ', ') friends
+  FROM USERS u
+  LEFT JOIN FRIENDS f ON u.user_id = f.user_id and f.status=true
+  GROUP BY u.user_id ) a
   ```
 
 - #### Получение пользователя по id.
   ```SQL
+  SELECT
+  a.*
+  FROM (SELECT
+  u.*,
+  STRING_AGG(f.friend_id, ', ') friends
+  FROM USERS u
+  LEFT JOIN FRIENDS f ON u.user_id = f.user_id and f.status=true
+  GROUP BY u.user_id) a
+  WHERE user_id = ?
+  ```
