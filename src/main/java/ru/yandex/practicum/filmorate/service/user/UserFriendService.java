@@ -9,7 +9,7 @@ public interface UserFriendService {
 
     String deletingFromUserFriends(Integer userId, Integer deletingFriendId);
 
-    Collection<?> getUserFriends(Integer userId);
+    Collection<User> getUserFriends(Integer userId);
 
     Collection<User> getListOfCommonFriends(Integer userId, Integer otherUserId);
 }
