@@ -37,19 +37,12 @@ public class InMemoryFilmStorage implements FilmStorage {
         Film f = filmMap.get(id);
 
         log.info("Обновлён фильм с id: {}", film.getId());
-//        filmMap.put(film.getId(), film);
-//
         f.setName(film.getName());
         f.setDescription(film.getDescription());
         f.setReleaseDate(film.getReleaseDate());
         f.setDuration(film.getDuration());
-        //f.setMpa(film.getMpa());
-        //f.setGenres(film.getGenres());
         f.setLikes(film.getLikes());
         return f;
-//
-//
-//        return film;
     }
 
     @Override
@@ -65,7 +58,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     /**
-     * @param comparator
      * @param count
      * @return
      */

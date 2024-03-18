@@ -36,10 +36,8 @@ public class UserFriendServiceImpl implements UserFriendService {
         checkId(userId, friendId, "добавить в друзья самого себя");
         var user = checkUser(userId, "добавить друга для");
         var friend = checkUser(friendId, "добавить в друзья");
-//        user.addFriend(friendId);
         user.getFriends().add(friendId);
         friend.getFriends().add(friendId);
-//        friend.addFriend(userId);
         return String.format("Пользователь с id: %d добавил в друзья пользователя с id: %d", userId, friendId);
     }
 
@@ -47,10 +45,8 @@ public class UserFriendServiceImpl implements UserFriendService {
         checkId(userId, deletingFriendId, "удалить из друзей самого себя");
         var user = checkUser(userId, "удалить друга для");
         var deletingFriend = checkUser(deletingFriendId, "удалить из друзей");
-        //user.deletingFriend(deletingFriendId);
         user.getFriends().remove(deletingFriendId);
         deletingFriend.getFriends().remove(userId);
-        //deletingFriend.deletingFriend(userId);
         return String.format("Пользователь с id: %d удалил из друзей пользователя с id: %d", userId, deletingFriendId);
     }
 

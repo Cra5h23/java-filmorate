@@ -16,18 +16,18 @@ import static java.lang.String.format;
 
 @RequiredArgsConstructor
 @Slf4j
-//@Primary
 @Service
 public class UserFriendServiceDbImpl implements UserFriendService {
     private final FriendDao friendDao;
     @Qualifier("userDbStorage")
     private final UserStorage userStorage;
+
     @Override
     public String addingUserAsFriend(Integer userId, Integer friendId) {
         checkId(userId, friendId, "добавить в друзья самого себя");
         checkUser(userId, "добавить друга для");
         checkUser(friendId, "добавить в друзья");
-        friendDao.addingUserAsFriend(userId,friendId);
+        friendDao.addingUserAsFriend(userId, friendId);
         return String.format("Пользователь с id: %d добавил в друзья пользователя с id: %d", userId, friendId);
     }
 
@@ -59,6 +59,7 @@ public class UserFriendServiceDbImpl implements UserFriendService {
                 .orElseThrow(() -> new UserFriendServiceException(
                         format("Попытка %s несуществующего пользователя с id: %d", s[0], friendId)));
     }
+
     private void checkId(Integer userId, Integer friendId, String s) {
         if (userId.equals(friendId)) {
             throw new UserFriendServiceException(String.format("Нельзя %s", s));

@@ -38,7 +38,7 @@ public class FilmDbStorage implements FilmStorage {
                 "GROUP BY f.FILM_ID";
         try {
             return jdbcTemplate.query(sql, (this::makeFilm));
-        }catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
             return List.of();
         }
     }

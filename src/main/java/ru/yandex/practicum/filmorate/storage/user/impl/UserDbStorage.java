@@ -51,7 +51,6 @@ public class UserDbStorage implements UserStorage {
     public User updateUser(User user) {
         var sql = "update users set email=?, login=?, name=?, birthday=? where user_id=?";
         jdbcTemplate.update(sql, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId());
-        //log.info("Создан запрос в базу данных на обновление пользователя");
         return user;
     }
 
@@ -72,9 +71,6 @@ public class UserDbStorage implements UserStorage {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
-
-
-        //return Optional.ofNullable(jdbcTemplate.queryForObject(sql, this::makeUser, id));
     }
 
     @Override

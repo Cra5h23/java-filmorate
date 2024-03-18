@@ -20,9 +20,6 @@ public class UserServiceImpl implements UserService {
     @Qualifier("userDbStorage")
     private final UserStorage userStorage;
 
-    //Todo убрать генерацию ид в хранилище
-    //private int generatorUserId = 0;
-
     /**
      * @return
      */
@@ -38,7 +35,6 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User addUser(User user) {
-        //user.setId(++generatorUserId);
         var u = userStorage.addUser(user);
         log.info("Добавлен пользователь {}", u);
         return u;
@@ -50,13 +46,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User updateUser(User user) {
-        //var userId = user.getId();
         checkUser(user.getId(), "обновить");
-
-//        u.setName(user.getName());
-//        u.setLogin(user.getLogin());
-//        u.setEmail(user.getEmail());
-//        u.setBirthday(user.getBirthday());
         log.info("Обновлён пользователь с id: {}", user.getId());
         return userStorage.updateUser(user);
     }
@@ -68,7 +58,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Integer userId) {
         log.info("Запрошен пользователь с id {}", userId);
-        //return userStorage.getUserById(userId);
         return checkUser(userId, "получить");
     }
 

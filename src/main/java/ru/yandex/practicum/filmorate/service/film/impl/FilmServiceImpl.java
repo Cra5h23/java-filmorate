@@ -19,7 +19,6 @@ import static java.lang.String.format;
 public class FilmServiceImpl implements FilmService {
     @Qualifier("filmDbStorage")
     private final FilmStorage filmStorage;
-    //private int generatorFilmId = 0;
 
     /**
      * Метод получения списка всех фильмов
@@ -48,7 +47,6 @@ public class FilmServiceImpl implements FilmService {
      */
     @Override
     public Film addFilm(Film film) {
-        //film.setId(++generatorFilmId);
         log.info("Добавлен фильм {}", film);
         return filmStorage.addFilm(film);
     }
@@ -60,14 +58,6 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public Film updateFilm(Film film) {
         var f = checkFilm(film.getId(), "обновить");
-
-//        f.setName(film.getName());
-//        f.setDescription(film.getDescription());
-//        f.setReleaseDate(film.getReleaseDate());
-//        f.setDuration(film.getDuration());
-//        filmStorage.updateFilm(f);
-//        log.info("Обновлён фильм с id: {}", film.getId());
-//        return f;
         log.info("Обновлён фильм с id: {}", film.getId());
         return filmStorage.updateFilm(film);
     }

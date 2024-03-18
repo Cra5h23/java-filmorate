@@ -15,6 +15,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Integer, User> userMap = new HashMap<>();
     private int generatorUserId = 0;
+
     /**
      * @return
      */
