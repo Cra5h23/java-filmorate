@@ -14,13 +14,11 @@ import java.time.LocalDate;
 import java.util.*;
 
 @JdbcTest()
-//@SpringBootTest
-//@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Sql({"/schema.sql", "/test-data.sql"})
 class UserDbStorageTest {
     @Autowired
-    private  JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     @Test
     @DisplayName("Метод getAllUser возвращает список всех пользователей")
@@ -34,7 +32,6 @@ class UserDbStorageTest {
                 .usingRecursiveComparison()
                 .isEqualTo(users);
     }
-
 
     @Test
     @DisplayName("Метод addUser добавляет пользователя в базу данных")
@@ -92,13 +89,14 @@ class UserDbStorageTest {
         Assertions.assertThat(userById)
                 .isNotPresent();
     }
+
     private List<User> generateUsersList(Integer count) {
         List<User> users = new ArrayList<>();
         for (int i = 1; i <= count; i++) {
             var u = User.builder()
-                    .id(i+1)
+                    .id(i + 1)
                     .login("TestLogin" + i)
-                    .name("TestName"+i)
+                    .name("TestName" + i)
                     .email(String.format("testEmail%d.com", i))
                     .birthday(LocalDate.now().minusYears(18).plusDays(i))
                     .friends(Set.of())
@@ -107,7 +105,4 @@ class UserDbStorageTest {
         }
         return users;
     }
-
-
-
 }
