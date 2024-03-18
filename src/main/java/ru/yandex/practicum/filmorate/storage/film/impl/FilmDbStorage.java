@@ -102,7 +102,6 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getSortedFilms(FilmSort sort, Integer count) {
-
         try {
             return jdbcTemplate.query(sort.getSql(), this::makeFilm, count);
         } catch (EmptyResultDataAccessException e) {
