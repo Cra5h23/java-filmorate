@@ -51,6 +51,7 @@ public class FilmLikeServiceDbImpl implements FilmLikeService {
                 .orElseThrow(() -> new FilmLikeServiceException(
                         String.format("Попытка %s лайк %s с несуществующим id: %d", s[0], s[1], filmId)));
     }
+
     private User checkUser(Integer userId, String... s) {
         return userStorage.getUserById(userId)
                 .orElseThrow(() -> new FilmLikeServiceException(
