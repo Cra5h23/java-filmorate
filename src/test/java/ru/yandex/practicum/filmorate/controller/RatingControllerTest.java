@@ -17,7 +17,6 @@ import ru.yandex.practicum.filmorate.service.rating.RatingService;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = RatingController.class)
@@ -55,7 +54,7 @@ class RatingControllerTest {
     }
 
     @Test
-    @DisplayName("GET mpa/{ratingId} возвращает рейтинг" )
+    @DisplayName("GET mpa/{ratingId} возвращает рейтинг")
     void getRatingByIdReturnsValidResponse() throws Exception {
         var requestBuilder = MockMvcRequestBuilders.get("/mpa/1");
 
@@ -69,7 +68,7 @@ class RatingControllerTest {
     }
 
     @Test
-    @DisplayName("GET mpa/{ratingId} возвращает код 404 и сообщение ошибки" )
+    @DisplayName("GET mpa/{ratingId} возвращает код 404 и сообщение ошибки")
     void getRatingByIdReturnsNotValidResponse() throws Exception {
         var requestBuilder = MockMvcRequestBuilders.get("/mpa/1");
 
