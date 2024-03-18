@@ -23,8 +23,8 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public Genre getGenreById(Integer genreId) {
-        return genreDao.findById(genreId).
-                orElseThrow(() -> new GenreServiceException(
+        return genreDao.findById(genreId)
+                .orElseThrow(() -> new GenreServiceException(
                         String.format("Запрашиваемый жанр с id %d не существует", genreId)));
     }
 }
