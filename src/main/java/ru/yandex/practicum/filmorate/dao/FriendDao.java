@@ -12,4 +12,6 @@ public interface FriendDao {
     Collection<User> getUserFriends(Integer userId);
 
     Collection<User> getListOfCommonFriends(Integer userId, Integer otherUserId);
+
+    String confirmFriend(Integer userId, Integer friendId, boolean confirm);
 }

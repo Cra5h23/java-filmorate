@@ -28,9 +28,22 @@ public class UserDbStorage implements UserStorage {
                 "u.*,\n" +
                 "string_agg(f.friend_id, ', ') friends\n" +
                 "FROM USERS u\n" +
-                "LEFT JOIN FRIENDS f ON u.user_id = f.user_id\n" +
+                "LEFT JOIN FRIENDS f ON u.user_id = f.user_id and f.status=true\n" +
                 "GROUP BY u.user_id\n" +
                 ") a\n";
+
+  //todo test
+
+
+//        var sql = "SELECT\n" +
+//                "a.*\n" +
+//                "FROM (SELECT\n" +
+//                "u.*,\n" +
+//                "string_agg(f.friend_id, ', ') friends\n" +
+//                "FROM USERS u\n" +
+//                "LEFT JOIN FRIENDS f ON u.user_id = f.user_id\n" +
+//                "GROUP BY u.user_id\n" +
+//                ") a\n";
         log.info("Создан запрос в базу данных на получение списка всех пользователей");
         return jdbcTemplate.query(sql, this::makeUser);
     }
@@ -62,10 +75,21 @@ public class UserDbStorage implements UserStorage {
                 "u.*,\n" +
                 "string_agg(f.friend_id, ', ') friends\n" +
                 "FROM USERS u\n" +
-                "LEFT JOIN FRIENDS f ON u.user_id = f.user_id\n" +
+                "LEFT JOIN FRIENDS f ON u.user_id = f.user_id and f.status=true\n" +
                 "GROUP BY u.user_id\n" +
                 ") a\n" +
                 "WHERE user_id = ?\n";
+        //todo test
+//        var sql = "SELECT\n" +
+//                "a.*\n" +
+//                "FROM (SELECT\n" +
+//                "u.*,\n" +
+//                "string_agg(f.friend_id, ', ') friends\n" +
+//                "FROM USERS u\n" +
+//                "LEFT JOIN FRIENDS f ON u.user_id = f.user_id\n" +
+//                "GROUP BY u.user_id\n" +
+//                ") a\n" +
+//                "WHERE user_id = ?\n";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, this::makeUser, id));
         } catch (EmptyResultDataAccessException e) {

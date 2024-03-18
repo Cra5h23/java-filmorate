@@ -62,7 +62,6 @@ public class UserController {
         log.info("PUT addUserToFriends {} друга {}", userId, friendId);
         userFriendService.addingUserAsFriend(userId, friendId);
         return ResponseEntity.ok().build();
-        //return ResponseEntity.ok(userFriendService.addingUserAsFriend(userId, friendId));
     }
 
     @GetMapping("/{userId}")
@@ -103,5 +102,11 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable(required = false) int userId) {
         log.info("DELETE deleteUser {}", userId);
         return ResponseEntity.ok(userService.deleteUserById(userId));
+    }
+
+    @PutMapping("/{userId}/confirmation/{friendId}/{confirm}")
+    public ResponseEntity<?> confirmUserFriend(
+            @PathVariable Integer userId, @PathVariable Integer friendId, @PathVariable boolean confirm) {
+        return ResponseEntity.ok(userFriendService.confirmFriend(userId, friendId, confirm));
     }
 }

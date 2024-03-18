@@ -54,6 +54,15 @@ public class UserFriendServiceDbImpl implements UserFriendService {
         return friendDao.getListOfCommonFriends(userId, otherUserId);
     }
 
+    @Override
+    public String confirmFriend(Integer userId, Integer friendId, boolean confirm) {
+        checkId(userId, friendId, "подтвердить дружбу с самим собой");
+        checkUser(userId,"подтвердить дружбу для");
+        checkUser(friendId,"подтвердить дружбу с");
+        return friendDao.confirmFriend(userId, friendId, confirm);
+    }
+
+
     private void checkUser(Integer friendId, String... s) {
         userStorage.getUserById(friendId)
                 .orElseThrow(() -> new UserFriendServiceException(

@@ -71,6 +71,11 @@ public class UserFriendServiceImpl implements UserFriendService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public String confirmFriend(Integer userId, Integer friendId, boolean confirm) {
+        return null;
+    }
+
     private User checkUser(Integer friendId, String... s) {
         return userStorage.getUserById(friendId)
                 .orElseThrow(() -> new UserFriendServiceException(
