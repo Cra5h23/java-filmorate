@@ -83,6 +83,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<?> handlerGenreServiceException(GenreServiceException e) {
+        log.warn("Ошибка работы с жанрами" + e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
