@@ -64,7 +64,7 @@ public class Film {
 //    private Set<Integer> likes = new HashSet<>();
 
     @Builder.Default
-    private Mpa mpa = new Mpa();
+    private Rating mpa = new Rating();
 
     @Builder.Default
     private List<Genres> genres = new ArrayList<>();
