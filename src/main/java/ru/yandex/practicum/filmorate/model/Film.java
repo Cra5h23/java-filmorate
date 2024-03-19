@@ -67,5 +67,5 @@ public class Film {
     private Rating mpa = new Rating();
 
     @Builder.Default
-    private List<Genres> genres = new ArrayList<>();
+    private List<Genre> genres = new ArrayList<>();
 }
