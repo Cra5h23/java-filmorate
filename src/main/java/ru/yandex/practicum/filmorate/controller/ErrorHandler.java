@@ -93,6 +93,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<?> handlerRatingServiceException(RatingServiceException e) {
+        log.warn("Ошибка работы с рейтингами" + e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
