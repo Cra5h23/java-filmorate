@@ -15,9 +15,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Film.
@@ -31,7 +29,6 @@ public class Film {
     /**
      * Идентификатор фильма
      */
-
     @Builder.Default
     private int id = 0;
 
@@ -62,8 +59,9 @@ public class Film {
     @Positive(message = "Продолжительность фильма должна быть положительной")
     private int duration;
 
-    @Builder.Default
-    private Set<Integer> likes = new HashSet<>();
+    //todo удилить поле
+//    @Builder.Default
+//    private Set<Integer> likes = new HashSet<>();
 
     @Builder.Default
     private Mpa mpa = new Mpa();
