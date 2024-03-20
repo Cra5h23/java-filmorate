@@ -54,35 +54,26 @@ Template repository for Filmorate project.
 ### Примеры запросов.
 - #### Получение всех фильмов.
   ```SQL
-  SELECT
-  f.*,
-  STRING_AGG(fg.GENRE_ID, ', ') genres,
-  STRING_AGG(l.USER_ID, ', ') likes
-  FROM FILMS f
-  LEFT JOIN FILM_GENRES fg ON f.FILM_ID = fg.FILM_ID
-  LEFT JOIN LIKES l ON f.FILM_ID =l.FILM_ID
-  GROUP BY f.FILM_ID
+  SELECT f.*, 
+  r.rating_name 
+  FROM films f 
+  LEFT JOIN ratings r ON f.rating_id = r.rating_id
   ```
 - #### Получение фильма по id.
   ```SQL
-  SELECT
-  f.*,
-  STRING_AGG(fg.genre_id, ', ') genres,
-  STRING_AGG(l.user_id, ', ') likes
+  SELECT f.*, 
+  r.rating_name 
   FROM films f 
-  LEFT JOIN film_genres fg on f.film_id = fg.film_id
-  LEFT JOIN likes l on f.film_id = l.film_id
-  WHERE f.film_id = ? 
-  GROUP BY f.film_id"
+  LEFR JOIN ratings r ON f.rating_id=r.rating_id 
+  WHERE f.film_id=?
   ```
 - #### Получение списка самых популярных фильмов, c колличеством фильмов count
   ```SQL
   SELECT
   f.*,
-  STRING_AGG(fg.GENRE_ID, ', ') genres,
-  STRING_AGG(l.USER_ID, ', ') likes
+  r.rating_name
   FROM FILMS
-  LEFT JOIN FILM_GENRES fg ON f.FILM_ID = fg.FILM_ID
+  LEFT JOIN ratings r on f.rating_id=r.rating_id
   LEFT JOIN LIKES l ON f.FILM_ID =l.FILM_ID
   GROUP BY f.FILM_ID
   ORDER BY count(l.user_id) DESC
@@ -91,25 +82,13 @@ Template repository for Filmorate project.
 
 - #### Получение всех пользователей.
   ```SQL
-  SELECT
-  a.*
-  FROM (SELECT
-  u.*,
-  STRING_AGG(f.friend_id, ', ') friends
-  FROM USERS u
-  LEFT JOIN FRIENDS f ON u.user_id = f.user_id and f.status=true
-  GROUP BY u.user_id ) a
+  "SELECT * 
+  FROM users"
   ```
 
 - #### Получение пользователя по id.
   ```SQL
-  SELECT
-  a.*
-  FROM (SELECT
-  u.*,
-  STRING_AGG(f.friend_id, ', ') friends
-  FROM USERS u
-  LEFT JOIN FRIENDS f ON u.user_id = f.user_id and f.status=true
-  GROUP BY u.user_id) a
-  WHERE user_id = ?
+  SELECT * 
+  FROM users 
+  WHERE user_id=?
   ```
