@@ -11,13 +11,15 @@ import org.springframework.test.context.jdbc.Sql;
 import ru.yandex.practicum.filmorate.FilmSort;
 import ru.yandex.practicum.filmorate.dao.impl.LikeDaoImpl;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.impl.UserDbStorage;
 
 import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @JdbcTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -118,7 +120,6 @@ class FilmDbStorageTest {
                         .name("testName1")
                         .login("testLogin1")
                         .email("testEmail1@test.com")
-                        .friends(Set.of())
                         .birthday(LocalDate.parse("1989-03-05"))
                         .build(),
                 User.builder()
@@ -126,7 +127,6 @@ class FilmDbStorageTest {
                         .name("testName2")
                         .login("testLogin2")
                         .email("testEmail2@test.com")
-                        .friends(Set.of())
                         .birthday(LocalDate.parse("1989-10-05"))
                         .build(),
                 User.builder()
@@ -134,7 +134,6 @@ class FilmDbStorageTest {
                         .name("testName3")
                         .login("testLogin3")
                         .email("testEmail3@test.com")
-                        .friends(Set.of())
                         .birthday(LocalDate.parse("1989-10-05"))
                         .build()
         );
@@ -144,7 +143,7 @@ class FilmDbStorageTest {
         Film film = filmDbStorage.addFilm(films.get(0));
         Film film1 = filmDbStorage.addFilm(films.get(1));
         Film film2 = filmDbStorage.addFilm(films.get(2));
-
+        Collection<Film> filmCollection = new ArrayList<>(List.of(film, film2, film1));
 
         likeDao.saveLike(film.getId(), 1);
         likeDao.saveLike(film.getId(), 2);
@@ -153,17 +152,14 @@ class FilmDbStorageTest {
 
         Collection<Film> sortedFilms = filmDbStorage.getSortedFilms(FilmSort.POPULAR_FILMS_DESC, 10);
 
-        Film film11 = films.get(0);
-        film11.setLikes(Set.of(1, 2, 3));
-        Film film13 = films.get(2);
-        film13.setLikes(Set.of(2));
 
-        List<Film> collect = films.stream().sorted(FilmSort.POPULAR_FILMS_DESC.getComparator()).collect(Collectors.toList());
+
+
 
         Assertions.assertThat(sortedFilms)
                 .isNotNull()
                 .usingRecursiveComparison()
-                .isEqualTo(collect);
+                .isEqualTo(filmCollection);
     }
 
     private List<Film> generatorFilmList(Integer count) {
@@ -173,8 +169,7 @@ class FilmDbStorageTest {
                     .id(i)
                     .name("testName" + i)
                     .description("testDescription" + i)
-                    .mpa(new Mpa(1))
-                    .likes(Set.of())
+                    .mpa(new Rating(1,"G"))
                     .duration(10 + i)
                     .genres(List.of())
                     .releaseDate(LocalDate.parse("1991-10-01").plusDays(i))
