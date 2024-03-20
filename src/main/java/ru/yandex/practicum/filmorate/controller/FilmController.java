@@ -31,6 +31,7 @@ public class FilmController {
 
     @GetMapping
     public ResponseEntity<Collection<Film>> getAllFilms() {
+        log.info("/GET getAllFilms");
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -39,6 +40,7 @@ public class FilmController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Film> getFilmById(@PathVariable(required = false) Integer id) {
+        log.info("/GET getFilmById {}", id);
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -47,6 +49,7 @@ public class FilmController {
 
     @PostMapping
     public ResponseEntity<Film> addNewFilm(@Valid @RequestBody Film film) {
+        log.info("/POST addNewFilm {}", film);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -55,6 +58,7 @@ public class FilmController {
 
     @PutMapping
     public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film film) {
+        log.info("/PUT updateFilm {}", film);
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -63,6 +67,7 @@ public class FilmController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFilm(@PathVariable int id) {
+        log.info("/DELETE deleteFilm {}", id);
         return ResponseEntity.ok(filmService.deleteFilmById(id));
     }
 
@@ -75,6 +80,7 @@ public class FilmController {
 
     @DeleteMapping("/{filmId}/like/{userId}")
     public ResponseEntity<?> userRemoveLikeFromFilm(@PathVariable Integer filmId, @PathVariable Integer userId) {
+        log.info("/DELETE userRemoveLikeFromFilm film {} user {}", filmId, userId);
         return ResponseEntity.ok(filmLikeService.deleteLikeFilm(filmId, userId));
     }
 
