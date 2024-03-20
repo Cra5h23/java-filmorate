@@ -18,11 +18,13 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public Collection<Rating> getAllRatings() {
+        log.info("Запрошен список всех рейтингов");
         return (Collection<Rating>) ratingDao.findAll();
     }
 
     @Override
     public Rating getRatingById(Integer ratingId) {
+        log.info("Запрошен рейтинг с id {}", ratingId);
         return ratingDao.findById(ratingId).orElseThrow(() -> new RatingServiceException(
                 String.format("Запрашиваемый рейтинг с id %d не существует", ratingId)));
     }
