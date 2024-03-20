@@ -2,12 +2,14 @@ package ru.yandex.practicum.filmorate.storage.film.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.FilmSort;
+import ru.yandex.practicum.filmorate.exeption.FilmServiceException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Rating;
@@ -62,16 +64,21 @@ public class FilmDbStorage implements FilmStorage {
         var s = "insert into film_genres(film_id, genre_id) values(?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        jdbcTemplate.update(connection -> {
-            var ps = connection
-                    .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, film.getName());
-            ps.setString(2, film.getDescription());
-            ps.setDate(3, Date.valueOf(film.getReleaseDate()));
-            ps.setInt(4, film.getDuration());
-            ps.setLong(5, film.getMpa().getId());
-            return ps;
-        }, keyHolder);
+        try {
+            jdbcTemplate.update(connection -> {
+                var ps = connection
+                        .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, film.getName());
+                ps.setString(2, film.getDescription());
+                ps.setDate(3, Date.valueOf(film.getReleaseDate()));
+                ps.setInt(4, film.getDuration());
+                ps.setLong(5, film.getMpa().getId());
+                return ps;
+            }, keyHolder);
+        } catch (DataAccessException e) {
+            throw new FilmServiceException("Неправильно введены данные");
+        }
+
         film.setId((int) Objects.requireNonNull(keyHolder.getKey()));
 
         film.getGenres().forEach(genre -> jdbcTemplate.update(s, keyHolder.getKey(), genre.getId()));
@@ -81,7 +88,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        var sql = "update films set name=?, description=?, release_date=?, duration=?, rating_id=? where film_id=?;";
+        var sql = "update films set name=?, description=?, release_date=?, duration=?, rating_id=? where film_id=?";
         var s = "delete from film_genres where film_id=?";
         var genreSql = "insert into film_genres(film_id, genre_id) values(?, ?)";
 
@@ -114,7 +121,8 @@ public class FilmDbStorage implements FilmStorage {
         } catch (EmptyResultDataAccessException e) {
             query = List.of();
         }
-        film.setGenres(query.stream().filter(m -> m.containsKey(id)).map(o -> o.get(id)).collect(Collectors.toList()));
+        film.setGenres(query.stream().filter(m -> m.containsKey(id)).map(o -> o.get(id))
+                .collect(Collectors.toList()));
 
         return Optional.of(film);
     }
