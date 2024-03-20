@@ -18,11 +18,13 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public Collection<Genre> getAllGenre() {
+        log.info("Запрошен список всех жанров");
         return (Collection<Genre>) genreDao.findAll();
     }
 
     @Override
     public Genre getGenreById(Integer genreId) {
+        log.info("Запрошен жанр с id {}", genreId);
         return genreDao.findById(genreId)
                 .orElseThrow(() -> new GenreServiceException(
                         String.format("Запрашиваемый жанр с id %d не существует", genreId)));
