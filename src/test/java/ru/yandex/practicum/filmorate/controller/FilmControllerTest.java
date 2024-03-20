@@ -14,15 +14,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.exeption.FilmLikeServiceException;
 import ru.yandex.practicum.filmorate.exeption.FilmServiceException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genres;
-import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.service.film.FilmLikeService;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -59,17 +58,15 @@ public class FilmControllerTest {
                         "\"description\":\"testDescription1\"," +
                         "\"releaseDate\":\"1989-05-02\"," +
                         "\"duration\":121," +
-                        "\"likes\":[]," +
-                        "\"mpa\":{\"id\":1}," +
-                        "\"genres\":[]}," +
+                        "\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
                         "{\"id\":2," +
                         "\"name\":\"testName2\"," +
                         "\"description\":\"testDescription2\"," +
                         "\"releaseDate\":\"1989-05-02\"," +
                         "\"duration\":122," +
-                        "\"likes\":[]," +
-                        "\"mpa\":{\"id\":1}," +
-                        "\"genres\":[]}] ")
+                        "\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}]")
         );
     }
 
@@ -80,11 +77,10 @@ public class FilmControllerTest {
                     .id(i)
                     .name("testName" + i)
                     .description("testDescription" + i)
-                    .mpa(new Mpa(1))
+                    .mpa(new Rating(1, "Комедия"))
                     .duration(120 + i)
-                    .likes(Set.of())
                     .releaseDate(LocalDate.of(1989, 5, 1).plusDays(1))
-                    .genres(List.of())
+                    .genres(List.of(new Genre(1, "G")))
                     .build();
             films.add(f);
         }
@@ -106,10 +102,8 @@ public class FilmControllerTest {
                         "\"description\":\"testDescription1\"," +
                         "\"releaseDate\":\"1989-05-02\"," +
                         "\"duration\":121," +
-                        "\"likes\":[]," +
-                        "\"mpa\":{\"id\":1}," +
-                        "\"genres\":[]}"
-                ));
+                        "\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}"));
     }
 
     @Test
@@ -133,15 +127,13 @@ public class FilmControllerTest {
         var f = Film.builder()
                 .name("testName")
                 .description("testDescription")
-                .mpa(new Mpa(1))
+                .mpa(new Rating(1, "Комедия"))
                 .duration(120)
-                .likes(null)
                 .releaseDate(LocalDate.of(1989, 5, 1).plusDays(1))
-                .genres(List.of(new Genres(1L)))
+                .genres(List.of(new Genre(1, "G")))
                 .build();
         String s = objectMapper.writeValueAsString(f);
         f.setId(1);
-        f.setLikes(Set.of());
         var requestBuilder = post("/films")
                 .contentType(APPLICATION_JSON).content(s);
 
@@ -155,10 +147,9 @@ public class FilmControllerTest {
                         "\"description\":\"testDescription\"," +
                         "\"releaseDate\":\"1989-05-02\"," +
                         "\"duration\":120," +
-                        "\"likes\":[]," +
-                        "\"mpa\":{\"id\":1}," +
-                        "\"genres\":[{\"id\":1}]}"),
-                jsonPath("$.id").exists());
+                        "\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}")
+        );
     }
 
     @Test
@@ -261,11 +252,10 @@ public class FilmControllerTest {
                 .id(1)
                 .name("testName")
                 .description("testDescription")
-                .mpa(new Mpa(1))
+                .mpa(new Rating(1, "Комедия"))
                 .duration(120)
-                .likes(null)
                 .releaseDate(LocalDate.of(1989, 5, 1).plusDays(1))
-                .genres(List.of(new Genres(1L)))
+                .genres(List.of(new Genre(1, "G")))
                 .build();
 
         var requestBuilder = put("/films")
@@ -285,9 +275,8 @@ public class FilmControllerTest {
                         "\"description\":\"testDescription\"," +
                         "\"releaseDate\":\"1989-05-02\"," +
                         "\"duration\":120," +
-                        "\"likes\":null," +
-                        "\"mpa\":{\"id\":1}," +
-                        "\"genres\":[{\"id\":1}]}")
+                        "\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}")
         );
     }
 
@@ -501,9 +490,8 @@ public class FilmControllerTest {
                         .description("TestDescription1")
                         .releaseDate(LocalDate.parse("1900-01-02"))
                         .duration(2)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(11)
@@ -511,9 +499,8 @@ public class FilmControllerTest {
                         .description("TestDescription11")
                         .releaseDate(LocalDate.parse("1900-01-12"))
                         .duration(12)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(4)
@@ -521,9 +508,8 @@ public class FilmControllerTest {
                         .description("TestDescription4")
                         .releaseDate(LocalDate.parse("1900-01-05"))
                         .duration(5)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(3, 4, 5, 6, 7, 8, 9, 10))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(5)
@@ -531,9 +517,8 @@ public class FilmControllerTest {
                         .description("TestDescription5")
                         .releaseDate(LocalDate.parse("1900-01-06"))
                         .duration(6)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(7)
@@ -541,9 +526,8 @@ public class FilmControllerTest {
                         .description("TestDescription7")
                         .releaseDate(LocalDate.parse("1900-01-08"))
                         .duration(8)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(9)
@@ -551,9 +535,8 @@ public class FilmControllerTest {
                         .description("TestDescription9")
                         .releaseDate(LocalDate.parse("1900-01-10"))
                         .duration(10)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(2, 3, 4, 5, 6, 7))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(10)
@@ -561,9 +544,8 @@ public class FilmControllerTest {
                         .description("TestDescription10")
                         .releaseDate(LocalDate.parse("1900-01-11"))
                         .duration(11)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(6, 7, 8, 9, 10))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(6)
@@ -571,9 +553,8 @@ public class FilmControllerTest {
                         .description("TestDescription6")
                         .releaseDate(LocalDate.parse("1900-01-07"))
                         .duration(7)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(4, 5, 6, 7))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(8)
@@ -581,9 +562,8 @@ public class FilmControllerTest {
                         .description("TestDescription8")
                         .releaseDate(LocalDate.parse("1900-01-09"))
                         .duration(9)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(5, 6, 7))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(3)
@@ -591,37 +571,44 @@ public class FilmControllerTest {
                         .description("TestDescription3")
                         .releaseDate(LocalDate.parse("1900-01-04"))
                         .duration(4)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(1, 2))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build()
         ));
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
-                content().json(
-                        "[{\"id\":1,\"name\":\"TestFilm1\",\"description\":\"TestDescription1\"" +
-                                ",\"releaseDate\":\"1900-01-02\",\"duration\":2,\"likes\":[1,2,3,4,5,6,7,8,9,10]}" +
-                                ",{\"id\":11,\"name\":\"TestFilm11\",\"description\":\"TestDescription11\"" +
-                                ",\"releaseDate\":\"1900-01-12\",\"duration\":12,\"likes\":[1,2,3,4,5,6,7,8,9]}" +
-                                ",{\"id\":4,\"name\":\"TestFilm4\",\"description\":\"TestDescription4\"" +
-                                ",\"releaseDate\":\"1900-01-05\",\"duration\":5,\"likes\":[3,4,5,6,7,8,9,10]}" +
-                                ",{\"id\":5,\"name\":\"TestFilm5\",\"description\":\"TestDescription5\"" +
-                                ",\"releaseDate\":\"1900-01-06\",\"duration\":6,\"likes\":[1,2,3,4,5,6,7]}" +
-                                ",{\"id\":7,\"name\":\"TestFilm7\",\"description\":\"TestDescription7\"" +
-                                ",\"releaseDate\":\"1900-01-08\",\"duration\":8,\"likes\":[1,2,3,4,5,6,7]}" +
-                                ",{\"id\":9,\"name\":\"TestFilm9\",\"description\":\"TestDescription9\"" +
-                                ",\"releaseDate\":\"1900-01-10\",\"duration\":10,\"likes\":[2,3,4,5,6,7]}" +
-                                ",{\"id\":10,\"name\":\"TestFilm10\",\"description\":\"TestDescription10\"" +
-                                ",\"releaseDate\":\"1900-01-11\",\"duration\":11,\"likes\":[6,7,8,9,10]}" +
-                                ",{\"id\":6,\"name\":\"TestFilm6\",\"description\":\"TestDescription6\"" +
-                                ",\"releaseDate\":\"1900-01-07\",\"duration\":7,\"likes\":[4,5,6,7]}" +
-                                ",{\"id\":8,\"name\":\"TestFilm8\",\"description\":\"TestDescription8\"" +
-                                ",\"releaseDate\":\"1900-01-09\",\"duration\":9,\"likes\":[5,6,7]}" +
-                                ",{\"id\":3,\"name\":\"TestFilm3\",\"description\":\"TestDescription3\"" +
-                                ",\"releaseDate\":\"1900-01-04\",\"duration\":4,\"likes\":[1,2]}]"
-                ));
+                content().json("[{\"id\":1,\"name\":\"TestFilm1\",\"description\":\"TestDescription1\"," +
+                        "\"releaseDate\":\"1900-01-02\",\"duration\":2,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":11,\"name\":\"TestFilm11\",\"description\":\"TestDescription11\"," +
+                        "\"releaseDate\":\"1900-01-12\",\"duration\":12,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":4,\"name\":\"TestFilm4\",\"description\":\"TestDescription4\"," +
+                        "\"releaseDate\":\"1900-01-05\",\"duration\":5,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":5,\"name\":\"TestFilm5\",\"description\":\"TestDescription5\"," +
+                        "\"releaseDate\":\"1900-01-06\",\"duration\":6,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":7,\"name\":\"TestFilm7\",\"description\":\"TestDescription7\"," +
+                        "\"releaseDate\":\"1900-01-08\",\"duration\":8,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":9,\"name\":\"TestFilm9\",\"description\":\"TestDescription9\"," +
+                        "\"releaseDate\":\"1900-01-10\",\"duration\":10,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":10,\"name\":\"TestFilm10\",\"description\":\"TestDescription10\"," +
+                        "\"releaseDate\":\"1900-01-11\",\"duration\":11,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":6,\"name\":\"TestFilm6\",\"description\":\"TestDescription6\"," +
+                        "\"releaseDate\":\"1900-01-07\",\"duration\":7,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":8,\"name\":\"TestFilm8\",\"description\":\"TestDescription8\"," +
+                        "\"releaseDate\":\"1900-01-09\",\"duration\":9,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":3,\"name\":\"TestFilm3\",\"description\":\"TestDescription3\"," +
+                        "\"releaseDate\":\"1900-01-04\",\"duration\":4,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}]"));
     }
 
     @Test
@@ -635,9 +622,8 @@ public class FilmControllerTest {
                         .description("TestDescription1")
                         .releaseDate(LocalDate.parse("1900-01-02"))
                         .duration(2)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(11)
@@ -645,9 +631,8 @@ public class FilmControllerTest {
                         .description("TestDescription11")
                         .releaseDate(LocalDate.parse("1900-01-12"))
                         .duration(12)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(4)
@@ -655,18 +640,16 @@ public class FilmControllerTest {
                         .description("TestDescription4")
                         .releaseDate(LocalDate.parse("1900-01-05"))
                         .duration(5)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(3, 4, 5, 6, 7, 8, 9, 10))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(5).name("TestFilm5")
                         .description("TestDescription5")
                         .releaseDate(LocalDate.parse("1900-01-06"))
                         .duration(6)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(7)
@@ -674,9 +657,8 @@ public class FilmControllerTest {
                         .description("TestDescription7")
                         .releaseDate(LocalDate.parse("1900-01-08"))
                         .duration(8)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(9)
@@ -684,9 +666,8 @@ public class FilmControllerTest {
                         .description("TestDescription9")
                         .releaseDate(LocalDate.parse("1900-01-10"))
                         .duration(10)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(2, 3, 4, 5, 6, 7))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(10)
@@ -694,9 +675,8 @@ public class FilmControllerTest {
                         .description("TestDescription10")
                         .releaseDate(LocalDate.parse("1900-01-11"))
                         .duration(11)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(6, 7, 8, 9, 10))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(6)
@@ -704,9 +684,8 @@ public class FilmControllerTest {
                         .description("TestDescription6")
                         .releaseDate(LocalDate.parse("1900-01-07"))
                         .duration(7)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(4, 5, 6, 7))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(8)
@@ -714,9 +693,8 @@ public class FilmControllerTest {
                         .description("TestDescription8")
                         .releaseDate(LocalDate.parse("1900-01-09"))
                         .duration(9)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(5, 6, 7))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(3)
@@ -724,9 +702,8 @@ public class FilmControllerTest {
                         .description("TestDescription3")
                         .releaseDate(LocalDate.parse("1900-01-04"))
                         .duration(4)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(1, 2))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
                         .id(2)
@@ -734,39 +711,47 @@ public class FilmControllerTest {
                         .description("TestDescription2")
                         .releaseDate(LocalDate.parse("1900-01-03"))
                         .duration(3)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of())
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build()
         ));
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
-                content().json(
-                        "[{\"id\":1,\"name\":\"TestFilm1\",\"description\":\"TestDescription1\"" +
-                                ",\"releaseDate\":\"1900-01-02\",\"duration\":2,\"likes\":[1,2,3,4,5,6,7,8,9,10]}" +
-                                ",{\"id\":11,\"name\":\"TestFilm11\",\"description\":\"TestDescription11\"" +
-                                ",\"releaseDate\":\"1900-01-12\",\"duration\":12,\"likes\":[1,2,3,4,5,6,7,8,9]}" +
-                                ",{\"id\":4,\"name\":\"TestFilm4\",\"description\":\"TestDescription4\"" +
-                                ",\"releaseDate\":\"1900-01-05\",\"duration\":5,\"likes\":[3,4,5,6,7,8,9,10]}" +
-                                ",{\"id\":5,\"name\":\"TestFilm5\",\"description\":\"TestDescription5\"" +
-                                ",\"releaseDate\":\"1900-01-06\",\"duration\":6,\"likes\":[1,2,3,4,5,6,7]}" +
-                                ",{\"id\":7,\"name\":\"TestFilm7\",\"description\":\"TestDescription7\"" +
-                                ",\"releaseDate\":\"1900-01-08\",\"duration\":8,\"likes\":[1,2,3,4,5,6,7]}" +
-                                ",{\"id\":9,\"name\":\"TestFilm9\",\"description\":\"TestDescription9\"" +
-                                ",\"releaseDate\":\"1900-01-10\",\"duration\":10,\"likes\":[2,3,4,5,6,7]}" +
-                                ",{\"id\":10,\"name\":\"TestFilm10\",\"description\":\"TestDescription10\"" +
-                                ",\"releaseDate\":\"1900-01-11\",\"duration\":11,\"likes\":[6,7,8,9,10]}" +
-                                ",{\"id\":6,\"name\":\"TestFilm6\",\"description\":\"TestDescription6\"" +
-                                ",\"releaseDate\":\"1900-01-07\",\"duration\":7,\"likes\":[4,5,6,7]}" +
-                                ",{\"id\":8,\"name\":\"TestFilm8\",\"description\":\"TestDescription8\"" +
-                                ",\"releaseDate\":\"1900-01-09\",\"duration\":9,\"likes\":[5,6,7]}" +
-                                ",{\"id\":3,\"name\":\"TestFilm3\",\"description\":\"TestDescription3\"" +
-                                ",\"releaseDate\":\"1900-01-04\",\"duration\":4,\"likes\":[1,2]}" +
-                                ",{\"id\":2,\"name\":\"TestFilm2\",\"description\":\"TestDescription2\"" +
-                                ",\"releaseDate\":\"1900-01-03\",\"duration\":3,\"likes\":[]}]"
-                ));
+                content().json("[{\"id\":1,\"name\":\"TestFilm1\",\"description\":\"TestDescription1\"," +
+                        "\"releaseDate\":\"1900-01-02\",\"duration\":2,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":11,\"name\":\"TestFilm11\",\"description\":\"TestDescription11\"," +
+                        "\"releaseDate\":\"1900-01-12\",\"duration\":12,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":4,\"name\":\"TestFilm4\",\"description\":\"TestDescription4\"," +
+                        "\"releaseDate\":\"1900-01-05\",\"duration\":5,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":5,\"name\":\"TestFilm5\",\"description\":\"TestDescription5\"," +
+                        "\"releaseDate\":\"1900-01-06\",\"duration\":6,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":7,\"name\":\"TestFilm7\",\"description\":\"TestDescription7\"," +
+                        "\"releaseDate\":\"1900-01-08\",\"duration\":8,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":9,\"name\":\"TestFilm9\",\"description\":\"TestDescription9\"," +
+                        "\"releaseDate\":\"1900-01-10\",\"duration\":10,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":10,\"name\":\"TestFilm10\",\"description\":\"TestDescription10\"," +
+                        "\"releaseDate\":\"1900-01-11\",\"duration\":11,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":6,\"name\":\"TestFilm6\",\"description\":\"TestDescription6\"," +
+                        "\"releaseDate\":\"1900-01-07\",\"duration\":7,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":8,\"name\":\"TestFilm8\",\"description\":\"TestDescription8\"," +
+                        "\"releaseDate\":\"1900-01-09\",\"duration\":9,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":3,\"name\":\"TestFilm3\",\"description\":\"TestDescription3\"," +
+                        "\"releaseDate\":\"1900-01-04\",\"duration\":4,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":2,\"name\":\"TestFilm2\",\"description\":\"TestDescription2\"," +
+                        "\"releaseDate\":\"1900-01-03\",\"duration\":3,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}]"));
     }
 
     @Test
@@ -781,17 +766,15 @@ public class FilmControllerTest {
                         .description("TestDescription1")
                         .releaseDate(LocalDate.parse("1900-01-02"))
                         .duration(2)
-                        .genres(List.of(new Genres(1L)))
-                        .mpa(new Mpa(1))
-                        .likes(Set.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
                         .build()));
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
-                content().json(
-                        "[{\"id\":1,\"name\":\"TestFilm1\",\"description\":\"TestDescription1\"" +
-                                ",\"releaseDate\":\"1900-01-02\",\"duration\":2,\"likes\":[1,2,3,4,5,6,7,8,9,10]}]"
-                ));
+                content().json("[{\"id\":1,\"name\":\"TestFilm1\",\"description\":\"TestDescription1\"," +
+                        "\"releaseDate\":\"1900-01-02\",\"duration\":2,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}]"));
     }
 }
