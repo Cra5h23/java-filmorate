@@ -99,7 +99,6 @@ class UserDbStorageTest {
                     .name("TestName" + i)
                     .email(String.format("testEmail%d.com", i))
                     .birthday(LocalDate.now().minusYears(18).plusDays(i))
-                    .friends(Set.of())
                     .build();
             users.add(u);
         }
