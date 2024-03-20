@@ -80,26 +80,4 @@ public class UserDbStorage implements UserStorage {
                 "delete from users where user_id=?;";
         jdbcTemplate.update(sql, id, id, id);
     }
-
-    private User makeUser(ResultSet rs, int rowNum) throws SQLException {
-        return User.builder()
-                .id(rs.getInt("user_id"))
-                .email(rs.getString("email"))
-                .login(rs.getString("login"))
-                .name(rs.getString("name"))
-                .birthday(rs.getDate("birthday").toLocalDate())
-                .friends(rs.getString("friends") != null ? Arrays.stream(
-                                rs.getString("friends").split(", "))
-                        .map(Integer::parseInt)
-                        .collect(Collectors.toSet()) : Set.of())
-                .build();
-    }
-
-    public Map<String, Object> toMap(User user) {
-        return Map.of("user_id", user.getId(),
-                "email", user.getEmail(),
-                "login", user.getLogin(),
-                "name", user.getName(),
-                "birthday", user.getBirthday());
-    }
 }
