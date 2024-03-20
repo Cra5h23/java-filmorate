@@ -69,6 +69,7 @@ public class UserServiceImpl implements UserService {
     public String deleteUserById(Integer userId) {
         checkUser(userId, "удалить");
         userStorage.deleteUser(userId);
+        log.info("Удалён пользователь с id: {}", userId);
         return format("Удалён пользователь с id: %d", userId);
     }
 
