@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.FilmSort;
 import ru.yandex.practicum.filmorate.dao.LikeDao;
 import ru.yandex.practicum.filmorate.exeption.FilmLikeServiceException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.film.FilmLikeService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -46,14 +45,14 @@ public class FilmLikeServiceDbImpl implements FilmLikeService {
         return filmStorage.getSortedFilms(FilmSort.POPULAR_FILMS_DESC, count);
     }
 
-    private Film checkFilm(Integer filmId, String... s) {
-        return filmStorage.getFilmById(filmId)
+    private void checkFilm(Integer filmId, String... s) {
+        filmStorage.getFilmById(filmId)
                 .orElseThrow(() -> new FilmLikeServiceException(
                         String.format("Попытка %s лайк %s с несуществующим id: %d", s[0], s[1], filmId)));
     }
 
-    private User checkUser(Integer userId, String... s) {
-        return userStorage.getUserById(userId)
+    private void checkUser(Integer userId, String... s) {
+        userStorage.getUserById(userId)
                 .orElseThrow(() -> new FilmLikeServiceException(
                         String.format("Попытка %s лайк %s от несуществующего пользователя c id: %d", s[0], s[1], userId)));
     }
