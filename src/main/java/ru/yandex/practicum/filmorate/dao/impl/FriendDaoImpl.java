@@ -5,11 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.util.UserUtil;
 import ru.yandex.practicum.filmorate.dao.FriendDao;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
@@ -34,9 +33,9 @@ public class FriendDaoImpl implements FriendDao {
 
     @Override
     public Collection<User> getUserFriends(Integer userId) {
-        var sql = "select u.* from friends f left join users u on f.friend_id = u.user_id where f.user_id =? and f.status = true";
+        var sql = "select u.* from friends f left join users u on f.friend_id=u.user_id where f.user_id=? and f.status=true";
         try {
-            return jdbcTemplate.query(sql, this::makeUser, userId);
+            return jdbcTemplate.query(sql, UserUtil::makeUser, userId);
         } catch (EmptyResultDataAccessException e) {
             return List.of();
         }
@@ -50,7 +49,7 @@ public class FriendDaoImpl implements FriendDao {
                 "join users u on f.friend_id = u.user_id\n" +
                 "where f.user_id=? and f.status= true;";
         try {
-            return jdbcTemplate.query(sql, this::makeUser, otherUserId, userId);
+            return jdbcTemplate.query(sql, UserUtil::makeUser, otherUserId, userId);
         } catch (EmptyResultDataAccessException e) {
             return List.of();
         }
@@ -68,15 +67,5 @@ public class FriendDaoImpl implements FriendDao {
             return String.format(
                     "Пользователь с id %d не отправлял запрос на добавление в друзья пользователю с id %d", friendId, userId);
         }
-    }
-
-    private User makeUser(ResultSet rs, int rowNum) throws SQLException {
-        return User.builder()
-                .id(rs.getInt("user_id"))
-                .email(rs.getString("email"))
-                .login(rs.getString("login"))
-                .name(rs.getString("name"))
-                .birthday(rs.getDate("birthday").toLocalDate())
-                .build();
     }
 }
