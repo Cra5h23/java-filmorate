@@ -8,6 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.yandex.practicum.filmorate.validator.MinReleaseData;
 
 import javax.validation.constraints.NotBlank;
@@ -25,6 +26,7 @@ import java.util.List;
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
+@NoArgsConstructor
 public class Film {
     /**
      * Идентификатор фильма
@@ -59,13 +61,15 @@ public class Film {
     @Positive(message = "Продолжительность фильма должна быть положительной")
     private int duration;
 
-    //todo удилить поле
-//    @Builder.Default
-//    private Set<Integer> likes = new HashSet<>();
-
+    /**
+     * Рейтинг фильма
+     */
     @Builder.Default
     private Rating mpa = new Rating();
 
+    /**
+     * Список жанров фильма
+     */
     @Builder.Default
     private List<Genre> genres = new ArrayList<>();
 }
