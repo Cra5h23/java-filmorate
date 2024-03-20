@@ -29,6 +29,7 @@ public class FilmLikeServiceDbImpl implements FilmLikeService {
         checkFilm(filmId, "добавить", "фильму");
         checkUser(userId, "добавить", "фильму");
         likeDao.saveLike(filmId, userId);
+        log.info("Пользователь с id: {} поставил лайк фильму с id: {}", userId, filmId);
         return String.format("Пользователь с id: %d поставил лайк фильму с id: %d", userId, filmId);
     }
 
@@ -37,11 +38,13 @@ public class FilmLikeServiceDbImpl implements FilmLikeService {
         checkFilm(filmId, "удалить", "у фильма");
         checkUser(userId, "удалить", "у фильма");
         likeDao.deleteLike(filmId, userId);
+        log.info("Пользователь с id: {} удалил лайк у фильма с id: {}", userId, filmId);
         return String.format("Пользователь с id: %d удалил лайк у фильма с id: %d", userId, filmId);
     }
 
     @Override
     public Collection<Film> getMostPopularFilm(Integer count) {
+        log.info("Запрошена коллекция самых популярных фильмов в колличестве {} фильмов", count);
         return filmStorage.getSortedFilms(FilmSort.POPULAR_FILMS_DESC, count);
     }
 
