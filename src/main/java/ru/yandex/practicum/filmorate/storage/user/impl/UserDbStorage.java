@@ -6,13 +6,12 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.util.UserUtil;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -22,17 +21,10 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> getAllUsers() {
-        var sql = "SELECT\n" +
-                "a.*\n" +
-                "FROM (SELECT\n" +
-                "u.*,\n" +
-                "string_agg(f.friend_id, ', ') friends\n" +
-                "FROM USERS u\n" +
-                "LEFT JOIN FRIENDS f ON u.user_id = f.user_id and f.status=true\n" +
-                "GROUP BY u.user_id\n" +
-                ") a\n";
+        var sql = "select * from users";
+
         log.info("Создан запрос в базу данных на получение списка всех пользователей");
-        return jdbcTemplate.query(sql, this::makeUser);
+        return jdbcTemplate.query(sql, UserUtil::makeUser);
     }
 
     @Override
@@ -41,8 +33,7 @@ public class UserDbStorage implements UserStorage {
                 .withTableName("users")
                 .usingGeneratedKeyColumns("user_id");
 
-        user.setId(simpleJdbcInsert.executeAndReturnKey(toMap(user)).intValue());
-        user.setFriends(Set.of());
+        user.setId(simpleJdbcInsert.executeAndReturnKey(UserUtil.toMap(user)).intValue());
         log.info("Создан запрос в базу данных на добавление пользователя {}", user);
         return user;
     }
@@ -56,18 +47,10 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Optional<User> getUserById(int id) {
-        var sql = "SELECT\n" +
-                "a.*\n" +
-                "FROM (SELECT\n" +
-                "u.*,\n" +
-                "string_agg(f.friend_id, ', ') friends\n" +
-                "FROM USERS u\n" +
-                "LEFT JOIN FRIENDS f ON u.user_id = f.user_id and f.status=true\n" +
-                "GROUP BY u.user_id\n" +
-                ") a\n" +
-                "WHERE user_id = ?\n";
+        var sql = "select * from users where user_id=?";
+
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, this::makeUser, id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, UserUtil::makeUser, id));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
