@@ -19,6 +19,7 @@ public class RatingController {
 
     @GetMapping
     public ResponseEntity<?> getAllRatings() {
+        log.info("/GET getAllRatings");
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(ratingService.getAllRatings());
@@ -26,6 +27,7 @@ public class RatingController {
 
     @GetMapping("/{genreId}")
     public ResponseEntity<?> getRatingById(@PathVariable(required = false) Integer genreId) {
+        log.info("/GET getRatingById id {}", genreId);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(ratingService.getRatingById(genreId));
