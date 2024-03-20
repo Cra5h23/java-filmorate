@@ -18,7 +18,6 @@ import ru.yandex.practicum.filmorate.service.user.UserService;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -49,7 +48,6 @@ class UserControllerTest {
                         .name("testName1")
                         .login("testLogin1")
                         .email("testEmail1@test.com")
-                        .friends(Set.of())
                         .birthday(LocalDate.parse("1989-03-05"))
                         .build(),
                 User.builder()
@@ -57,7 +55,6 @@ class UserControllerTest {
                         .name("testName2")
                         .login("testLogin2")
                         .email("testEmail2@test.com")
-                        .friends(Set.of())
                         .birthday(LocalDate.parse("1989-10-05"))
                         .build()
         ));
@@ -65,19 +62,16 @@ class UserControllerTest {
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
-                content().json("[{\"id\":1" +
-                        ",\"email\":\"testEmail1@test.com\"" +
-                        ",\"login\":\"testLogin1\"" +
-                        ",\"name\":\"testName1\"" +
-                        ",\"birthday\":\"1989-03-05\"" +
-                        ",\"friends\":[]}" +
-                        ",{\"id\":2" +
-                        ",\"email\":\"testEmail2@test.com\"" +
-                        ",\"login\":\"testLogin2\"" +
-                        ",\"name\":\"testName2\"" +
-                        ",\"birthday\":\"1989-10-05\"" +
-                        ",\"friends\":[]}]")
-        );
+                content().json("[{\"id\":1," +
+                        "\"email\":\"testEmail1@test.com\"," +
+                        "\"login\":\"testLogin1\"," +
+                        "\"name\":\"testName1\"," +
+                        "\"birthday\":\"1989-03-05\"}," +
+                        "{\"id\":2," +
+                        "\"email\":\"testEmail2@test.com\"," +
+                        "\"login\":\"testLogin2\"," +
+                        "\"name\":\"testName2\"," +
+                        "\"birthday\":\"1989-10-05\"}]"));
     }
 
     @Test
@@ -92,7 +86,6 @@ class UserControllerTest {
                 .id(1)
                 .birthday(LocalDate.parse("2020-03-04"))
                 .name("validUserName")
-                .friends(Set.of())
                 .email("validuser@test.com")
                 .login("validUserLogin")
                 .build());
@@ -103,8 +96,7 @@ class UserControllerTest {
                 content().json("{\"email\":\"validuser@test.com\"" +
                         ",\"birthday\":\"2020-03-04\"" +
                         ",\"login\":\"validUserLogin\"" +
-                        ",\"name\":\"validUserName\"," +
-                        "\"friends\":[]}"),
+                        ",\"name\":\"validUserName\"}"),
                 jsonPath("$.id").exists()
         );
     }
@@ -157,7 +149,6 @@ class UserControllerTest {
                         .id(1)
                         .name("validUserLogin")
                         .login("validUserLogin")
-                        .friends(Set.of())
                         .birthday(LocalDate.parse("2020-03-04"))
                         .email("validuser@test.com")
                         .build()
@@ -206,7 +197,6 @@ class UserControllerTest {
                         .id(1)
                         .login("validUserLoginUpdate")
                         .email("validuserUpdate@test.com")
-                        .friends(Set.of())
                         .name("validUserNameUpdate")
                         .birthday(LocalDate.parse("2020-03-04"))
                         .build());
@@ -218,8 +208,7 @@ class UserControllerTest {
                         ",\"email\":\"validuserUpdate@test.com\"" +
                         ",\"login\":\"validUserLoginUpdate\"" +
                         ",\"name\":\"validUserNameUpdate\"" +
-                        ",\"birthday\":\"2020-03-04\"," +
-                        "\"friends\":[]}")
+                        ",\"birthday\":\"2020-03-04\"}")
         );
     }
 
@@ -277,7 +266,6 @@ class UserControllerTest {
                         .name("validUserLoginUpdate")
                         .login("validUserLoginUpdate")
                         .birthday(LocalDate.parse("2020-03-04"))
-                        .friends(Set.of())
                         .build());
 
         mockMvc.perform(requestBuilder).andExpectAll(
@@ -287,8 +275,7 @@ class UserControllerTest {
                         ",\"email\":\"validuserUpdate@test.com\"" +
                         ",\"login\":\"validUserLoginUpdate\"" +
                         ",\"name\":\"validUserLoginUpdate\"" +
-                        ",\"birthday\":\"2020-03-04\"," +
-                        "\"friends\":[]}")
+                        ",\"birthday\":\"2020-03-04\"}")
         );
     }
 
@@ -365,7 +352,6 @@ class UserControllerTest {
                         .email("testEmail@test.com1")
                         .name("testName1")
                         .login("testLogin1")
-                        .friends(Set.of())
                         .birthday(LocalDate.parse("1990-01-02"))
                         .build()
         );
@@ -377,8 +363,7 @@ class UserControllerTest {
                         ",\"email\":\"testEmail@test.com1\"" +
                         ",\"login\":\"testLogin1\"" +
                         ",\"name\":\"testName1\"" +
-                        ",\"birthday\":\"1990-01-02\"" +
-                        ",\"friends\":[]}")
+                        ",\"birthday\":\"1990-01-02\"}")
         );
     }
 
@@ -439,7 +424,6 @@ class UserControllerTest {
                         .login("testLogin2")
                         .name("testName2")
                         .email("testEmail@test.com2")
-                        .friends(Set.of(1))
                         .birthday(LocalDate.parse("1990-01-03"))
                         .build(),
                 User.builder()
@@ -447,7 +431,6 @@ class UserControllerTest {
                         .login("testLogin3")
                         .name("testName3")
                         .email("testEmail@test.com3")
-                        .friends(Set.of(1))
                         .birthday(LocalDate.parse("1990-01-04"))
                         .build()
         ));
@@ -459,14 +442,12 @@ class UserControllerTest {
                         ",\"email\":\"testEmail@test.com2\"" +
                         ",\"login\":\"testLogin2\"" +
                         ",\"name\":\"testName2\"" +
-                        ",\"birthday\":\"1990-01-03\"" +
-                        ",\"friends\":[1]}," +
+                        ",\"birthday\":\"1990-01-03\"}," +
                         "{\"id\":3" +
                         ",\"email\":\"testEmail@test.com3\"" +
                         ",\"login\":\"testLogin3\"" +
                         ",\"name\":\"testName3\"" +
-                        ",\"birthday\":\"1990-01-04\"" +
-                        ",\"friends\":[1]}]")
+                        ",\"birthday\":\"1990-01-04\"}]")
         );
     }
 
@@ -500,7 +481,6 @@ class UserControllerTest {
                                 .login("testLogin4")
                                 .name("testName4")
                                 .email("testEmail@test.com4")
-                                .friends(Set.of(1, 2))
                                 .birthday(LocalDate.parse("1990-01-05"))
                                 .build(),
                         User.builder()
@@ -508,7 +488,6 @@ class UserControllerTest {
                                 .login("testLogin5")
                                 .name("testName5")
                                 .email("testEmail@test.com5")
-                                .friends(Set.of(1, 2))
                                 .birthday(LocalDate.parse("1990-01-06"))
                                 .build()
                 )
@@ -521,14 +500,12 @@ class UserControllerTest {
                         ",\"email\":\"testEmail@test.com4\"" +
                         ",\"login\":\"testLogin4\"" +
                         ",\"name\":\"testName4\"" +
-                        ",\"birthday\":\"1990-01-05\"" +
-                        ",\"friends\":[1,2]}" +
+                        ",\"birthday\":\"1990-01-05\"}" +
                         ",{\"id\":5" +
                         ",\"email\":\"testEmail@test.com5\"" +
                         ",\"login\":\"testLogin5\"" +
                         ",\"name\":\"testName5\"" +
-                        ",\"birthday\":\"1990-01-06\"" +
-                        ",\"friends\":[1,2]}]")
+                        ",\"birthday\":\"1990-01-06\"}]")
         );
     }
 
