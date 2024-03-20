@@ -19,6 +19,7 @@ public class GenreController {
 
     @GetMapping
     public ResponseEntity<?> getAllGenres() {
+        log.info("/GET getAllGenres");
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(genreService.getAllGenre());
@@ -26,6 +27,7 @@ public class GenreController {
 
     @GetMapping("/{genreId}")
     public ResponseEntity<?> getGenreById(@PathVariable(required = false) Integer genreId) {
+        log.info("/GET getGenreById id {}", genreId);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(genreService.getGenreById(genreId));
