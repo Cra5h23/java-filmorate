@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @JdbcTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@Sql({"/schema.sql", "/test-data.sql"})
+@Sql({"/schema.sql", "/data.sql"})
 class FilmDbStorageTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;

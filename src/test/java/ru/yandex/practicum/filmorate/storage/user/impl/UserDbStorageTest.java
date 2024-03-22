@@ -15,7 +15,7 @@ import java.util.*;
 
 @JdbcTest()
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@Sql({"/schema.sql", "/test-data.sql"})
+@Sql({"/schema.sql", "/data.sql"})
 class UserDbStorageTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
