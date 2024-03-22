@@ -88,10 +88,8 @@ public class FilmDbStorage implements FilmStorage {
 
         jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(),
                 film.getDuration(), film.getMpa().getId(), film.getId());
-        if (!film.getGenres().isEmpty()) {
-            jdbcTemplate.update(s, film.getId());
-            film.getGenres().forEach(g -> jdbcTemplate.update(genreSql, film.getId(), g.getId()));
-        }
+        jdbcTemplate.update(s, film.getId());
+        film.getGenres().forEach(g -> jdbcTemplate.update(genreSql, film.getId(), g.getId()));
 
         return getFilmById(film.getId()).get();
     }
@@ -139,7 +137,7 @@ public class FilmDbStorage implements FilmStorage {
                 "left join likes l on fg.film_id=l.film_id\n" +
                 "GROUP BY fg.film_id, g.genre_id\n" +
                 "ORDER BY count(l.user_id) DESC\n" +
-                "limit?";
+                "limit ?";
         List<Film> films = new ArrayList<>();
         final List<Map<Integer, Genre>> genreList = new ArrayList<>();
 
