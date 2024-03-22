@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.jdbc.Sql;
 import ru.yandex.practicum.filmorate.FilmSort;
 import ru.yandex.practicum.filmorate.dao.impl.LikeDaoImpl;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -23,7 +22,7 @@ import java.util.Optional;
 
 @JdbcTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@Sql({"/schema.sql", "/test-data.sql"})
+//@Sql({"/schema.sql", "/test-data.sql"})
 class FilmDbStorageTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
