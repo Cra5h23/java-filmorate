@@ -147,14 +147,10 @@ class FilmDbStorageTest {
 
         likeDao.saveLike(film.getId(), 1);
         likeDao.saveLike(film.getId(), 2);
-        likeDao.saveLike(film.getId(),3);
+        likeDao.saveLike(film.getId(), 3);
         likeDao.saveLike(film2.getId(), 2);
 
         Collection<Film> sortedFilms = filmDbStorage.getSortedFilms(FilmSort.POPULAR_FILMS_DESC, 10);
-
-
-
-
 
         Assertions.assertThat(sortedFilms)
                 .isNotNull()
@@ -169,7 +165,7 @@ class FilmDbStorageTest {
                     .id(i)
                     .name("testName" + i)
                     .description("testDescription" + i)
-                    .mpa(new Rating(1,"G"))
+                    .mpa(new Rating(1, "G"))
                     .duration(10 + i)
                     .genres(List.of())
                     .releaseDate(LocalDate.parse("1991-10-01").plusDays(i))

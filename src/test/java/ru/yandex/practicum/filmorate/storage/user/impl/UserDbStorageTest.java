@@ -13,7 +13,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 import java.util.*;
 
-@JdbcTest()
+@JdbcTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Sql({"/schema.sql", "/data.sql"})
 class UserDbStorageTest {
