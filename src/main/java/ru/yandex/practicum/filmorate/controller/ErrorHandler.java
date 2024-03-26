@@ -73,11 +73,31 @@ public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<?> handlerThrowable(Throwable e) {
-        log.warn("Внутренняя ошибка сервера" + e.fillInStackTrace());
+        log.warn("Внутренняя ошибка сервера:" + e.fillInStackTrace());
         return ResponseEntity
                 .internalServerError()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("timestamp", LocalDateTime.now().toString(),
                         "Произошла внутренняя ошибка сервера", e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handlerGenreServiceException(GenreServiceException e) {
+        log.warn("Ошибка работы с жанрами:" + e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("timestamp", LocalDateTime.now().toString(),
+                        "Ошибка работы с жанрами", e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handlerRatingServiceException(RatingServiceException e) {
+        log.warn("Ошибка работы с рейтингами:" + e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("timestamp", LocalDateTime.now().toString(),
+                        "Ошибка работы с рейтингами", e.getMessage()));
     }
 }

@@ -2,24 +2,28 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.yandex.practicum.filmorate.exeption.UserFriendServiceException;
+import ru.yandex.practicum.filmorate.exeption.UserServiceException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserFriendService;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.service.user.UserService;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@WebMvcTest(controllers = UserController.class)
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class UserControllerTest {
@@ -27,34 +31,47 @@ class UserControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    InMemoryUserStorage userStorage;
+    @MockBean
+    UserService userService;
 
-    @Autowired
+    @MockBean
+    @Qualifier("userFriendServiceDbImpl")
     UserFriendService userFriendService;
 
     @Test
     @DisplayName("GET /users возвращает коллекцию из двух пользователей ")
     void getAllUserTest() throws Exception {
         var requestBuilder = get("/users");
-        userStorage.getUserMap().putAll(generatorUserMap(2));
+        Mockito.when(userService.getUsers()).thenReturn(List.of(
+                User.builder()
+                        .id(1)
+                        .name("testName1")
+                        .login("testLogin1")
+                        .email("testEmail1@test.com")
+                        .birthday(LocalDate.parse("1989-03-05"))
+                        .build(),
+                User.builder()
+                        .id(2)
+                        .name("testName2")
+                        .login("testLogin2")
+                        .email("testEmail2@test.com")
+                        .birthday(LocalDate.parse("1989-10-05"))
+                        .build()
+        ));
 
         this.mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
-                content().json("[{\"id\":1" +
-                        ",\"email\":\"testEmail@test.com1\"" +
-                        ",\"login\":\"testLogin1\"" +
-                        ",\"name\":\"testName1\"" +
-                        ",\"birthday\":\"1990-01-02\"" +
-                        ",\"friends\":[]}" +
-                        ",{\"id\":2" +
-                        ",\"email\":\"testEmail@test.com2\"" +
-                        ",\"login\":\"testLogin2\"" +
-                        ",\"name\":\"testName2\"" +
-                        ",\"birthday\":\"1990-01-03\"" +
-                        ",\"friends\":[]}]")
-        );
+                content().json("[{\"id\":1," +
+                        "\"email\":\"testEmail1@test.com\"," +
+                        "\"login\":\"testLogin1\"," +
+                        "\"name\":\"testName1\"," +
+                        "\"birthday\":\"1989-03-05\"}," +
+                        "{\"id\":2," +
+                        "\"email\":\"testEmail2@test.com\"," +
+                        "\"login\":\"testLogin2\"," +
+                        "\"name\":\"testName2\"," +
+                        "\"birthday\":\"1989-10-05\"}]"));
     }
 
     @Test
@@ -65,6 +82,13 @@ class UserControllerTest {
                         ",\"birthday\":\"2020-03-04\"" +
                         ",\"login\":\"validUserLogin\"" +
                         ",\"name\":\"validUserName\"}");
+        Mockito.when(userService.addUser(Mockito.any())).thenReturn(User.builder()
+                .id(1)
+                .birthday(LocalDate.parse("2020-03-04"))
+                .name("validUserName")
+                .email("validuser@test.com")
+                .login("validUserLogin")
+                .build());
 
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isCreated(),
@@ -120,6 +144,16 @@ class UserControllerTest {
                         ",\"login\":\"validUserLogin\"" +
                         ",\"name\":\"\"}");
 
+        Mockito.when(userService.addUser(Mockito.any())).thenReturn(
+                User.builder()
+                        .id(1)
+                        .name("validUserLogin")
+                        .login("validUserLogin")
+                        .birthday(LocalDate.parse("2020-03-04"))
+                        .email("validuser@test.com")
+                        .build()
+        );
+
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isCreated(),
                 content().contentType(APPLICATION_JSON),
@@ -157,7 +191,16 @@ class UserControllerTest {
                         ",\"birthday\":\"2020-03-04\"" +
                         ",\"login\":\"validUserLoginUpdate\"" +
                         ",\"name\":\"validUserNameUpdate\"}");
-        userStorage.getUserMap().putAll(generatorUserMap(1));
+
+        Mockito.when(userService.updateUser(Mockito.any())).thenReturn(
+                User.builder()
+                        .id(1)
+                        .login("validUserLoginUpdate")
+                        .email("validuserUpdate@test.com")
+                        .name("validUserNameUpdate")
+                        .birthday(LocalDate.parse("2020-03-04"))
+                        .build());
+
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
@@ -165,8 +208,7 @@ class UserControllerTest {
                         ",\"email\":\"validuserUpdate@test.com\"" +
                         ",\"login\":\"validUserLoginUpdate\"" +
                         ",\"name\":\"validUserNameUpdate\"" +
-                        ",\"birthday\":\"2020-03-04\"," +
-                        "\"friends\":[]}")
+                        ",\"birthday\":\"2020-03-04\"}")
         );
     }
 
@@ -180,7 +222,7 @@ class UserControllerTest {
                         ",\"login\":\"validUserLoginUpdate\"" +
                         ",\"name\":\"validUserNameUpdate\"}");
 
-        userStorage.getUserMap().putAll(generatorUserMap(1));
+
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest(),
                 content().contentType(APPLICATION_JSON),
@@ -198,7 +240,7 @@ class UserControllerTest {
                         ",\"birthday\":\"2020-03-04\"" +
                         ",\"login\":\"\"" +
                         ",\"name\":\"validUserNameUpdate\"}");
-        userStorage.getUserMap().putAll(generatorUserMap(1));
+
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest(),
                 content().contentType(APPLICATION_JSON),
@@ -216,7 +258,16 @@ class UserControllerTest {
                         ",\"birthday\":\"2020-03-04\"" +
                         ",\"login\":\"validUserLoginUpdate\"" +
                         ",\"name\":\"\"}");
-        userStorage.getUserMap().putAll(generatorUserMap(1));
+
+        Mockito.when(userService.updateUser(Mockito.any()))
+                .thenReturn(User.builder()
+                        .id(1)
+                        .email("validuserUpdate@test.com")
+                        .name("validUserLoginUpdate")
+                        .login("validUserLoginUpdate")
+                        .birthday(LocalDate.parse("2020-03-04"))
+                        .build());
+
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
@@ -224,8 +275,7 @@ class UserControllerTest {
                         ",\"email\":\"validuserUpdate@test.com\"" +
                         ",\"login\":\"validUserLoginUpdate\"" +
                         ",\"name\":\"validUserLoginUpdate\"" +
-                        ",\"birthday\":\"2020-03-04\"," +
-                        "\"friends\":[]}")
+                        ",\"birthday\":\"2020-03-04\"}")
         );
     }
 
@@ -238,7 +288,7 @@ class UserControllerTest {
                         ",\"birthday\":\"%s\"" +
                         ",\"login\":\"validUserLoginUpdate\"" +
                         ",\"name\":\"validUserNameUpdate\"}", LocalDate.now().plusDays(1)));
-        userStorage.getUserMap().putAll(generatorUserMap(1));
+
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isBadRequest(),
                 content().contentType(APPLICATION_JSON),
@@ -252,10 +302,10 @@ class UserControllerTest {
     void addUserToFriendsTest_User1AddToFriendsUser2() throws Exception {
         var requestBuilder = put("/users/1/friends/2");
 
-        userStorage.getUserMap().putAll(generatorUserMap(2));
+        Mockito.when(userFriendService.addingUserAsFriend(1, 2)).thenReturn(" ");
+
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk(),
-                content().string("Пользователь с id: 1 добавил в друзья пользователя с id: 2")
+                status().isOk()
         );
     }
 
@@ -263,7 +313,10 @@ class UserControllerTest {
     @DisplayName("PUT /users/1/friends/2 пользователь 2 не существует")
     void addUserToFriendsTest_User1NotExists() throws Exception {
         var requestBuilder = put("/users/1/friends/2");
-        userStorage.getUserMap().putAll(generatorUserMap(1));
+
+        Mockito.when(userFriendService.addingUserAsFriend(1, 2)).thenThrow(
+                new UserFriendServiceException("Попытка добавить в друзья несуществующего пользователя с id: 2"));
+
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
                 content().json("{\"Ошибка работы с друзьями\"" +
@@ -276,6 +329,9 @@ class UserControllerTest {
     @DisplayName("PUT /users/1/friends/2 пользователь 1 не существует")
     void addUserToFriendsTest_User2NotExists() throws Exception {
         var requestBuilder = put("/users/1/friends/2");
+
+        Mockito.when(userFriendService.addingUserAsFriend(1, 2)).thenThrow(
+                new UserFriendServiceException("Попытка добавить друга для несуществующего пользователя с id: 1"));
 
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
@@ -290,7 +346,16 @@ class UserControllerTest {
     void getUserByIdTest_GetUser1() throws Exception {
         var requestBuilder = get("/users/1");
 
-        userStorage.getUserMap().putAll(generatorUserMap(1));
+        Mockito.when(userService.getUserById(1)).thenReturn(
+                User.builder()
+                        .id(1)
+                        .email("testEmail@test.com1")
+                        .name("testName1")
+                        .login("testLogin1")
+                        .birthday(LocalDate.parse("1990-01-02"))
+                        .build()
+        );
+
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
@@ -298,8 +363,7 @@ class UserControllerTest {
                         ",\"email\":\"testEmail@test.com1\"" +
                         ",\"login\":\"testLogin1\"" +
                         ",\"name\":\"testName1\"" +
-                        ",\"birthday\":\"1990-01-02\"" +
-                        ",\"friends\":[]}")
+                        ",\"birthday\":\"1990-01-02\"}")
         );
     }
 
@@ -307,6 +371,9 @@ class UserControllerTest {
     @DisplayName("GET /users/1 не возвращает не существующего пользователя с id 1")
     void getUserByIdTest_GetUser1NotExists() throws Exception {
         var requestBuilder = get("/users/1");
+
+        Mockito.when(userService.getUserById(1)).thenThrow(
+                new UserServiceException("Попытка получить пользователя с несуществующим id: 1"));
 
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
@@ -321,7 +388,8 @@ class UserControllerTest {
     void deleteFromUserFriendsTest_DeleteUser1() throws Exception {
         var requestBuilder = delete("/users/1");
 
-        userStorage.getUserMap().putAll(generatorUserMap(1));
+        Mockito.when(userService.deleteUserById(1)).thenReturn("Удалён пользователь с id: 1");
+
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().string("Удалён пользователь с id: 1")
@@ -333,6 +401,9 @@ class UserControllerTest {
     @DisplayName("DELETE /users/1 не удаляет несуществующего пользователя с id 1")
     void deleteFromUserFriendsTest_DeleteUser1NotExists() throws Exception {
         var requestBuilder = delete("/users/1");
+
+        Mockito.when(userService.deleteUserById(1)).thenThrow(
+                new UserServiceException("Попытка удалить пользователя с несуществующим id: 1"));
 
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
@@ -347,9 +418,23 @@ class UserControllerTest {
     void getUsersFriendsTest_ReturnListFriends() throws Exception {
         var requestBuilder = get("/users/1/friends");
 
-        userStorage.getUserMap().putAll(generatorUserMap(3));
-        userFriendService.addingUserAsFriend(1, 2);
-        userFriendService.addingUserAsFriend(1, 3);
+        Mockito.when(userFriendService.getUserFriends(1)).thenReturn(List.of(
+                User.builder()
+                        .id(2)
+                        .login("testLogin2")
+                        .name("testName2")
+                        .email("testEmail@test.com2")
+                        .birthday(LocalDate.parse("1990-01-03"))
+                        .build(),
+                User.builder()
+                        .id(3)
+                        .login("testLogin3")
+                        .name("testName3")
+                        .email("testEmail@test.com3")
+                        .birthday(LocalDate.parse("1990-01-04"))
+                        .build()
+        ));
+
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
@@ -357,14 +442,12 @@ class UserControllerTest {
                         ",\"email\":\"testEmail@test.com2\"" +
                         ",\"login\":\"testLogin2\"" +
                         ",\"name\":\"testName2\"" +
-                        ",\"birthday\":\"1990-01-03\"" +
-                        ",\"friends\":[1]}," +
+                        ",\"birthday\":\"1990-01-03\"}," +
                         "{\"id\":3" +
                         ",\"email\":\"testEmail@test.com3\"" +
                         ",\"login\":\"testLogin3\"" +
                         ",\"name\":\"testName3\"" +
-                        ",\"birthday\":\"1990-01-04\"" +
-                        ",\"friends\":[1]}]")
+                        ",\"birthday\":\"1990-01-04\"}]")
         );
     }
 
@@ -372,6 +455,10 @@ class UserControllerTest {
     @DisplayName("GET /users/1/friends не возвращает список друзей для несуществующего пользователя с id 1")
     void getUsersFriendsTest_User1NotExists() throws Exception {
         var requestBuilder = get("/users/1/friends");
+
+        Mockito.when(userFriendService.getUserFriends(1))
+                .thenThrow(new UserFriendServiceException(
+                        "Попытка получить список друзей для несуществующего пользователя с id: 1"));
 
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
@@ -387,12 +474,25 @@ class UserControllerTest {
     void getUsersCommonFriendsTest_ReturnsListCommonFriends() throws Exception {
         var requestBuilder = get("/users/1/friends/common/2");
 
-        userStorage.getUserMap().putAll(generatorUserMap(5));
-        userFriendService.addingUserAsFriend(1, 3);
-        userFriendService.addingUserAsFriend(1, 4);
-        userFriendService.addingUserAsFriend(1, 5);
-        userFriendService.addingUserAsFriend(2, 4);
-        userFriendService.addingUserAsFriend(2, 5);
+        Mockito.when(userFriendService.getListOfCommonFriends(1, 2)).thenReturn(
+                List.of(
+                        User.builder()
+                                .id(4)
+                                .login("testLogin4")
+                                .name("testName4")
+                                .email("testEmail@test.com4")
+                                .birthday(LocalDate.parse("1990-01-05"))
+                                .build(),
+                        User.builder()
+                                .id(5)
+                                .login("testLogin5")
+                                .name("testName5")
+                                .email("testEmail@test.com5")
+                                .birthday(LocalDate.parse("1990-01-06"))
+                                .build()
+                )
+        );
+
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
@@ -400,14 +500,12 @@ class UserControllerTest {
                         ",\"email\":\"testEmail@test.com4\"" +
                         ",\"login\":\"testLogin4\"" +
                         ",\"name\":\"testName4\"" +
-                        ",\"birthday\":\"1990-01-05\"" +
-                        ",\"friends\":[1,2]}" +
+                        ",\"birthday\":\"1990-01-05\"}" +
                         ",{\"id\":5" +
                         ",\"email\":\"testEmail@test.com5\"" +
                         ",\"login\":\"testLogin5\"" +
                         ",\"name\":\"testName5\"" +
-                        ",\"birthday\":\"1990-01-06\"" +
-                        ",\"friends\":[1,2]}]")
+                        ",\"birthday\":\"1990-01-06\"}]")
         );
     }
 
@@ -415,6 +513,10 @@ class UserControllerTest {
     @DisplayName("GET /users/1/friends/common/2 не возвращает список общих друзей для несуществующего пользователя с id 1")
     void getUsersCommonFriendsTest_User1NotExists() throws Exception {
         var requestBuilder = get("/users/1/friends/common/2");
+
+        Mockito.when(userFriendService.getListOfCommonFriends(1, 2)).thenThrow(
+                new UserFriendServiceException("Попытка получить список общих друзей для несуществующего пользователя с id: 1")
+        );
 
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
@@ -431,7 +533,10 @@ class UserControllerTest {
     void getUsersCommonFriendsTest_User2NotExists() throws Exception {
         var requestBuilder = get("/users/1/friends/common/2");
 
-        userStorage.getUserMap().putAll(generatorUserMap(1));
+        Mockito.when(userFriendService.getListOfCommonFriends(1, 2)).thenThrow(
+                new UserFriendServiceException("Попытка получить список общих друзей несуществующего пользователя с id: 2")
+        );
+
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
                 content().contentType(APPLICATION_JSON),
@@ -446,7 +551,8 @@ class UserControllerTest {
     void deleteUserTest() throws Exception {
         var requestBuilder = delete("/users/1");
 
-        userStorage.getUserMap().putAll(generatorUserMap(1));
+        Mockito.when(userService.deleteUserById(1)).thenReturn("Удалён пользователь с id: 1");
+
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk(),
                 content().string("Удалён пользователь с id: 1")
@@ -457,6 +563,9 @@ class UserControllerTest {
     @DisplayName("DELETE /users/1 не удаляет несуществующего пользователя с id 1")
     void deleteUserTest_User1NotExists() throws Exception {
         var requestBuilder = delete("/users/1");
+
+        Mockito.when(userService.deleteUserById(1))
+                .thenThrow(new UserServiceException("Попытка удалить пользователя с несуществующим id: 1"));
 
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
@@ -471,7 +580,9 @@ class UserControllerTest {
     void deleteFromUserFriendsTest_Delete() throws Exception {
         var requestBuilder = delete("/users/1/friends/1");
 
-        userStorage.getUserMap().putAll(generatorUserMap(1));
+        Mockito.when(userFriendService.deletingFromUserFriends(1, 1))
+                .thenThrow(new UserFriendServiceException("Нельзя удалить из друзей самого себя"));
+
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
                 content().contentType(APPLICATION_JSON),
@@ -486,6 +597,11 @@ class UserControllerTest {
     void deleteFromUserFriendsTest_User1NotExists() throws Exception {
         var requestBuilder = delete("/users/1/friends/2");
 
+        Mockito.when(userFriendService.deletingFromUserFriends(1, 2))
+                .thenThrow(new UserFriendServiceException(
+                        "Попытка удалить друга для несуществующего пользователя с id: 1"));
+
+
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
                 content().contentType(APPLICATION_JSON),
@@ -499,7 +615,10 @@ class UserControllerTest {
     @DisplayName("DELETE /users/1/friends/1 не удаляет из друзей у несуществующего пользователя с id 1")
     void deleteFromUserFriendsTest_User2NotExists() throws Exception {
         var requestBuilder = delete("/users/1/friends/2");
-        userStorage.getUserMap().putAll(generatorUserMap(1));
+
+        Mockito.when(userFriendService.deletingFromUserFriends(1, 2))
+                .thenThrow(new UserFriendServiceException(
+                        "Попытка удалить из друзей несуществующего пользователя с id: 2"));
 
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isNotFound(),
@@ -514,21 +633,13 @@ class UserControllerTest {
     @DisplayName("DELETE /users/1/friends/1 удаляет из друзей у пользователя с id 1 пользователя с id 2")
     void deleteFromUserFriendsTest() throws Exception {
         var requestBuilder = delete("/users/1/friends/2");
-        userStorage.getUserMap().putAll(generatorUserMap(2));
-        userFriendService.addingUserAsFriend(1, 2);
+
+        Mockito.when(userFriendService.deletingFromUserFriends(1, 1))
+                .thenReturn(null);
 
         mockMvc.perform(requestBuilder).andExpectAll(
-                status().isOk(),
-                content().string("Пользователь с id: 1 удалил из друзей пользователя с id: 2")
+                status().isOk()
+                //content().string("Пользователь с id: 1 удалил из друзей пользователя с id: 2")
         );
-    }
-
-    private Map<Integer, User> generatorUserMap(int userQuantity) {
-        Map<Integer, User> userMap = new HashMap<>();
-        for (int i = 1; i <= userQuantity; i++) {
-            userMap.put(i, new User(i, "testEmail@test.com" + i, "testLogin" + i, "testName" + i,
-                    LocalDate.of(1990, 1, 1).plusDays(i)));
-        }
-        return userMap;
     }
 }

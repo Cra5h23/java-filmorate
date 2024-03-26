@@ -1,10 +1,12 @@
-package ru.yandex.practicum.filmorate.service.user;
+package ru.yandex.practicum.filmorate.service.user.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.UserServiceException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
@@ -15,8 +17,8 @@ import static java.lang.String.format;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    @Qualifier("userDbStorage")
     private final UserStorage userStorage;
-    private int generatorUserId = 0;
 
     /**
      * @return
@@ -33,10 +35,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User addUser(User user) {
-        user.setId(++generatorUserId);
-        userStorage.addUser(user);
-        log.info("Добавлен пользователь {}", user);
-        return user;
+        var u = userStorage.addUser(user);
+        log.info("Добавлен пользователь {}", u);
+        return u;
     }
 
     /**
@@ -45,16 +46,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User updateUser(User user) {
-        var userId = user.getId();
-        var u = checkUser(userId, "обновить");
-
-        u.setName(user.getName());
-        u.setLogin(user.getLogin());
-        u.setEmail(user.getEmail());
-        u.setBirthday(user.getBirthday());
-        userStorage.updateUser(u);
-        log.info("Обновлён пользователь с id: {}", userId);
-        return u;
+        checkUser(user.getId(), "обновить");
+        log.info("Обновлён пользователь с id: {}", user.getId());
+        return userStorage.updateUser(user);
     }
 
     /**
@@ -75,6 +69,7 @@ public class UserServiceImpl implements UserService {
     public String deleteUserById(Integer userId) {
         checkUser(userId, "удалить");
         userStorage.deleteUser(userId);
+        log.info("Удалён пользователь с id: {}", userId);
         return format("Удалён пользователь с id: %d", userId);
     }
 
