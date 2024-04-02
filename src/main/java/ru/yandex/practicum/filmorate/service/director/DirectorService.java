@@ -20,4 +20,10 @@ public interface DirectorService {
      * @return
      */
     Director findById(Integer id);
+
+    /**
+     * Метод создания нового режесёра
+     * @return
+     */
+    Director addNewDirector();
 }
