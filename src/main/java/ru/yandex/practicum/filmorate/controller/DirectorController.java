@@ -47,4 +47,13 @@ public class DirectorController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(directorService.addNewDirector());
     }
+
+    @PutMapping
+    public ResponseEntity<Director> updateDirector(@RequestBody Director director) {
+        log.info("PUT /directors");
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(directorService.updateDirector(director));
+    }
 }
