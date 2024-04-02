@@ -26,4 +26,11 @@ public interface DirectorService {
      * @return
      */
     Director addNewDirector();
+
+    /**
+     * Метод изменения режесёра
+     * @param director
+     * @return
+     */
+    Director updateDirector(Director director);
 }
