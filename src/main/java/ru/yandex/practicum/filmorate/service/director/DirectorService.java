@@ -33,4 +33,11 @@ public interface DirectorService {
      * @return
      */
     Director updateDirector(Director director);
+
+    /**
+     * Метод удаления режесёра по id
+     * @param id
+     * @return
+     */
+    Director deleteDirectorById(Integer id);
 }
