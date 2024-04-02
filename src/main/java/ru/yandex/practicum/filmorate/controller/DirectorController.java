@@ -56,4 +56,13 @@ public class DirectorController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(directorService.updateDirector(director));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteDirectorById(@PathVariable Integer id) {
+        log.info("DELETE /directors/{}", id);
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(directorService.deleteDirectorById(id));
+    }
 }
