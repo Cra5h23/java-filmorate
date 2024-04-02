@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.service.director.DirectorService;
 
@@ -31,5 +29,12 @@ public class DirectorController {
                 .body(directorService.findAll());
     }
 
-
+    @GetMapping("/{id}")
+    public ResponseEntity<Director> getDirectorById(@PathVariable(required = false) Integer id) {
+        log.info("GET /directors0/{}", id);
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(directorService.findById(id));
+    }
 }
