@@ -9,8 +9,7 @@ import javax.validation.constraints.NotBlank;
  */
 @NoArgsConstructor
 @Builder(toBuilder = true)
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 public class Director {
     private Integer id;
