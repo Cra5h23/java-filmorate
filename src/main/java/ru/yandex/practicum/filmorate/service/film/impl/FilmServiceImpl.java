@@ -73,6 +73,18 @@ public class FilmServiceImpl implements FilmService {
         return format("Удалён фильм с id: %d", filmId);
     }
 
+    /**
+     * Метод получения списка всех фильмов заданного режиссёра
+     *
+     * @param directorId
+     * @param sortBy
+     * @return
+     */
+    @Override
+    public Film getFilmsByDirector(Integer directorId, String sortBy) {
+        return null;
+    }
+
     private Film checkFilm(Integer filmId, String s) {
         return filmStorage.getFilmById(filmId)
                 .orElseThrow(() -> new FilmServiceException(
