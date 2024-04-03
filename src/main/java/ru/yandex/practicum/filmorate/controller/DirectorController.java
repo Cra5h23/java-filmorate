@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.service.director.DirectorService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -40,16 +41,16 @@ public class DirectorController {
     }
 
     @PostMapping
-    public ResponseEntity<Director> createDirector(@RequestBody Director director) {
+    public ResponseEntity<Director> createDirector(@Valid @RequestBody Director director) {
         log.info("POST /directors");
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(directorService.addNewDirector());
+                .body(directorService.addNewDirector(director));
     }
 
     @PutMapping
-    public ResponseEntity<Director> updateDirector(@RequestBody Director director) {
+    public ResponseEntity<Director> updateDirector(@Valid @RequestBody Director director) {
         log.info("PUT /directors");
         return ResponseEntity
                 .ok()
@@ -60,9 +61,6 @@ public class DirectorController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDirectorById(@PathVariable Integer id) {
         log.info("DELETE /directors/{}", id);
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(directorService.deleteDirectorById(id));
+        return ResponseEntity.ok().build();
     }
 }
