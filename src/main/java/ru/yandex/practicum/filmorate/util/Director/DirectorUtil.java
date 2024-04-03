@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.util;
+package ru.yandex.practicum.filmorate.util.Director;
 
 import ru.yandex.practicum.filmorate.model.Director;
 
