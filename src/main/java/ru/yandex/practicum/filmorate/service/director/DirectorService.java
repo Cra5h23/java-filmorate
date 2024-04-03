@@ -10,12 +10,14 @@ import java.util.List;
 public interface DirectorService {
     /**
      * Метод получения списка всех режесёров
+     *
      * @return список всех режесёров
      */
     List<Director> findAll();
 
     /**
      * Метод получения режесёра по id
+     *
      * @param id
      * @return
      */
@@ -23,12 +25,14 @@ public interface DirectorService {
 
     /**
      * Метод создания нового режесёра
+     *
      * @return
      */
     Director addNewDirector();
 
     /**
      * Метод изменения режесёра
+     *
      * @param director
      * @return
      */
@@ -36,6 +40,7 @@ public interface DirectorService {
 
     /**
      * Метод удаления режесёра по id
+     *
      * @param id
      * @return
      */
