@@ -1,7 +1,8 @@
--- Дроп таблиц для дибильных новых тестов
+-- Дроп таблиц для новых тестов
 DROP TABLE IF EXISTS film_genres;
 DROP TABLE IF EXISTS friends;
 DROP TABLE IF EXISTS films_directors;
+DROP TABLE IF EXISTS likes;
 DROP TABLE IF EXISTS films;
 DROP TABLE IF EXISTS ratings;
 DROP TABLE IF EXISTS genres;
