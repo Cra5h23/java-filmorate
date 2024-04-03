@@ -28,7 +28,7 @@ public interface DirectorService {
      *
      * @return
      */
-    Director addNewDirector();
+    Director addNewDirector(Director director);
 
     /**
      * Метод изменения режесёра
@@ -42,7 +42,6 @@ public interface DirectorService {
      * Метод удаления режесёра по id
      *
      * @param id
-     * @return
      */
-    Director deleteDirectorById(Integer id);
+    void deleteDirectorById(Integer id);
 }
