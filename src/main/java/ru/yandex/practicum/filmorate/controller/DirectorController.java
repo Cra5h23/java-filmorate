@@ -27,7 +27,7 @@ public class DirectorController {
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(directorService.findAll());
+                .body(directorService.getAllDirectors());
     }
 
     @GetMapping("/{id}")

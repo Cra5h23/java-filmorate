@@ -13,7 +13,7 @@ public interface DirectorService {
      *
      * @return список всех режесёров
      */
-    List<Director> findAll();
+    List<Director> getAllDirectors();
 
     /**
      * Метод получения режесёра по id
