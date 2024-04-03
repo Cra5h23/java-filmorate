@@ -89,4 +89,13 @@ public class FilmController {
         log.info("GET getListOfMostPopularFilms");
         return ResponseEntity.ok(filmLikeService.getMostPopularFilm(count));
     }
+
+    @GetMapping("/director/{directorId}")
+    public ResponseEntity<Film> getFilmsByDirector(@PathVariable Integer directorId, @RequestParam String sortBy) {
+        log.info("GET /director/{}/{}",directorId,sortBy);
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(filmService.getFilmsByDirector(directorId, sortBy));
+    }
 }
