@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.DirectorDao;
+import ru.yandex.practicum.filmorate.exeption.DirectorServiceException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.service.director.DirectorService;
 
@@ -37,7 +38,8 @@ public class DirectorServiceImpl implements DirectorService {
      */
     @Override
     public Director findById(Integer id) {
-        return null;
+        log.info("Запрошен режесёр с id {}", id);
+        return checkDirector(id, String.format("Попытка получить режесёра с несуществующим id: %d", id));
     }
 
     /**
@@ -46,8 +48,10 @@ public class DirectorServiceImpl implements DirectorService {
      * @return
      */
     @Override
-    public Director addNewDirector() {
-        return null;
+    public Director addNewDirector(Director director) {
+        var d = directorDao.save(director);
+        log.info("Добавлен режесёр {}", d);
+        return d;
     }
 
     /**
@@ -58,17 +62,26 @@ public class DirectorServiceImpl implements DirectorService {
      */
     @Override
     public Director updateDirector(Director director) {
-        return null;
+        var id = director.getId();
+        checkDirector(id, String.format("Попытка обновить режесёра с несуществующим id %d",id));
+        var d = directorDao.update(director);
+
+        log.info("Обновлён режесёр {}", d);
+        return d;
     }
 
     /**
      * Метод удаления режесёра по id
      *
      * @param id
-     * @return
      */
     @Override
-    public Director deleteDirectorById(Integer id) {
-        return null;
+    public void deleteDirectorById(Integer id) {
+        checkDirector(id, String.format("Попытка удалить режесёра с несуществующим id %d", id));
+        directorDao.delete(id);
+    }
+
+    private Director checkDirector(Integer id, String message) {
+        return directorDao.findById(id).orElseThrow(() -> new DirectorServiceException(message));
     }
 }
