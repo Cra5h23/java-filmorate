@@ -103,11 +103,11 @@ public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<?> handlerDirectorDaoException(DirectorServiceException e) {
-        log.warn("Ошибка работы с режесёрами: " + e.getMessage());
+        log.warn("Ошибка работы с режессёрами: " + e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("timestamp", LocalDateTime.now().toString(),
-                        "Ошибка работы с режесёрами", e.getMessage()));
+                        "Ошибка работы с режиссёрами", e.getMessage()));
     }
 }

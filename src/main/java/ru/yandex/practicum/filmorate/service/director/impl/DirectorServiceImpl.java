@@ -20,42 +20,42 @@ public class DirectorServiceImpl implements DirectorService {
     private final DirectorDao directorDao;
 
     /**
-     * Метод получения списка всех режесёров
+     * Метод получения списка всех режиссёров
      *
-     * @return список всех режесёров
+     * @return список всех режиссёров
      */
     @Override
     public List<Director> getAllDirectors() {
-        log.info("Запрошен список всех режесёров");
+        log.info("Запрошен список всех режиссёров");
         return directorDao.findAll();
     }
 
     /**
-     * Метод получения режесёра по id
+     * Метод получения режиссёра по id
      *
      * @param id
      * @return
      */
     @Override
     public Director findById(Integer id) {
-        log.info("Запрошен режесёр с id {}", id);
-        return checkDirector(id, String.format("Попытка получить режесёра с несуществующим id: %d", id));
+        log.info("Запрошен режиссёр с id {}", id);
+        return checkDirector(id, String.format("Попытка получить режиссёра с несуществующим id: %d", id));
     }
 
     /**
-     * Метод создания нового режесёра
+     * Метод создания нового режиссёра
      *
      * @return
      */
     @Override
     public Director addNewDirector(Director director) {
         var d = directorDao.save(director);
-        log.info("Добавлен режесёр {}", d);
+        log.info("Добавлен режиссёр {}", d);
         return d;
     }
 
     /**
-     * Метод изменения режесёра
+     * Метод изменения режиссёра
      *
      * @param director
      * @return
@@ -63,15 +63,15 @@ public class DirectorServiceImpl implements DirectorService {
     @Override
     public Director updateDirector(Director director) {
         var id = director.getId();
-        checkDirector(id, String.format("Попытка обновить режесёра с несуществующим id %d",id));
+        checkDirector(id, String.format("Попытка обновить режиссёра с несуществующим id %d",id));
         var d = directorDao.update(director);
 
-        log.info("Обновлён режесёр {}", d);
+        log.info("Обновлён режиссёр {}", d);
         return d;
     }
 
     /**
-     * Метод удаления режесёра по id
+     * Метод удаления режиссёра по id
      *
      * @param id
      */

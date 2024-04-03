@@ -10,9 +10,9 @@ import java.util.Optional;
  */
 public interface DirectorDao {
     /**
-     * Метод получения списка всех режесёров из базы данных
+     * Метод получения списка всех режиссёров из базы данных
      *
-     * @return список всех режесёров
+     * @return список всех режиссёров
      */
     List<Director> findAll();
 

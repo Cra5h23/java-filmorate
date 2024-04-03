@@ -20,13 +20,13 @@ public class DirectorDaoImpl implements DirectorDao {
     private final JdbcTemplate jdbcTemplate;
 
     /**
-     * Метод получения списка всех режесёров из базы данных
+     * Метод получения списка всех режиссёров из базы данных
      *
-     * @return список всех режесёров
+     * @return список всех режиссёров
      */
     @Override
     public List<Director> findAll() {
-        log.info("Получен запрос в базу данных на получение списка всех режесёров");
+        log.info("Получен запрос в базу данных на получение списка всех режиссёров");
         var sql = "select d.* from directors d";
         return jdbcTemplate.query(sql, DirectorUtil::makeDirector);
     }
@@ -57,7 +57,7 @@ public class DirectorDaoImpl implements DirectorDao {
                 .usingGeneratedKeyColumns("director_id");
 
         director.setId(simpleJdbcInsert.executeAndReturnKey(DirectorUtil.toMap(director)).intValue());
-        log.info("Создан запрос в базу данных на добавление режесёра {}", director);
+        log.info("Создан запрос в базу данных на добавление режиссёра {}", director);
         return director;
     }
 

@@ -9,14 +9,14 @@ import java.util.List;
  */
 public interface DirectorService {
     /**
-     * Метод получения списка всех режесёров
+     * Метод получения списка всех режиссёров
      *
-     * @return список всех режесёров
+     * @return список всех режиссёров
      */
     List<Director> getAllDirectors();
 
     /**
-     * Метод получения режесёра по id
+     * Метод получения режиссёра по id
      *
      * @param id
      * @return
@@ -24,14 +24,14 @@ public interface DirectorService {
     Director findById(Integer id);
 
     /**
-     * Метод создания нового режесёра
+     * Метод создания нового режиссёра
      *
      * @return
      */
     Director addNewDirector(Director director);
 
     /**
-     * Метод изменения режесёра
+     * Метод изменения режиссёра
      *
      * @param director
      * @return
@@ -39,7 +39,7 @@ public interface DirectorService {
     Director updateDirector(Director director);
 
     /**
-     * Метод удаления режесёра по id
+     * Метод удаления режиссёра по id
      *
      * @param id
      */
