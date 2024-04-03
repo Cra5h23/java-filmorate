@@ -72,4 +72,10 @@ public class Film {
      */
     @Builder.Default
     private List<Genre> genres = new ArrayList<>();
+
+    /**
+     * Список всех режесёров
+     */
+    @Builder.Default
+    private List<Director> director = new ArrayList<>();
 }
