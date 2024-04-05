@@ -61,6 +61,7 @@ public class DirectorController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDirectorById(@PathVariable Integer id) {
         log.info("DELETE /directors/{}", id);
+        directorService.deleteDirectorById(id);
         return ResponseEntity.ok().build();
     }
 }
