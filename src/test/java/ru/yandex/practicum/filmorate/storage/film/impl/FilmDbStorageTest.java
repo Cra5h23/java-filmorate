@@ -16,10 +16,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.impl.UserDbStorage;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @JdbcTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -150,7 +147,7 @@ class FilmDbStorageTest {
         likeDao.saveLike(film.getId(), 3);
         likeDao.saveLike(film2.getId(), 2);
 
-        Collection<Film> sortedFilms = filmDbStorage.getSortedFilms(FilmSort.POPULAR_FILMS_DESC, 10);
+        Collection<Film> sortedFilms = filmDbStorage.getSortedFilms(FilmSort.POPULAR_FILMS_DESC.getSql(), 10);
 
         Assertions.assertThat(sortedFilms)
                 .isNotNull()
@@ -167,7 +164,7 @@ class FilmDbStorageTest {
                     .description("testDescription" + i)
                     .mpa(new Rating(1, "G"))
                     .duration(10 + i)
-                    .genres(List.of())
+                    .genres(Set.of())
                     .releaseDate(LocalDate.parse("1991-10-01").plusDays(i))
                     .build();
             films.add(f);
