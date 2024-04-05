@@ -777,11 +777,12 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1900-01-02\",\"duration\":2,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
                         "\"genres\":[{\"id\":1,\"name\":\"G\"}]}]"));
     }
+
     @Test
     @DisplayName("GET /films/common возвращает список общих с другом фильмов с сортировкой по их популярности")
     void getFilmsTestCommonFriends() throws Exception {
         var requestBuilder = get("/films/common?userId=1&friendId=2");
-        Mockito.when(filmLikeService.getCommonFilms(1,2)).thenReturn(List.of(
+        Mockito.when(filmLikeService.getCommonFilms(1, 2)).thenReturn(List.of(
                 Film.builder()
                         .id(1)
                         .name("TestFilm1")

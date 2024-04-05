@@ -157,6 +157,7 @@ class FilmDbStorageTest {
                 .usingRecursiveComparison()
                 .isEqualTo(filmCollection);
     }
+
     @Test
     void getCommonFilms() {
         List<Film> films = generatorFilmList(5);
@@ -206,7 +207,7 @@ class FilmDbStorageTest {
         likeDao.saveLike(film4.getId(), 2);
         likeDao.saveLike(film4.getId(), 3);
 
-        Collection<Film> sortedFilms = filmDbStorage.getCommonFilms(1,2);
+        Collection<Film> sortedFilms = filmDbStorage.getCommonFilms(1, 2);
 
         Assertions.assertThat(sortedFilms)
                 .isNotNull()
