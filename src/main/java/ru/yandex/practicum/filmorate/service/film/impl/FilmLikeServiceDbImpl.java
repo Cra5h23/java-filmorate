@@ -7,16 +7,12 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.FilmSort;
 import ru.yandex.practicum.filmorate.dao.LikeDao;
 import ru.yandex.practicum.filmorate.exeption.FilmLikeServiceException;
-import ru.yandex.practicum.filmorate.exeption.UserServiceException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.film.FilmLikeService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
-
-import static java.lang.String.format;
 
 @Service
 @Slf4j
