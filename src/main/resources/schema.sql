@@ -34,7 +34,7 @@ genre_name VARCHAR NOT NULL
 
 CREATE TABLE IF NOT EXISTS film_genres(
 film_id INTEGER REFERENCES films (film_id) ON DELETE CASCADE,
-genre_id INTEGER REFERENCES genres (genre_id),
+genre_id INTEGER REFERENCES genres (genre_id) ON DELETE CASCADE,
 PRIMARY KEY(film_id,genre_id)
 );
 --
@@ -52,7 +52,7 @@ birthday DATE NOT NULL
 --Лайки
 CREATE TABLE IF NOT EXISTS likes(
 film_id INTEGER REFERENCES films (film_id) ON DELETE CASCADE,
-user_id INTEGER REFERENCES users (user_id),
+user_id INTEGER REFERENCES users (user_id) ON DELETE CASCADE,
 PRIMARY KEY(film_id,user_id)
 );
 --
@@ -73,7 +73,7 @@ director_name VARCHAR NOT NULL
 
 CREATE TABLE IF NOT EXISTS films_directors(
 film_id INTEGER REFERENCES films (film_id) ON DELETE CASCADE,
-director_id INTEGER REFERENCES directors (director_id),
+director_id INTEGER REFERENCES directors (director_id) ON DELETE CASCADE,
 PRIMARY KEY(film_id, director_id)
 );
 --
