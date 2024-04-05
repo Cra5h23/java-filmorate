@@ -51,7 +51,7 @@ public class FilmUtil {
                 .map(s -> s.split(";"))
                 .filter(s -> s.length == 2)
                 .map(s -> new Genre(Integer.parseInt(s[0]), s[1]))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private static List<Director> makeDirectorList(ResultSet rs) throws SQLException {

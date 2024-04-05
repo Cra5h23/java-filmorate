@@ -52,7 +52,7 @@ public class FilmDbStorage implements FilmStorage {
         simpleJdbcInsertToGenres.executeBatch(FilmUtil.toGenreMap(film));
         simpleJdbcInsertToDirectors.executeBatch(FilmUtil.toDirectorMap(film));
 
-        return film;
+        return getFilmById(film.getId()).get();
     }
 
 
@@ -86,8 +86,8 @@ public class FilmDbStorage implements FilmStorage {
                 "LEFT JOIN FILMS_DIRECTORS fd ON fd.FILM_ID  = f.FILM_ID\n" +
                 "LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = fd.DIRECTOR_ID\n" +
                 "WHERE f.FILM_ID = ?\n" +
-                "GROUP BY f.FILM_ID\n" +
-                "ORDER BY genres DESC";
+                "GROUP BY f.FILM_ID\n" ;
+                //"ORDER BY genres DESC";
 
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, FilmUtil::makeFilm, id));
