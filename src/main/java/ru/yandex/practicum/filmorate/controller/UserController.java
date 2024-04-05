@@ -79,7 +79,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/friends")
-    public ResponseEntity<?> getUsersFriends(@PathVariable Integer userId) {
+    public ResponseEntity<?> getUserFriends(@PathVariable Integer userId) {
         log.info("GET /users/{}", userId);
         return ResponseEntity
                 .ok()
