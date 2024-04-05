@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.FilmSort;
 import ru.yandex.practicum.filmorate.dao.DirectorDao;
-import ru.yandex.practicum.filmorate.exeption.FilmLikeServiceException;
 import ru.yandex.practicum.filmorate.exeption.FilmServiceException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -90,9 +89,10 @@ public class FilmServiceImpl implements FilmService {
      */
     @Override
     public Collection<Film> getFilmsByDirector(Integer directorId, String sortBy) {
-        log.info("Запрошен списко всех фильмов для режиссёра с id {} и сортировкой по {}", directorId, sortBy);
+        log.info("Запрошен список всех фильмов для режиссёра с id {} и сортировкой по {}", directorId, sortBy);
         Optional<Director> byId = directorDao.findById(directorId);
-        byId.orElseThrow(() -> new FilmLikeServiceException(format("Режиссёра с id %d не существует", directorId)));
+        byId.orElseThrow(() -> new FilmServiceException(
+                format("Нельзя получить список фильмов для не существующего режиссёра с id %d", directorId)));
 
         switch (sortBy) {
             case "year":
