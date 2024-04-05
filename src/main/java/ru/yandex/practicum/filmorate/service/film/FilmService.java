@@ -50,5 +50,5 @@ public interface FilmService {
      * @param sortBy
      * @return
      */
-    Film getFilmsByDirector(Integer directorId, String sortBy);
+    Collection<Film> getFilmsByDirector(Integer directorId, String sortBy);
 }
