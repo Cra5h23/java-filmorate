@@ -33,7 +33,7 @@ public class DirectorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Director> getDirectorById(@PathVariable(required = false) Integer id) {
-        log.info("GET /directors0/{}", id);
+        log.info("GET /directors/{}", id);
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -42,7 +42,7 @@ public class DirectorController {
 
     @PostMapping
     public ResponseEntity<Director> createDirector(@Valid @RequestBody Director director) {
-        log.info("POST /directors");
+        log.info("POST /directors {}", director);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -51,7 +51,7 @@ public class DirectorController {
 
     @PutMapping
     public ResponseEntity<Director> updateDirector(@Valid @RequestBody Director director) {
-        log.info("PUT /directors");
+        log.info("PUT /directors {}", director);
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
