@@ -4,12 +4,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.FilmSort;
+import ru.yandex.practicum.filmorate.dao.DirectorDao;
+import ru.yandex.practicum.filmorate.exeption.FilmLikeServiceException;
 import ru.yandex.practicum.filmorate.exeption.FilmServiceException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import static java.lang.String.format;
 
@@ -19,6 +24,8 @@ import static java.lang.String.format;
 public class FilmServiceImpl implements FilmService {
     @Qualifier("filmDbStorage")
     private final FilmStorage filmStorage;
+
+    private final DirectorDao directorDao;
 
     /**
      * Метод получения списка всех фильмов
@@ -70,6 +77,7 @@ public class FilmServiceImpl implements FilmService {
     public String deleteFilmById(Integer filmId) {
         checkFilm(filmId, "удалить");
         filmStorage.deleteFilm(filmId);
+        log.info("Удалён фильм с id: {}", filmId);
         return format("Удалён фильм с id: %d", filmId);
     }
 
@@ -81,8 +89,19 @@ public class FilmServiceImpl implements FilmService {
      * @return
      */
     @Override
-    public Film getFilmsByDirector(Integer directorId, String sortBy) {
-        return null;
+    public Collection<Film> getFilmsByDirector(Integer directorId, String sortBy) {
+        log.info("Запрошен списко всех фильмов для режиссёра с id {} и сортировкой по {}", directorId, sortBy);
+        Optional<Director> byId = directorDao.findById(directorId);
+        byId.orElseThrow(() -> new FilmLikeServiceException(format("Режиссёра с id %d не существует", directorId)));
+
+        switch (sortBy) {
+            case "year":
+                return filmStorage.getSortedFilms(FilmSort.FILMS_BY_DIRECTOR_SORT_YEAR.getSql(), directorId);
+            case "likes":
+                return filmStorage.getSortedFilms(FilmSort.FILMS_BY_DIRECTOR_SORT_LIKES.getSql(), directorId);
+            default:
+                throw new IllegalStateException("Unexpected value: " + sortBy);
+        }
     }
 
     private Film checkFilm(Integer filmId, String s) {
