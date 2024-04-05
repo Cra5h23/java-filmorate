@@ -13,6 +13,9 @@ import ru.yandex.practicum.filmorate.util.Director.DirectorUtil;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author Nikolay Radzivon
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -38,6 +41,7 @@ public class DirectorDaoImpl implements DirectorDao {
     @Override
     public Optional<Director> findById(Integer id) {
         var sql = "select d.* from directors d where d.director_id = ?";
+        log.info("Получен запрос на получение из базы данных режиссёра с id {}", id);
 
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, DirectorUtil::makeDirector, id));
@@ -68,7 +72,7 @@ public class DirectorDaoImpl implements DirectorDao {
     @Override
     public Director update(Director director) {
         var sql = "update directors set director_name = ? where director_id = ?";
-
+        log.info("Создан запрос на обновление режиссёра {}", director);
         jdbcTemplate.update(sql, director.getName(), director.getId());
         return director;
     }
@@ -78,9 +82,8 @@ public class DirectorDaoImpl implements DirectorDao {
      */
     @Override
     public void delete(Integer id) {
-        var sql = "delete films_directors where director_id = ?;" +
-                "delete directors where director_id = ?;";
-
-        jdbcTemplate.update(sql, id, id);
+        var sql = "delete directors where director_id = ?;";
+        log.info("Создан запрос на удаление из базы данных режиссёра с id {}", id);
+        jdbcTemplate.update(sql, id);
     }
 }
