@@ -181,4 +181,52 @@ public class FilmDbStorage implements FilmStorage {
         return Map.of(rs.getInt("film_id"),
                 new Genre(rs.getInt("genre_id"), rs.getString("genre_name")));
     }
+
+    @Override
+    public Collection<Film> getCommonFilms(Integer userId, Integer friendId) {
+        String sql = "SELECT f.*, r.RATING_NAME  " +
+                "FROM FILMS f \n" +
+                "LEFT JOIN LIKES l ON f.FILM_ID = l.FILM_ID \n" +
+                "LEFT JOIN LIKES l2 ON f.FILM_ID =l2.FILM_ID \n" +
+                "LEFT JOIN LIKES l3 ON f.FILM_ID =l3.FILM_ID \n" +
+                "LEFT JOIN RATINGS r ON f.RATING_ID = r.RATING_ID \n" +
+                "WHERE l.USER_ID = ? AND L2.USER_ID = ?\n" +
+                "GROUP BY f.FILM_ID \n" +
+                "ORDER BY COUNT(L3.USER_ID) DESC ";
+        List<Film> films = new ArrayList<>();
+        final List<Map<Integer, Genre>> genreList = new ArrayList<>();
+
+        try {
+            var query = jdbcTemplate.query(sql, this::makeFilm, userId, friendId);
+            films.addAll(query);
+        } catch (EmptyResultDataAccessException e) {
+            return List.of();
+        }
+        var genreSql = "select fg.film_id,\n" +
+                "g.* \n" +
+                "from film_genres fg \n" +
+                "left join genres g on fg.genre_id=g.genre_id \n" +
+                "left join likes l on fg.film_id=l.film_id\n" +
+                "LEFT JOIN LIKES l2 ON fg.FILM_ID =l2.FILM_ID \n" +
+                "LEFT JOIN LIKES l3 ON fg.FILM_ID =l3.FILM_ID\n" +
+                "WHERE l.USER_ID = ? AND L2.USER_ID = ?\n" +
+                "GROUP BY fg.film_id, g.genre_id\n" +
+                "ORDER BY count(l3.user_id) DESC ";
+
+        try {
+            var query = jdbcTemplate.query(genreSql, this::makeGenreMap, userId, friendId);
+            genreList.addAll(query);
+        } catch (EmptyResultDataAccessException e) {
+            genreList.addAll(List.of());
+        }
+
+        films.forEach(f -> f.setGenres(
+                genreList.stream().filter(m -> m.containsKey(f.getId()))
+                        .map(o -> o.get(f.getId()))
+                        .collect(Collectors.toList()))
+        );
+
+        return films;
+    }
+
 }

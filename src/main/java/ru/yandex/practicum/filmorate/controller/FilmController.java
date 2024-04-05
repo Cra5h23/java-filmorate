@@ -89,4 +89,9 @@ public class FilmController {
         log.info("GET getListOfMostPopularFilms");
         return ResponseEntity.ok(filmLikeService.getMostPopularFilm(count));
     }
+    @GetMapping("/common")
+    public ResponseEntity<?> getCommonFriendFilms(@RequestParam Integer userId,@RequestParam Integer friendId) {
+        log.info("GET getCommonFriendFilms");
+        return ResponseEntity.ok(filmLikeService.getCommonFilms(userId,friendId));
+    }
 }

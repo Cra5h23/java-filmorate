@@ -7,12 +7,16 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.FilmSort;
 import ru.yandex.practicum.filmorate.dao.LikeDao;
 import ru.yandex.practicum.filmorate.exeption.FilmLikeServiceException;
+import ru.yandex.practicum.filmorate.exeption.UserServiceException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.film.FilmLikeService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
+
+import static java.lang.String.format;
 
 @Service
 @Slf4j
@@ -46,6 +50,15 @@ public class FilmLikeServiceDbImpl implements FilmLikeService {
     public Collection<Film> getMostPopularFilm(Integer count) {
         log.info("Запрошена коллекция самых популярных фильмов в колличестве {} фильмов", count);
         return filmStorage.getSortedFilms(FilmSort.POPULAR_FILMS_DESC, count);
+    }
+
+    @Override
+    public Collection<Film> getCommonFilms(Integer userId, Integer friendId) {
+        log.info("Запрошена коллекция общих с другом фильмов с сортировкой " +
+                "по их популярности для пользователя {} и его друга {}", userId, friendId);
+        checkUser(userId, "получить", "фильма");
+        checkUser(friendId, "получить", "фильма");
+        return filmStorage.getCommonFilms(userId, friendId);
     }
 
     private void checkFilm(Integer filmId, String... s) {
