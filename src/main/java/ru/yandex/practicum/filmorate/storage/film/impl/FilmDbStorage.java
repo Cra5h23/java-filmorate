@@ -86,7 +86,7 @@ public class FilmDbStorage implements FilmStorage {
                 "LEFT JOIN FILMS_DIRECTORS fd ON fd.FILM_ID  = f.FILM_ID\n" +
                 "LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = fd.DIRECTOR_ID\n" +
                 "WHERE f.FILM_ID = ?\n" +
-                "GROUP BY f.FILM_ID\n" ;
+                "GROUP BY f.FILM_ID\n";
 
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, FilmUtil::makeFilm, id));
