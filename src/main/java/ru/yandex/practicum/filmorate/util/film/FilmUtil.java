@@ -7,16 +7,14 @@ import ru.yandex.practicum.filmorate.model.Rating;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * @author Nikolay Radzivon
  */
 public class FilmUtil {
-    public Film makeFilm(ResultSet rs, int rowNum) throws SQLException {
+    public static Film makeFilm(ResultSet rs, int rowNum) throws SQLException {
         return Film.builder()
                 .id(rs.getInt("film_id"))
                 .name(rs.getString("name"))
@@ -27,7 +25,7 @@ public class FilmUtil {
                         new Rating(rs.getInt("rating_id"), rs.getString("rating_name"))
                         : new Rating())
                 .genres(makeGenreList(rs))
-                .director(makeDirectorList(rs))
+                .directors(makeDirectorList(rs))
                 .build();
     }
 
@@ -40,19 +38,48 @@ public class FilmUtil {
                 "rating_id", film.getMpa().getId());
     }
 
-    private List<Genre> makeGenreList(ResultSet rs) throws SQLException {
-        return Arrays.stream(rs.getString("genres").split(","))
+    private static Set<Genre> makeGenreList(ResultSet rs) throws SQLException {
+        String genres = null;
+
+        try {
+            genres = rs.getString("genres");
+        } catch (SQLException e) {
+            return Set.of();
+        }
+
+        return Arrays.stream(genres.substring(1, genres.length() - 1).split(", "))
                 .map(s -> s.split(";"))
                 .filter(s -> s.length == 2)
                 .map(s -> new Genre(Integer.parseInt(s[0]), s[1]))
+                .collect(Collectors.toSet());
+    }
+
+    private static List<Director> makeDirectorList(ResultSet rs) throws SQLException {
+        String directors = null;
+
+        try {
+            directors = rs.getString("directors");
+        } catch (SQLException e) {
+            return List.of();
+        }
+        return Arrays.stream(directors.substring(1, directors.length() - 1).split(", "))
+                .map(s -> s.split(";"))
+                .filter(s -> s.length == 2)
+                .map(s -> Director.builder().id(Integer.parseInt(s[0])).name(s[1]).build())
                 .collect(Collectors.toList());
     }
 
-    private List<Director> makeDirectorList(ResultSet rs) throws SQLException {
-        return Arrays.stream(rs.getString("directors").split(","))
-                .map(s-> s.split(";"))
-                .filter(s->s.length==2)
-                .map(s-> Director.builder().id(Integer.parseInt(s[0])).name(s[1]).build())
-                .collect(Collectors.toList());
+    public static Map[] toGenreMap(Film film) {
+        return film.getGenres().stream()
+                .map(genre -> Map.of("film_id", film.getId(), "genre_id", genre.getId()))
+                .collect(Collectors.toList())
+                .toArray(Map[]::new);
+    }
+
+    public static Map[] toDirectorMap(Film film) {
+        return film.getDirectors().stream()
+                .map(director -> Map.of("film_id", film.getId(), "director_id", director.getId()))
+                .collect(Collectors.toList())
+                .toArray(Map[]::new);
     }
 }
