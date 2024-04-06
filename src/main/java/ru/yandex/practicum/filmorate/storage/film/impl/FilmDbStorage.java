@@ -75,7 +75,7 @@ public class FilmDbStorage implements FilmStorage {
 
         film.setId((int) Objects.requireNonNull(keyHolder.getKey()));
 
-        film.getGenres().stream().distinct().forEach(g -> jdbcTemplate.update(s, film.getId(), g.getId()));
+        film.getGenres().stream().distinct().forEach(genre -> jdbcTemplate.update(s, keyHolder.getKey(), genre.getId()));
         return film;
     }
 
