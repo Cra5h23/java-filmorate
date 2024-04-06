@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service.review.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.EventDao;
 import ru.yandex.practicum.filmorate.dao.ReviewDao;
 import ru.yandex.practicum.filmorate.dao.ReviewRatingDao;
 import ru.yandex.practicum.filmorate.exeption.BadRequestException;
@@ -12,6 +13,7 @@ import ru.yandex.practicum.filmorate.model.ReviewRating;
 import ru.yandex.practicum.filmorate.service.review.ReviewService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +28,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final UserStorage userStorage;
 
     private final ReviewRatingDao reviewRatingDao;
+    private final EventDao eventDao;
 
     @Override
     public Review getReviewById(Integer id) {
@@ -46,6 +49,7 @@ public class ReviewServiceImpl implements ReviewService {
         checkExistsReviewByFilmIdAndUserId(review.getFilmId(), review.getUserId());
 
         Integer reviewId = reviewDao.create(review);
+        eventDao.createAddReviewEvent(review.getFilmId(), review.getUserId());
 
         return getReviewById(reviewId);
     }
@@ -56,14 +60,17 @@ public class ReviewServiceImpl implements ReviewService {
         checkExistsReviewById(id);
 
         reviewDao.update(review);
+        eventDao.createUpdateReviewEvent(review.getFilmId(),review.getUserId());
 
         return reviewDao.getById(id).orElse(null);
     }
 
     @Override
     public String deleteReviewById(Integer id) {
-        checkExistsReviewById(id);
+        Review review = checkExistsReviewById(id);
         reviewDao.deleteById(id);
+
+        eventDao.createDeleteReviewEvent(review.getFilmId(),review.getUserId());
 
         return String.format("Обзор с reviewId %d удалён", id);
     }
@@ -192,8 +199,8 @@ public class ReviewServiceImpl implements ReviewService {
                 String.format("Пользователя с userId %d не существует", id)));
     }
 
-    private void checkExistsReviewById(Integer id) {
-        reviewDao.getById(id).orElseThrow(() -> new NotFoundException(
+    private Review checkExistsReviewById(Integer id) {
+        return reviewDao.getById(id).orElseThrow(() -> new NotFoundException(
                 String.format("Отзыва с reviewId %d не существует", id)));
     }
 
