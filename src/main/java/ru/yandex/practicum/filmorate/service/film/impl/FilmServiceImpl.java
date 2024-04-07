@@ -102,6 +102,7 @@ public class FilmServiceImpl implements FilmService {
         log.info("Выполнен поиск фильма по запросу {} и параметру {}", query, by);
         return filmStorage.findFilms(query,by);
     }
+
     private Film checkFilm(Integer filmId, String s) {
         return filmStorage.getFilmById(filmId)
                 .orElseThrow(() -> new FilmServiceException(
