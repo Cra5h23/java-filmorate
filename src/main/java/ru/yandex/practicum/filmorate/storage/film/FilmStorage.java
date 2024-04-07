@@ -18,4 +18,6 @@ public interface FilmStorage {
     void deleteFilm(int id);
 
     Collection<Film> getSortedFilms(FilmSort sort, Object... param);
+
+    Collection<Film> findFilms(String query, String by);
 }
