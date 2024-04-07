@@ -103,7 +103,65 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> getSortedFilms(String sql, Object... param) {
-        return jdbcTemplate.query(sql, FilmUtil::makeFilm, param);
+    public Collection<Film> getSortedFilms(FilmSort sort, Object... param) {
+        var popularFilmDescSql = "SELECT " +
+                "f.*, \n" +
+                "r.rating_name, \n" +
+                "ARRAY_AGG(DISTINCT g.GENRE_ID || ';' || g.genre_name) genres,\n" +
+                "ARRAY_AGG(DISTINCT d.DIRECTOR_ID || ';' || d.DIRECTOR_NAME) directors\n" +
+                "FROM FILMS f\n" +
+                "LEFT JOIN ratings r on f.rating_id=r.rating_id \n" +
+                "LEFT JOIN LIKES l ON f.FILM_ID =l.FILM_ID \n" +
+                "LEFT JOIN FILM_GENRES fg ON f.FILM_ID = fg.FILM_ID\n" +
+                "LEFT JOIN GENRES g ON fg.GENRE_ID = g.GENRE_ID\n" +
+                "LEFT JOIN FILMS_DIRECTORS fd ON fd.FILM_ID  = f.FILM_ID\n" +
+                "LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = fd.DIRECTOR_ID\n" +
+                "GROUP BY f.FILM_ID \n" +
+                "ORDER BY count(l.user_id) DESC\n" +
+                "limit ?";
+
+        var filmsByDirectorSortYearSql = "SELECT f.*,\n" +
+                "r.RATING_NAME,\n" +
+                "ARRAY_AGG(DISTINCT g.GENRE_ID || ';' || g.genre_name) genres,\n" +
+                "ARRAY_AGG(DISTINCT d.DIRECTOR_ID || ';' || d.DIRECTOR_NAME) directors\n" +
+                "FROM FILMS f\n" +
+                "LEFT JOIN RATINGS r ON f.RATING_ID = r.RATING_ID\n" +
+                "LEFT JOIN FILM_GENRES fg ON f.FILM_ID = fg.FILM_ID\n" +
+                "LEFT JOIN GENRES g ON fg.GENRE_ID = g.GENRE_ID\n" +
+                "LEFT JOIN FILMS_DIRECTORS fd ON fd.FILM_ID  = f.FILM_ID\n" +
+                "LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = fd.DIRECTOR_ID\n" +
+                "WHERE d.DIRECTOR_ID = ?\n" +
+                "GROUP BY d.DIRECTOR_ID, F.FILM_ID\n" +
+                "ORDER BY f.RELEASE_DATE \n";
+
+        var filmsByDirectorSortLikesSql = "SELECT\n" +
+                "f.*,\n" +
+                "r.RATING_NAME,\n" +
+                "ARRAY_AGG(DISTINCT g.GENRE_ID || ';' || g.genre_name) genres,\n" +
+                "ARRAY_AGG(DISTINCT d.DIRECTOR_ID || ';' || d.DIRECTOR_NAME) directors\n" +
+                "FROM FILMS f\n" +
+                "LEFT JOIN RATINGS r ON f.RATING_ID = r.RATING_ID\n" +
+                "LEFT JOIN FILM_GENRES fg ON f.FILM_ID = fg.FILM_ID\n" +
+                "LEFT JOIN GENRES g ON fg.GENRE_ID = g.GENRE_ID\n" +
+                "LEFT JOIN FILMS_DIRECTORS fd ON fd.FILM_ID  = f.FILM_ID\n" +
+                "LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = fd.DIRECTOR_ID\n" +
+                "LEFT JOIN LIKES l ON l.FILM_ID = f.FILM_ID\n" +
+                "WHERE d.DIRECTOR_ID = ?\n" +
+                "GROUP BY d.DIRECTOR_ID , F.FILM_ID\n" +
+                "ORDER BY COUNT(DISTINCT l.USER_ID) DESC\n";
+
+        switch (sort) {
+            case POPULAR_FILMS_DESC:
+                return jdbcTemplate.query(popularFilmDescSql, FilmUtil::makeFilm, param);
+            case FILMS_BY_DIRECTOR:
+                if (param[1].equals("year")) {
+                    return jdbcTemplate.query(filmsByDirectorSortYearSql, FilmUtil::makeFilm, param[0]);
+                } else if (param[1].equals("likes")) {
+                    return jdbcTemplate.query(filmsByDirectorSortLikesSql, FilmUtil::makeFilm, param[0]);
+                }
+                return List.of();
+            default:
+                return List.of();
+        }
     }
 }
