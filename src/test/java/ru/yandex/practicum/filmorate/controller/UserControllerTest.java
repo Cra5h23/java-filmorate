@@ -12,7 +12,11 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.exeption.UserFriendServiceException;
 import ru.yandex.practicum.filmorate.exeption.UserServiceException;
+import ru.yandex.practicum.filmorate.model.Event;
+import ru.yandex.practicum.filmorate.model.EventType;
+import ru.yandex.practicum.filmorate.model.OperationType;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.film.EventService;
 import ru.yandex.practicum.filmorate.service.user.UserFriendService;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 
@@ -33,6 +37,8 @@ class UserControllerTest {
 
     @MockBean
     UserService userService;
+    @MockBean
+    EventService eventService;
 
     @MockBean
     @Qualifier("userFriendServiceDbImpl")
@@ -640,6 +646,32 @@ class UserControllerTest {
         mockMvc.perform(requestBuilder).andExpectAll(
                 status().isOk()
                 //content().string("Пользователь с id: 1 удалил из друзей пользователя с id: 2")
+        );
+    }
+    @Test
+    @DisplayName("GET /users/1/feed возвращает ленту событий пользователя 1")
+    void getUserFeed() throws Exception {
+        var requestBuilder = get("/users/1/feed");
+
+        Mockito.when(eventService.getUserFeed(1)).thenReturn(List.of(
+                Event.builder().eventId(1)
+                        .timeStamp(1712493175L)
+                        .userId(1)
+                        .eventType(EventType.FRIEND)
+                        .operation(OperationType.ADD)
+                        .entityId(2)
+                        .build()
+        ));
+
+        mockMvc.perform(requestBuilder).andExpectAll(
+                status().isOk(),
+                content().contentType(APPLICATION_JSON),
+                content().json("[{\"eventId\":1," +
+                        "\"timeStamp\":1712493175," +
+                        "\"userId\":1," +
+                        "\"eventType\":\"FRIEND\"," +
+                        "\"operation\":\"ADD\"," +
+                        "\"entityId\":2}]")
         );
     }
 }

@@ -9,9 +9,10 @@ import ru.yandex.practicum.filmorate.dao.EventDao;
 import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.OperationType;
-import ru.yandex.practicum.filmorate.util.EventUtil;
+import ru.yandex.practicum.filmorate.util.event.EventUtil;
 
 import java.sql.Timestamp;
+import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import java.util.Map;
 @Component
 public class EventDaoImpl implements EventDao {
     private final JdbcTemplate jdbcTemplate;
+    private final Clock clock;
 
     @Override
     public List<Event> getUserFeed(int userId) {
@@ -67,7 +69,7 @@ public class EventDaoImpl implements EventDao {
         SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate).withTableName("EVENTS")
                 .usingGeneratedKeyColumns("EVENT_ID");
         insert.execute(Map.of(
-                "time_stamp", Timestamp.from(Instant.now()),
+                "time_stamp", Timestamp.from(Instant.now(clock)),
                 "user_id", userId,
                 "event_type", eventType.name(),
                 "operation", operation.name(),

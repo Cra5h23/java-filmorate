@@ -1,13 +1,11 @@
-package ru.yandex.practicum.filmorate.util;
+package ru.yandex.practicum.filmorate.util.event;
 
 import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.OperationType;
-import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
 
 public class EventUtil {
 
@@ -20,13 +18,5 @@ public class EventUtil {
                 .operation(OperationType.valueOf(rs.getString("operation")))
                 .entityId(rs.getInt("entity_id"))
                 .build();
-    }
-
-    public static Map<String, Object> toMap(User user) {
-        return Map.of("user_id", user.getId(),
-                "email", user.getEmail(),
-                "login", user.getLogin(),
-                "name", user.getName(),
-                "birthday", user.getBirthday());
     }
 }

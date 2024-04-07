@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.film.EventService;
 import ru.yandex.practicum.filmorate.service.user.UserFriendService;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 
@@ -26,6 +27,7 @@ public class UserController {
     private final UserService userService;
 
     private final UserFriendService userFriendService;
+    private final EventService eventService;
 
     @GetMapping
     public ResponseEntity<Collection<User>> getAllUsers() {
@@ -107,5 +109,12 @@ public class UserController {
             @PathVariable Integer userId, @PathVariable Integer friendId, @PathVariable boolean confirm) {
         log.info("PUT /users/{}/confirmation/{}/{}", userId, friendId, confirm);
         return ResponseEntity.ok(userFriendService.confirmFriend(userId, friendId, confirm));
+    }
+
+    @GetMapping("/{userId}/feed")
+    public ResponseEntity<?> getUserFeed(@PathVariable Integer userId) {
+        log.info("GET /users/{}/feed", userId);
+        return ResponseEntity
+                .ok(eventService.getUserFeed(userId));
     }
 }
