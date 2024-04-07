@@ -147,7 +147,7 @@ class FilmDbStorageTest {
         likeDao.saveLike(film.getId(), 3);
         likeDao.saveLike(film2.getId(), 2);
 
-        Collection<Film> sortedFilms = filmDbStorage.getSortedFilms(FilmSort.POPULAR_FILMS_DESC.getSql(), 10);
+        Collection<Film> sortedFilms = filmDbStorage.getSortedFilms(FilmSort.POPULAR_FILMS_DESC, 10);
 
         Assertions.assertThat(sortedFilms)
                 .isNotNull()
