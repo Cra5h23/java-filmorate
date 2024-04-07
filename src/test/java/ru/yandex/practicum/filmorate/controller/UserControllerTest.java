@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.exeption.UserFriendServiceException;
 import ru.yandex.practicum.filmorate.exeption.UserServiceException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.service.user.UserFriendService;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 
@@ -33,6 +34,9 @@ class UserControllerTest {
 
     @MockBean
     UserService userService;
+
+    @MockBean
+    FilmService filmService;
 
     @MockBean
     @Qualifier("userFriendServiceDbImpl")

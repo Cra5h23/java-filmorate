@@ -43,4 +43,9 @@ public interface FilmService {
      * @return Сообщение об успешном удалении фильма
      */
     String deleteFilmById(Integer filmId);
+
+    /**
+     * Возвращает список фильмов рекомендованных пользователю.
+     */
+    Collection<Film> getRecommendationsByUserId(Integer userId);
 }

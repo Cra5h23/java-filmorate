@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.service.user.UserFriendService;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 
@@ -25,6 +27,8 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+
+    private final FilmService filmService;
 
     @Qualifier("userFriendServiceDbImpl")
     private final UserFriendService userFriendService;
@@ -108,5 +112,13 @@ public class UserController {
     public ResponseEntity<?> confirmUserFriend(
             @PathVariable Integer userId, @PathVariable Integer friendId, @PathVariable boolean confirm) {
         return ResponseEntity.ok(userFriendService.confirmFriend(userId, friendId, confirm));
+    }
+
+    @GetMapping("{userId}/recommendations")
+    public ResponseEntity<Collection<Film>> getRecommendationsByUserId(@PathVariable Integer userId) {
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(filmService.getRecommendationsByUserId(userId));
     }
 }

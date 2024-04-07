@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.film.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 @Component
 @Primary
 @RequiredArgsConstructor
+@Slf4j
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
 
@@ -150,6 +152,47 @@ public class FilmDbStorage implements FilmStorage {
 
         try {
             var query = jdbcTemplate.query(genreSql, this::makeGenreMap, count);
+            genreList.addAll(query);
+        } catch (EmptyResultDataAccessException e) {
+            genreList.addAll(List.of());
+        }
+
+        films.forEach(f -> f.setGenres(
+                genreList.stream().filter(m -> m.containsKey(f.getId()))
+                        .map(o -> o.get(f.getId()))
+                        .collect(Collectors.toList()))
+        );
+
+        return films;
+    }
+
+    @Override
+    public Collection<Film> getFilmsByIds(Set<Integer> filmIds) {
+        String inSql = String.join(",", Collections.nCopies(filmIds.size(), "?"));
+        String filmsSql = String.format(
+                "select f.*, r.rating_name from films f left join ratings r on f.rating_id=r.rating_id " +
+                        "where film_id in (%s)",
+                inSql
+        );
+        String genreSql = String.format(
+                "select fg.film_id, g.* from film_genres fg left join genres g on fg.genre_id=g.genre_id " +
+                        "where film_id in (%s)",
+                inSql
+        );
+        List<Film> films = new ArrayList<>();
+        final List<Map<Integer, Genre>> genreList = new ArrayList<>();
+
+        try {
+            log.info("Выполняется запрос к БД: {} Параметры: {}", filmsSql, filmIds.toArray());
+            var query = jdbcTemplate.query(filmsSql, this::makeFilm, filmIds.toArray());
+            films.addAll(query);
+        } catch (EmptyResultDataAccessException e) {
+            return List.of();
+        }
+
+        try {
+            log.info("Выполняется запрос к БД: {} Параметры: {}", genreSql, filmIds.toArray());
+            var query = jdbcTemplate.query(genreSql, this::makeGenreMap, filmIds.toArray());
             genreList.addAll(query);
         } catch (EmptyResultDataAccessException e) {
             genreList.addAll(List.of());
