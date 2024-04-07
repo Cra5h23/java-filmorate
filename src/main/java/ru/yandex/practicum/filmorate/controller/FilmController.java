@@ -96,4 +96,11 @@ public class FilmController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(filmService.getFilmsByDirector(directorId, sortBy));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<Collection<Film>> searchFilms(@RequestParam(name = "query", required = false) String query,
+                                                        @RequestParam(name = "by", required = false) String by) {
+        log.info("GET /films/search?query={}&by={}");
+        return ResponseEntity.ok(filmService.findFilms(query, by));
+    }
 }
