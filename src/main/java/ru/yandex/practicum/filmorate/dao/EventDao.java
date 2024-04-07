@@ -11,11 +11,11 @@ public interface EventDao {
 
     void createDeleteFilmLikeEvent(Integer filmId, Integer userId);
 
-    void createAddReviewEvent(Integer filmId, Integer userId);
+    void createAddReviewEvent(Integer reviewId, Integer userId);
 
-    void createUpdateReviewEvent(Integer filmId, Integer userId);
+    void createUpdateReviewEvent(Integer reviewId, Integer userId);
 
-    void createDeleteReviewEvent(Integer filmId, Integer userId);
+    void createDeleteReviewEvent(Integer reviewId, Integer userId);
 
     void createAddUserFriendEvent(Integer userId, Integer friendId);
 

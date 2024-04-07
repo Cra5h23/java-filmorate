@@ -49,7 +49,7 @@ public class ReviewServiceImpl implements ReviewService {
         checkExistsReviewByFilmIdAndUserId(review.getFilmId(), review.getUserId());
 
         Integer reviewId = reviewDao.create(review);
-        eventDao.createAddReviewEvent(review.getFilmId(), review.getUserId());
+        eventDao.createAddReviewEvent(reviewId, review.getUserId());
 
         return getReviewById(reviewId);
     }
@@ -60,7 +60,7 @@ public class ReviewServiceImpl implements ReviewService {
         Review dbReview = checkExistsReviewById(id);
 
         reviewDao.update(review);
-        eventDao.createUpdateReviewEvent(dbReview.getFilmId(),dbReview.getUserId());
+        eventDao.createUpdateReviewEvent(id,dbReview.getUserId());
 
         return reviewDao.getById(id).orElse(null);
     }
@@ -70,7 +70,7 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = checkExistsReviewById(id);
         reviewDao.deleteById(id);
 
-        eventDao.createDeleteReviewEvent(review.getFilmId(),review.getUserId());
+        eventDao.createDeleteReviewEvent(id,review.getUserId());
 
         return String.format("Обзор с reviewId %d удалён", id);
     }

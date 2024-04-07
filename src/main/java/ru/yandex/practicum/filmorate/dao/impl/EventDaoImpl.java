@@ -42,18 +42,18 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
-    public void createAddReviewEvent(Integer filmId, Integer userId) {
-        saveEvent(userId, EventType.REVIEW, OperationType.ADD, filmId);
+    public void createAddReviewEvent(Integer reviewId, Integer userId) {
+        saveEvent(userId, EventType.REVIEW, OperationType.ADD, reviewId);
     }
 
     @Override
-    public void createUpdateReviewEvent(Integer filmId, Integer userId) {
-        saveEvent(userId, EventType.REVIEW, OperationType.UPDATE, filmId);
+    public void createUpdateReviewEvent(Integer reviewId, Integer userId) {
+        saveEvent(userId, EventType.REVIEW, OperationType.UPDATE, reviewId);
     }
 
     @Override
-    public void createDeleteReviewEvent(Integer filmId, Integer userId) {
-        saveEvent(userId, EventType.REVIEW, OperationType.REMOVE, filmId);
+    public void createDeleteReviewEvent(Integer reviewId, Integer userId) {
+        saveEvent(userId, EventType.REVIEW, OperationType.REMOVE, reviewId);
     }
 
     @Override
