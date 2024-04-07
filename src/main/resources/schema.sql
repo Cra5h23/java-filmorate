@@ -59,8 +59,8 @@ PRIMARY KEY(film_id,user_id)
 
 --Друзья
 CREATE TABLE IF NOT EXISTS friends(
-user_id INTEGER REFERENCES users (user_id) ,
-friend_id INTEGER REFERENCES users (user_id),
+user_id INTEGER REFERENCES users (user_id) ON DELETE CASCADE,
+friend_id INTEGER REFERENCES users (user_id) ON DELETE CASCADE,
 status boolean DEFAULT FALSE NOT NULL
 );
 --
