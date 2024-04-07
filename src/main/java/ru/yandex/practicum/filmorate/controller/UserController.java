@@ -113,7 +113,7 @@ public class UserController {
 
     @GetMapping("/{userId}/feed")
     public ResponseEntity<?> getUserFeed(@PathVariable Integer userId) {
-        log.info("GET /users/{}/feed", userId);
+        log.info("/GET /users/{}/feed", userId);
         return ResponseEntity
                 .ok(eventService.getUserFeed(userId));
     }
