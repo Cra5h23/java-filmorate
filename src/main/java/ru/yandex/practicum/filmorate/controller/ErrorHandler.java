@@ -110,4 +110,24 @@ public class ErrorHandler {
                 .body(Map.of("timestamp", LocalDateTime.now().toString(),
                         "Ошибка работы с режиссёрами", e.getMessage()));
     }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handlerBadRequestException(BadRequestException e) {
+        log.warn("Ошибка 400: {}", e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("timestamp", LocalDateTime.now().toString(),
+                        "error", e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handlerNotFoundException(NotFoundException e) {
+        log.warn("Ошибка 404: {}", e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("timestamp", LocalDateTime.now().toString(),
+                        "error", e.getMessage()));
+    }
 }
