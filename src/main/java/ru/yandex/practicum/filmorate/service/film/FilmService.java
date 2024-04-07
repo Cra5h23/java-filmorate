@@ -51,4 +51,9 @@ public interface FilmService {
      * @return
      */
     Collection<Film> getFilmsByDirector(Integer directorId, String sortBy);
+
+    /**
+     * Возвращает список фильмов рекомендованных пользователю.
+     */
+    Collection<Film> getRecommendationsByUserId(Integer userId);
 }
