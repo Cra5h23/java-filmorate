@@ -25,9 +25,9 @@ public class EventServiceImpl implements EventService {
         return eventDao.getUserFeed(userId);
     }
 
-    public User checkUser(Integer userId) {
+    private User checkUser(Integer userId) {
         return userStorage.getUserById(userId)
                 .orElseThrow(() -> new UserServiceException(
-                        format("Попытка запросить пользователя с несуществующим id: %d", userId)));
+                        format("Попытка запросить ленту пользователя с несуществующим id: %d", userId)));
     }
 }
