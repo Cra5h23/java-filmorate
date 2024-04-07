@@ -57,10 +57,10 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Review updateReview(Review review) {
         Integer id = review.getReviewId();
-        checkExistsReviewById(id);
+        Review dbReview = checkExistsReviewById(id);
 
         reviewDao.update(review);
-        eventDao.createUpdateReviewEvent(review.getFilmId(),review.getUserId());
+        eventDao.createUpdateReviewEvent(dbReview.getFilmId(),dbReview.getUserId());
 
         return reviewDao.getById(id).orElse(null);
     }
