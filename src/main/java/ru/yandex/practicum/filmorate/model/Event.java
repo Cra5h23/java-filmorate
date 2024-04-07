@@ -8,7 +8,7 @@ import lombok.Data;
 
 public class Event {
     private Integer eventId;
-    private Long timeStamp;
+    private Long timestamp;
     private Integer userId;
     private EventType eventType;
     private OperationType operation;

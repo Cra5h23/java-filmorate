@@ -656,7 +656,7 @@ class UserControllerTest {
 
         Mockito.when(eventService.getUserFeed(1)).thenReturn(List.of(
                 Event.builder().eventId(1)
-                        .timeStamp(1712493175L)
+                        .timestamp(1712493175L)
                         .userId(1)
                         .eventType(EventType.FRIEND)
                         .operation(OperationType.ADD)

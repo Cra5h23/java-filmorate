@@ -26,7 +26,8 @@ public class EventDaoImpl implements EventDao {
 
     @Override
     public List<Event> getUserFeed(int userId) {
-        String sql = "SELECT * FROM EVENTS WHERE user_id = ?";
+        String sql = "SELECT * FROM EVENTS WHERE user_id = ?" +
+                " ORDER BY time_stamp";
         return jdbcTemplate.query(sql, EventUtil::makeEvent, userId);
     }
 
