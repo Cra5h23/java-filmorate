@@ -648,6 +648,7 @@ class UserControllerTest {
                 //content().string("Пользователь с id: 1 удалил из друзей пользователя с id: 2")
         );
     }
+
     @Test
     @DisplayName("GET /users/1/feed возвращает ленту событий пользователя 1")
     void getUserFeed() throws Exception {
