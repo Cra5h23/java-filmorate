@@ -4,12 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.FilmSort;
+import ru.yandex.practicum.filmorate.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.exeption.FilmServiceException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import static java.lang.String.format;
 
@@ -19,6 +23,8 @@ import static java.lang.String.format;
 public class FilmServiceImpl implements FilmService {
     @Qualifier("filmDbStorage")
     private final FilmStorage filmStorage;
+
+    private final DirectorDao directorDao;
 
     /**
      * Метод получения списка всех фильмов
@@ -70,7 +76,25 @@ public class FilmServiceImpl implements FilmService {
     public String deleteFilmById(Integer filmId) {
         checkFilm(filmId, "удалить");
         filmStorage.deleteFilm(filmId);
+        log.info("Удалён фильм с id: {}", filmId);
         return format("Удалён фильм с id: %d", filmId);
+    }
+
+    /**
+     * Метод получения списка всех фильмов заданного режиссёра
+     *
+     * @param directorId
+     * @param sortBy
+     * @return
+     */
+    @Override
+    public Collection<Film> getFilmsByDirector(Integer directorId, String sortBy) {
+        log.info("Запрошен список всех фильмов для режиссёра с id {} и сортировкой по {}", directorId, sortBy);
+        Optional<Director> byId = directorDao.findById(directorId);
+        byId.orElseThrow(() -> new FilmServiceException(
+                format("Нельзя получить список фильмов для не существующего режиссёра с id %d", directorId)));
+
+        return filmStorage.getSortedFilms(FilmSort.FILMS_BY_DIRECTOR,directorId, sortBy);
     }
 
     private Film checkFilm(Integer filmId, String s) {

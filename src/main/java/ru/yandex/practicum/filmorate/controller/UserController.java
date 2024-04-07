@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,12 +25,11 @@ import java.util.Collection;
 public class UserController {
     private final UserService userService;
 
-    @Qualifier("userFriendServiceDbImpl")
     private final UserFriendService userFriendService;
 
     @GetMapping
     public ResponseEntity<Collection<User>> getAllUsers() {
-        log.info("/GET getAllUsers");
+        log.info("GET /users");
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -40,7 +38,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> addNewUser(@Valid @RequestBody User user) {
-        log.info("/POST addNewUser {}", user);
+        log.info("POST /users User {}", user);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -49,7 +47,7 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
-        log.info("PUT updateUser {}", user);
+        log.info("PUT /users/ User {}", user);
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -59,14 +57,14 @@ public class UserController {
     @PutMapping("/{userId}/friends/{friendId}")
     public ResponseEntity<?> addUserToFriends(
             @PathVariable Integer userId, @PathVariable Integer friendId) {
-        log.info("PUT addUserToFriends {} друга {}", userId, friendId);
+        log.info("PUT /users/{}/friends/{}", userId, friendId);
         userFriendService.addingUserAsFriend(userId, friendId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable(required = false) Integer userId) {
-        log.info("GET getUserById {}", userId);
+        log.info("GET /users/{}", userId);
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -76,13 +74,13 @@ public class UserController {
     @DeleteMapping("/{userId}/friends/{friendId}")
     public ResponseEntity<?> deleteFromUserFriends(
             @PathVariable Integer userId, @PathVariable Integer friendId) {
-        log.info("DELETE deleteFromUserFriends user {} friend {}", userId, friendId);
+        log.info("DELETE /users/{}/friends/{}", userId, friendId);
         return ResponseEntity.ok(userFriendService.deletingFromUserFriends(userId, friendId));
     }
 
     @GetMapping("/{userId}/friends")
-    public ResponseEntity<?> getUsersFriends(@PathVariable Integer userId) {
-        log.info("GET getUsersFriends for user id {}", userId);
+    public ResponseEntity<?> getUserFriends(@PathVariable Integer userId) {
+        log.info("GET /users/{}", userId);
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -92,7 +90,7 @@ public class UserController {
     @GetMapping("/{userId}/friends/common/{otherId}")
     public ResponseEntity<?> getUsersCommonFriends(
             @PathVariable Integer userId, @PathVariable Integer otherId) {
-        log.info("GET getUsersCommonFriends for user {} otherUser {}", userId, otherId);
+        log.info("GET /users/{}/friends/common/{}", userId, otherId);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(userFriendService.getListOfCommonFriends(userId, otherId));
@@ -100,13 +98,14 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable(required = false) int userId) {
-        log.info("DELETE deleteUser {}", userId);
+        log.info("DELETE /users/{}", userId);
         return ResponseEntity.ok(userService.deleteUserById(userId));
     }
 
     @PutMapping("/{userId}/confirmation/{friendId}/{confirm}")
     public ResponseEntity<?> confirmUserFriend(
             @PathVariable Integer userId, @PathVariable Integer friendId, @PathVariable boolean confirm) {
+        log.info("PUT /users/{}/confirmation/{}/{}", userId, friendId, confirm);
         return ResponseEntity.ok(userFriendService.confirmFriend(userId, friendId, confirm));
     }
 }

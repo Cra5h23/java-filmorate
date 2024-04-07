@@ -43,4 +43,12 @@ public interface FilmService {
      * @return Сообщение об успешном удалении фильма
      */
     String deleteFilmById(Integer filmId);
+
+    /**
+     * Метод получения списка всех фильмов заданного режиссёра
+     * @param directorId
+     * @param sortBy
+     * @return
+     */
+    Collection<Film> getFilmsByDirector(Integer directorId, String sortBy);
 }

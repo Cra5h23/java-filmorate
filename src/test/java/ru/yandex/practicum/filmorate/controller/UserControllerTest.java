@@ -415,7 +415,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("GET /users/1/friends возвращает список друзей для пользователя с id 1")
-    void getUsersFriendsTest_ReturnListFriends() throws Exception {
+    void getUserFriendsTest_ReturnListFriends() throws Exception {
         var requestBuilder = get("/users/1/friends");
 
         Mockito.when(userFriendService.getUserFriends(1)).thenReturn(List.of(
@@ -453,7 +453,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("GET /users/1/friends не возвращает список друзей для несуществующего пользователя с id 1")
-    void getUsersFriendsTest_User1NotExists() throws Exception {
+    void getUserFriendsTest_User1NotExists() throws Exception {
         var requestBuilder = get("/users/1/friends");
 
         Mockito.when(userFriendService.getUserFriends(1))

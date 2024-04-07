@@ -83,7 +83,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<?> handlerGenreServiceException(GenreServiceException e) {
-        log.warn("Ошибка работы с жанрами:" + e.getMessage());
+        log.warn("Ошибка работы с жанрами:" + e.fillInStackTrace());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -93,12 +93,22 @@ public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<?> handlerRatingServiceException(RatingServiceException e) {
-        log.warn("Ошибка работы с рейтингами:" + e.getMessage());
+        log.warn("Ошибка работы с рейтингами:" + e.fillInStackTrace());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("timestamp", LocalDateTime.now().toString(),
                         "Ошибка работы с рейтингами", e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handlerDirectorDaoException(DirectorServiceException e) {
+        log.warn("Ошибка работы с режиссёрами: " + e.fillInStackTrace());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("timestamp", LocalDateTime.now().toString(),
+                        "Ошибка работы с режиссёрами", e.getMessage()));
     }
 
     @ExceptionHandler

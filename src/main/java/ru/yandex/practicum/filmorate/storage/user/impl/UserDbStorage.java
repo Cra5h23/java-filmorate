@@ -6,7 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.util.UserUtil;
+import ru.yandex.practicum.filmorate.util.user.UserUtil;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -58,9 +58,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void deleteUser(int id) {
-        var sql = "delete from friends where user_id=?;" +
-                "delete from likes where user_id=?;" +
-                "delete from users where user_id=?;";
-        jdbcTemplate.update(sql, id, id, id);
+        var sql = "delete from users where user_id=?;";
+        jdbcTemplate.update(sql, id);
     }
 }
