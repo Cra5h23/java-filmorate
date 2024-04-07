@@ -94,14 +94,7 @@ public class FilmServiceImpl implements FilmService {
         byId.orElseThrow(() -> new FilmServiceException(
                 format("Нельзя получить список фильмов для не существующего режиссёра с id %d", directorId)));
 
-        switch (sortBy) {
-            case "year":
-                return filmStorage.getSortedFilms(FilmSort.FILMS_BY_DIRECTOR_SORT_YEAR.getSql(), directorId);
-            case "likes":
-                return filmStorage.getSortedFilms(FilmSort.FILMS_BY_DIRECTOR_SORT_LIKES.getSql(), directorId);
-            default:
-                throw new IllegalStateException("Unexpected value: " + sortBy);
-        }
+        return filmStorage.getSortedFilms(FilmSort.FILMS_BY_DIRECTOR,directorId, sortBy);
     }
 
     private Film checkFilm(Integer filmId, String s) {
