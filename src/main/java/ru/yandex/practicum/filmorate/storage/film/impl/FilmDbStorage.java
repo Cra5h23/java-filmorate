@@ -5,13 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.FilmSort;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.util.film.FilmUtil;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -55,18 +59,25 @@ public class FilmDbStorage implements FilmStorage {
         return getFilmById(film.getId()).get();
     }
 
-
     @Override
     public Film updateFilm(Film film) {
-        var sql = "update films set name=?, description=?, release_date=?, duration=?, rating_id=? where film_id=?;" +
-                "delete from film_genres where film_id=?;" +
-                "delete from films_directors where film_id=?;";
+        var sql = "update films " +
+                "set " +
+                "name = :name, " +
+                "description = :description, " +
+                "release_date = :release_date, " +
+                "duration= :duration, " +
+                "rating_id = :rating_id " +
+                "where film_id = :film_id;" +
+                "delete from film_genres where film_id = :film_id;" +
+                "delete from films_directors where film_id = :film_id;";
+        var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
         var simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("film_genres");
-        var simpleJdbcInsert1 = new SimpleJdbcInsert(jdbcTemplate).withTableName("films_directors");
+        var simpleJdbcInsert1 = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("films_directors");
 
-        jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(),
-                film.getDuration(), film.getMpa().getId(), film.getId(), film.getId(), film.getId());
+        namedParameterJdbcTemplate.update(sql, FilmUtil.toMap(film));
         simpleJdbcInsert.executeBatch(FilmUtil.toGenreMap(film));
         simpleJdbcInsert1.executeBatch(FilmUtil.toDirectorMap(film));
 
@@ -75,6 +86,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Optional<Film> getFilmById(int id) {
+        var param = new MapSqlParameterSource().addValue("film_id", id);
+        var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
         var sql = "SELECT f.*,\n" +
                 "r.RATING_NAME,\n" +
                 "ARRAY_AGG(DISTINCT g.GENRE_ID || ';' || g.genre_name) genres,\n" +
@@ -85,11 +98,11 @@ public class FilmDbStorage implements FilmStorage {
                 "LEFT JOIN GENRES g ON fg.GENRE_ID = g.GENRE_ID\n" +
                 "LEFT JOIN FILMS_DIRECTORS fd ON fd.FILM_ID  = f.FILM_ID\n" +
                 "LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = fd.DIRECTOR_ID\n" +
-                "WHERE f.FILM_ID = ?\n" +
+                "WHERE f.FILM_ID = :film_id\n" +
                 "GROUP BY f.FILM_ID\n";
 
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, FilmUtil::makeFilm, id));
+            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, param, FilmUtil::makeFilm));
         } catch (DataAccessException e) {
             return Optional.empty();
         }
@@ -97,9 +110,11 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void deleteFilm(int id) {
-        var sql = "delete from films where film_id = ?";
+        var param = new MapSqlParameterSource().addValue("film_id", id);
+        var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        var sql = "delete from films where film_id = :film_id";
 
-        jdbcTemplate.update(sql, id);
+        namedParameterJdbcTemplate.update(sql, param);
     }
 
     @Override
