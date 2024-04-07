@@ -668,7 +668,7 @@ class UserControllerTest {
                 status().isOk(),
                 content().contentType(APPLICATION_JSON),
                 content().json("[{\"eventId\":1," +
-                        "\"timeStamp\":1712493175," +
+                        "\"timestamp\":1712493175," +
                         "\"userId\":1," +
                         "\"eventType\":\"FRIEND\"," +
                         "\"operation\":\"ADD\"," +
