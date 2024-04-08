@@ -155,6 +155,36 @@ class FilmDbStorageTest {
                 .isEqualTo(filmCollection);
     }
 
+    @Test
+    void getFilmsByIds() {
+        var films = generatorFilmList(2);
+        var filmDbStorage = new FilmDbStorage(jdbcTemplate);
+
+        filmDbStorage.addFilm(films.get(0));
+        filmDbStorage.addFilm(films.get(1));
+
+        Collection<Film> gettedFilms = filmDbStorage.getFilmsByIds(Set.of(1,2));
+
+        Assertions.assertThat(gettedFilms)
+                .isNotNull()
+                .isEqualTo(films);
+    }
+
+    @Test
+    void getFilmsByIds_incorrectFilmIds() {
+        var films = generatorFilmList(2);
+        var filmDbStorage = new FilmDbStorage(jdbcTemplate);
+
+        filmDbStorage.addFilm(films.get(0));
+        filmDbStorage.addFilm(films.get(1));
+
+        Collection<Film> gettedFilms = filmDbStorage.getFilmsByIds(Set.of(101,102));
+
+        Assertions.assertThat(gettedFilms)
+                .isNotNull()
+                .isEqualTo(List.of());
+    }
+
     private List<Film> generatorFilmList(Integer count) {
         List<Film> films = new ArrayList<>();
         for (int i = 1; i <= count; i++) {

@@ -14,9 +14,12 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.util.film.FilmUtil;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 @Primary
@@ -179,4 +182,63 @@ public class FilmDbStorage implements FilmStorage {
                 return List.of();
         }
     }
+
+    @Override
+    public Collection<Film> getFilmsByIds(Set<Integer> filmIds) {
+        String inSql = String.join(",", Collections.nCopies(filmIds.size(), "?"));
+
+        String sql = "SELECT f.*,\n" +
+                "r.RATING_NAME,\n" +
+                "ARRAY_AGG(DISTINCT g.GENRE_ID || ';' || g.genre_name) genres,\n" +
+                "ARRAY_AGG(DISTINCT d.DIRECTOR_ID || ';' || d.DIRECTOR_NAME) directors\n" +
+                "FROM FILMS f\n" +
+                "LEFT JOIN RATINGS r ON f.RATING_ID = r.RATING_ID\n" +
+                "LEFT JOIN FILM_GENRES fg ON f.FILM_ID = fg.FILM_ID\n" +
+                "LEFT JOIN GENRES g ON fg.GENRE_ID = g.GENRE_ID\n" +
+                "LEFT JOIN FILMS_DIRECTORS fd ON fd.FILM_ID  = f.FILM_ID\n" +
+                "LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = fd.DIRECTOR_ID\n" +
+                "WHERE f.FILM_ID IN (" + inSql + ") " +
+                "GROUP BY f.FILM_ID\n";
+        log.info("Выполняется запрос к БД: {} Параметры: {}", sql, filmIds.toArray());
+
+        return jdbcTemplate.query(sql, FilmUtil::makeFilm, filmIds.toArray());
+    }
+
+    @Override
+    public Collection<Film> findFilms(String query, String by) {
+        String sql = "SELECT f.FILM_ID AS film_id, f.NAME AS name, " +
+                "f.DESCRIPTION AS description, f.RELEASE_DATE AS release_date, " +
+                "f.DURATION AS duration, r.RATING_ID AS rating_id, " +
+                "r.RATING_NAME AS rating_code, " +
+                "ARRAY_AGG(DISTINCT g.GENRE_ID || ';' || g.genre_name) AS genres, " +
+                "ARRAY_AGG(DISTINCT d.DIRECTOR_ID || ';' || d.DIRECTOR_NAME) AS directors, " +
+                "COUNT(l.USER_ID) AS likes_count " +
+                "FROM FILMS AS f " +
+                "LEFT JOIN RATINGS AS r ON r.RATING_ID = f.RATING_ID " +
+                "LEFT JOIN FILM_GENRES fg ON fg.FILM_ID = f.FILM_ID " +
+                "LEFT JOIN GENRES g ON g.GENRE_ID = fg.GENRE_ID " +
+                "LEFT JOIN FILMS_DIRECTORS fd ON fd.FILM_ID = f.FILM_ID " +
+                "LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = fd.DIRECTOR_ID " +
+                "LEFT JOIN LIKES l ON l.FILM_ID = f.FILM_ID ";
+
+        List<String> conditions = new ArrayList<>();
+
+        String[] searchParams = by.split(",");
+        for (String param : searchParams) {
+            if (param.equals("title")) {
+                conditions.add("f.NAME ILIKE '%" + query + "%'");
+            } else if (param.equals("director")) {
+                conditions.add("d.DIRECTOR_NAME ILIKE '%" + query + "%'");
+            }
+        }
+
+        if (!conditions.isEmpty()) {
+            sql += "WHERE " + String.join(" OR ", conditions) + " ";
+        }
+
+        sql += "GROUP BY f.FILM_ID, r.RATING_ID ORDER BY likes_count DESC";
+
+        return jdbcTemplate.query(sql, FilmUtil::makeFilm);
+    }
+
 }
