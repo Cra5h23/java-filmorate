@@ -53,6 +53,17 @@ public interface FilmService {
     Collection<Film> getFilmsByDirector(Integer directorId, String sortBy);
 
     /**
+     * Метод поиска фильмов по названию/режиссеру
+     *
+     * @param query — текст для поиска
+     * @param by — может принимать значения director (поиск по режиссёру), title (поиск по названию),
+     * либо оба значения через запятую при поиске одновременно и по режиссеру и по названию.
+     * @return Список фильмов, отсортированных по популярности.
+     */
+
+    Collection<Film> findFilms(String query, String by);
+
+    /**
      * Возвращает список фильмов рекомендованных пользователю.
      */
     Collection<Film> getRecommendationsByUserId(Integer userId);

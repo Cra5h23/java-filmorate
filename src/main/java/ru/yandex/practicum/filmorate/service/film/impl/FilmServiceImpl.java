@@ -108,6 +108,12 @@ public class FilmServiceImpl implements FilmService {
         return filmStorage.getSortedFilms(FilmSort.FILMS_BY_DIRECTOR,directorId, sortBy);
     }
 
+    @Override
+    public Collection<Film> findFilms(String query, String by) {
+        log.info("Выполнен поиск фильма по запросу {} и параметру {}", query, by);
+        return filmStorage.findFilms(query,by);
+    }
+
     private Film checkFilm(Integer filmId, String s) {
         return filmStorage.getFilmById(filmId)
                 .orElseThrow(() -> new FilmServiceException(
