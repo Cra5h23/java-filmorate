@@ -12,12 +12,17 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.exeption.UserFriendServiceException;
 import ru.yandex.practicum.filmorate.exeption.UserServiceException;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.service.user.UserFriendService;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -33,6 +38,9 @@ class UserControllerTest {
 
     @MockBean
     UserService userService;
+
+    @MockBean
+    FilmService filmService;
 
     @MockBean
     @Qualifier("userFriendServiceDbImpl")
@@ -641,5 +649,82 @@ class UserControllerTest {
                 status().isOk()
                 //content().string("Пользователь с id: 1 удалил из друзей пользователя с id: 2")
         );
+    }
+
+
+    @Test
+    @DisplayName("Получение рекомендация по пользователю с userId 1. Возврат одного фильма.")
+    void getRecommendation_returnOneFilm() throws Exception {
+        var requestBuilder = get("/users/1/recommendations");
+
+        Mockito.when(filmService.getRecommendationsByUserId(1)).thenReturn(List.of(
+                Film.builder()
+                        .id(1)
+                        .name("TestFilm1")
+                        .description("TestDescription1")
+                        .releaseDate(LocalDate.parse("1900-01-02"))
+                        .duration(2)
+                        .genres(Set.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
+                        .build()
+        ));
+
+        this.mockMvc.perform(requestBuilder).andExpectAll(
+                status().isOk(),
+                content().contentType(APPLICATION_JSON),
+                content().json("[{\"id\":1,\"name\":\"TestFilm1\",\"description\":\"TestDescription1\"," +
+                        "\"releaseDate\":\"1900-01-02\",\"duration\":2,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}]"));
+    }
+
+    @Test
+    @DisplayName("Получение рекомендация по пользователю с userId 1. Возврат двух фильмов фильма.")
+    void getRecommendation_returnTwoFilms() throws Exception {
+        var requestBuilder = get("/users/1/recommendations");
+
+        Mockito.when(filmService.getRecommendationsByUserId(1)).thenReturn(List.of(
+                Film.builder()
+                        .id(1)
+                        .name("TestFilm1")
+                        .description("TestDescription1")
+                        .releaseDate(LocalDate.parse("1900-01-02"))
+                        .duration(2)
+                        .genres(Set.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
+                        .build(),
+                Film.builder()
+                        .id(2)
+                        .name("TestFilm2")
+                        .description("TestDescription2")
+                        .releaseDate(LocalDate.parse("1900-01-03"))
+                        .duration(3)
+                        .genres(Set.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
+                        .build()
+        ));
+
+        this.mockMvc.perform(requestBuilder).andExpectAll(
+                status().isOk(),
+                content().contentType(APPLICATION_JSON),
+                content().json("[{\"id\":1,\"name\":\"TestFilm1\",\"description\":\"TestDescription1\"," +
+                        "\"releaseDate\":\"1900-01-02\",\"duration\":2,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":2,\"name\":\"TestFilm2\",\"description\":\"TestDescription2\"," +
+                        "\"releaseDate\":\"1900-01-03\",\"duration\":3,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}]"));
+    }
+
+    @Test
+    @DisplayName("Получение рекомендация по пользователю с userId 1. Возврат пустого списка.")
+    void getRecommendation_returnVoidList() throws Exception {
+        var requestBuilder = get("/users/1/recommendations");
+
+        Mockito.when(filmService.getRecommendationsByUserId(1)).thenReturn(List.of(
+        ));
+
+        this.mockMvc.perform(requestBuilder).andExpectAll(
+                status().isOk(),
+                content().contentType(APPLICATION_JSON),
+                content().json("[]"));
     }
 }

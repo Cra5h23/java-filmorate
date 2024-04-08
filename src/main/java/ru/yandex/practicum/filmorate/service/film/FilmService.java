@@ -62,4 +62,9 @@ public interface FilmService {
      */
 
     Collection<Film> findFilms(String query, String by);
+
+    /**
+     * Возвращает список фильмов рекомендованных пользователю.
+     */
+    Collection<Film> getRecommendationsByUserId(Integer userId);
 }

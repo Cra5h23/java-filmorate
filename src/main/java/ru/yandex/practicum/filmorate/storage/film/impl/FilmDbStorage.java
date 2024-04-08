@@ -16,8 +16,10 @@ import ru.yandex.practicum.filmorate.util.film.FilmUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 @Primary
@@ -179,6 +181,27 @@ public class FilmDbStorage implements FilmStorage {
             default:
                 return List.of();
         }
+    }
+
+    @Override
+    public Collection<Film> getFilmsByIds(Set<Integer> filmIds) {
+        String inSql = String.join(",", Collections.nCopies(filmIds.size(), "?"));
+
+        String sql = "SELECT f.*,\n" +
+                "r.RATING_NAME,\n" +
+                "ARRAY_AGG(DISTINCT g.GENRE_ID || ';' || g.genre_name) genres,\n" +
+                "ARRAY_AGG(DISTINCT d.DIRECTOR_ID || ';' || d.DIRECTOR_NAME) directors\n" +
+                "FROM FILMS f\n" +
+                "LEFT JOIN RATINGS r ON f.RATING_ID = r.RATING_ID\n" +
+                "LEFT JOIN FILM_GENRES fg ON f.FILM_ID = fg.FILM_ID\n" +
+                "LEFT JOIN GENRES g ON fg.GENRE_ID = g.GENRE_ID\n" +
+                "LEFT JOIN FILMS_DIRECTORS fd ON fd.FILM_ID  = f.FILM_ID\n" +
+                "LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = fd.DIRECTOR_ID\n" +
+                "WHERE f.FILM_ID IN (" + inSql + ") " +
+                "GROUP BY f.FILM_ID\n";
+        log.info("Выполняется запрос к БД: {} Параметры: {}", sql, filmIds.toArray());
+
+        return jdbcTemplate.query(sql, FilmUtil::makeFilm, filmIds.toArray());
     }
 
     @Override

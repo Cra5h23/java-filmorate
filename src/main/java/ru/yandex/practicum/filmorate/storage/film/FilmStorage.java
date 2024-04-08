@@ -5,6 +5,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 
 public interface FilmStorage {
     Collection<Film> getAllFilms();
@@ -20,4 +21,6 @@ public interface FilmStorage {
     Collection<Film> getSortedFilms(FilmSort sort, Object... param);
 
     Collection<Film> findFilms(String query, String by);
+
+    Collection<Film> getFilmsByIds(Set<Integer> filmIds);
 }
