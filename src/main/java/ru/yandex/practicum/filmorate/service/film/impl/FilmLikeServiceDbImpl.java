@@ -43,9 +43,9 @@ public class FilmLikeServiceDbImpl implements FilmLikeService {
     }
 
     @Override
-    public Collection<Film> getMostPopularFilm(Integer count) {
-        log.info("Запрошена коллекция самых популярных фильмов в колличестве {} фильмов", count);
-        return filmStorage.getSortedFilms(FilmSort.POPULAR_FILMS_DESC, count);
+    public Collection<Film> getMostPopularFilm(Integer count, Integer genreId, Integer year) {
+        log.info("Запрошена коллекция самых популярных фильмов в количестве {} фильмов", count);
+        return filmStorage.getSortedFilms(FilmSort.POPULAR_FILMS_DESC, count, genreId, year);
     }
 
     private void checkFilm(Integer filmId, String... s) {
