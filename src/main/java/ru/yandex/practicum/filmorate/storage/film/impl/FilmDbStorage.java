@@ -14,12 +14,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.util.film.FilmUtil;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @Primary
@@ -168,6 +163,23 @@ public class FilmDbStorage implements FilmStorage {
                 "GROUP BY d.DIRECTOR_ID , F.FILM_ID\n" +
                 "ORDER BY COUNT(DISTINCT l.USER_ID) DESC\n";
 
+        var commonFilms = "SELECT f.*,\n" +
+                "r.RATING_NAME,\n" +
+                "ARRAY_AGG(DISTINCT g.GENRE_ID || ';' || g.genre_name) genres,\n" +
+                "ARRAY_AGG(DISTINCT d.DIRECTOR_ID || ';' || d.DIRECTOR_NAME) directors\n" +
+                "FROM FILMS f \n" +
+                "LEFT JOIN ratings r on f.rating_id=r.rating_id \n" +
+                "LEFT JOIN LIKES l ON f.FILM_ID = l.FILM_ID \n" +
+                "LEFT JOIN FILM_GENRES fg ON f.FILM_ID = fg.FILM_ID\n" +
+                "LEFT JOIN GENRES g ON fg.GENRE_ID = g.GENRE_ID\n" +
+                "LEFT JOIN FILMS_DIRECTORS fd ON fd.FILM_ID  = f.FILM_ID\n" +
+                "LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = fd.DIRECTOR_ID\n" +
+                "LEFT JOIN LIKES l1 ON f.FILM_ID = l1.FILM_ID \n" +
+                "LEFT JOIN LIKES l2 ON f.FILM_ID = l2.FILM_ID \n" +
+                "WHERE l1.USER_ID = ? AND L2.USER_ID = ?\n" +
+                "GROUP BY f.FILM_ID \n" +
+                "ORDER BY COUNT(l.USER_ID) DESC ";
+
         switch (sort) {
             case POPULAR_FILMS_DESC:
                 return jdbcTemplate.query(popularFilmDescSql, FilmUtil::makeFilm, param);
@@ -178,6 +190,8 @@ public class FilmDbStorage implements FilmStorage {
                     return jdbcTemplate.query(filmsByDirectorSortLikesSql, FilmUtil::makeFilm, param[0]);
                 }
                 return List.of();
+            case COMMON_FILMS_DESC:
+                return jdbcTemplate.query(commonFilms, FilmUtil::makeFilm, param[0], param[1]);
             default:
                 return List.of();
         }
@@ -240,5 +254,4 @@ public class FilmDbStorage implements FilmStorage {
 
         return jdbcTemplate.query(sql, FilmUtil::makeFilm);
     }
-
 }

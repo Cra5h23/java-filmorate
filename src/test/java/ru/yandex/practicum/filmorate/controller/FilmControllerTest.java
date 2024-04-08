@@ -778,4 +778,41 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1900-01-02\",\"duration\":2,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
                         "\"genres\":[{\"id\":1,\"name\":\"G\"}]}]"));
     }
+
+    @Test
+    @DisplayName("GET /films/common возвращает список общих с другом фильмов с сортировкой по их популярности")
+    void getFilmsTestCommonFriends() throws Exception {
+        var requestBuilder = get("/films/common?userId=1&friendId=2");
+        Mockito.when(filmLikeService.getCommonFilms(1, 2)).thenReturn(List.of(
+                Film.builder()
+                        .id(1)
+                        .name("TestFilm1")
+                        .description("TestDescription1")
+                        .releaseDate(LocalDate.parse("1900-01-02"))
+                        .duration(2)
+                        .genres(Set.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
+                        .build(),
+                Film.builder()
+                        .id(11)
+                        .name("TestFilm11")
+                        .description("TestDescription11")
+                        .releaseDate(LocalDate.parse("1900-01-12"))
+                        .duration(12)
+                        .genres(Set.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
+                        .build()
+
+        ));
+
+        this.mockMvc.perform(requestBuilder).andExpectAll(
+                status().isOk(),
+                content().contentType(APPLICATION_JSON),
+                content().json("[{\"id\":1,\"name\":\"TestFilm1\",\"description\":\"TestDescription1\"," +
+                        "\"releaseDate\":\"1900-01-02\",\"duration\":2,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":11,\"name\":\"TestFilm11\",\"description\":\"TestDescription11\"," +
+                        "\"releaseDate\":\"1900-01-12\",\"duration\":12,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}]"));
+    }
 }

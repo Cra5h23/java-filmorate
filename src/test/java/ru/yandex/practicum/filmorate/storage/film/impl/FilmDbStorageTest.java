@@ -156,6 +156,63 @@ class FilmDbStorageTest {
     }
 
     @Test
+    void getCommonFilms() {
+        List<Film> films = generatorFilmList(5);
+        var filmDbStorage = new FilmDbStorage(jdbcTemplate);
+        var userDbStorage = new UserDbStorage(jdbcTemplate);
+        LikeDaoImpl likeDao = new LikeDaoImpl(jdbcTemplate);
+
+        List<User> users = List.of(
+                User.builder()
+                        .id(1)
+                        .name("testName1")
+                        .login("testLogin1")
+                        .email("testEmail1@test.com")
+                        .birthday(LocalDate.parse("1989-03-05"))
+                        .build(),
+                User.builder()
+                        .id(2)
+                        .name("testName2")
+                        .login("testLogin2")
+                        .email("testEmail2@test.com")
+                        .birthday(LocalDate.parse("1989-10-05"))
+                        .build(),
+                User.builder()
+                        .id(3)
+                        .name("testName3")
+                        .login("testLogin3")
+                        .email("testEmail3@test.com")
+                        .birthday(LocalDate.parse("1989-10-05"))
+                        .build()
+        );
+
+        users.forEach(userDbStorage::addUser);
+
+        Film film = filmDbStorage.addFilm(films.get(0));
+        Film film1 = filmDbStorage.addFilm(films.get(1));
+        Film film2 = filmDbStorage.addFilm(films.get(2));
+        Film film3 = filmDbStorage.addFilm(films.get(3));
+        Film film4 = filmDbStorage.addFilm(films.get(4));
+        Collection<Film> filmCollection = new ArrayList<>(List.of(film4, film3));
+
+        likeDao.saveLike(film.getId(), 1);
+        likeDao.saveLike(film1.getId(), 2);
+        likeDao.saveLike(film2.getId(), 3);
+        likeDao.saveLike(film3.getId(), 1);
+        likeDao.saveLike(film3.getId(), 2);
+        likeDao.saveLike(film4.getId(), 1);
+        likeDao.saveLike(film4.getId(), 2);
+        likeDao.saveLike(film4.getId(), 3);
+
+        Collection<Film> sortedFilms = filmDbStorage.getSortedFilms(FilmSort.COMMON_FILMS_DESC,1, 2);
+
+        Assertions.assertThat(sortedFilms)
+                .isNotNull()
+                .usingRecursiveComparison()
+                .isEqualTo(filmCollection);
+    }
+
+    @Test
     void getFilmsByIds() {
         var films = generatorFilmList(2);
         var filmDbStorage = new FilmDbStorage(jdbcTemplate);
