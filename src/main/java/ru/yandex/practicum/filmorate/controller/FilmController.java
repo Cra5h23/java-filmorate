@@ -101,6 +101,12 @@ public class FilmController {
                 .body(filmService.getFilmsByDirector(directorId, sortBy));
     }
 
+    @GetMapping("/common")
+    public ResponseEntity<?> getCommonFriendFilms(@RequestParam Integer userId, @RequestParam Integer friendId) {
+        log.info("GET /getCommonFriendFilms");
+        return ResponseEntity.ok(filmLikeService.getCommonFilms(userId, friendId));
+    }
+
     @GetMapping("/search")
     public ResponseEntity<Collection<Film>> searchFilms(@RequestParam(name = "query", required = false) String query,
                                                         @RequestParam(name = "by", required = false) String by) {

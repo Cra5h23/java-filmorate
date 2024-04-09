@@ -53,6 +53,15 @@ public class FilmLikeServiceDbImpl implements FilmLikeService {
         return filmStorage.getSortedFilms(FilmSort.POPULAR_FILMS_DESC, count, genreId, year);
     }
 
+    @Override
+    public Collection<Film> getCommonFilms(Integer userId, Integer friendId) {
+        log.info("Запрошена коллекция общих с другом фильмов с сортировкой " +
+                "по их популярности для пользователя {} и его друга {}", userId, friendId);
+        checkUser(userId, "получить", "фильма");
+        checkUser(friendId, "получить", "фильма");
+        return filmStorage.getSortedFilms(FilmSort.COMMON_FILMS_DESC,userId,friendId);
+    }
+
     private void checkFilm(Integer filmId, String... s) {
         filmStorage.getFilmById(filmId)
                 .orElseThrow(() -> new FilmLikeServiceException(
