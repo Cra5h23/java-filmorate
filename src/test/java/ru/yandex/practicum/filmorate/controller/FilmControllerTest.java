@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -13,6 +12,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.exeption.FilmLikeServiceException;
 import ru.yandex.practicum.filmorate.exeption.FilmServiceException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Rating;
@@ -39,7 +39,6 @@ public class FilmControllerTest {
     FilmService filmService;
 
     @MockBean
-    @Qualifier("filmLikeServiceDbImpl")
     FilmLikeService filmLikeService;
 
     @Autowired
@@ -60,14 +59,16 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1989-05-02\"," +
                         "\"duration\":121," +
                         "\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
-                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]," +
+                        "\"directors\":[{\"id\":1,\"name\":\"testDirector\"}]}," +
                         "{\"id\":2," +
                         "\"name\":\"testName2\"," +
                         "\"description\":\"testDescription2\"," +
                         "\"releaseDate\":\"1989-05-02\"," +
                         "\"duration\":122," +
                         "\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
-                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}]")
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]," +
+                        "\"directors\":[{\"id\":1,\"name\":\"testDirector\"}]}]")
         );
     }
 
@@ -82,6 +83,7 @@ public class FilmControllerTest {
                     .duration(120 + i)
                     .releaseDate(LocalDate.of(1989, 5, 1).plusDays(1))
                     .genres(Set.of(new Genre(1, "G")))
+                    .directors(List.of(new Director(1, "testDirector")))
                     .build();
             films.add(f);
         }
@@ -104,7 +106,8 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1989-05-02\"," +
                         "\"duration\":121," +
                         "\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
-                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}"));
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]," +
+                        "\"directors\":[{\"id\":1,\"name\":\"testDirector\"}]}"));
     }
 
     @Test
@@ -132,6 +135,7 @@ public class FilmControllerTest {
                 .duration(120)
                 .releaseDate(LocalDate.of(1989, 5, 1).plusDays(1))
                 .genres(Set.of(new Genre(1, "G")))
+                .directors(List.of(new Director(1,"testDirector")))
                 .build();
         String s = objectMapper.writeValueAsString(f);
         f.setId(1);
@@ -149,7 +153,8 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1989-05-02\"," +
                         "\"duration\":120," +
                         "\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
-                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}")
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]," +
+                        "\"directors\":[{\"id\":1,\"name\":\"testDirector\"}]}")
         );
     }
 
