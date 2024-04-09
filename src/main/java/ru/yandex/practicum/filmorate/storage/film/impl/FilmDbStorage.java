@@ -179,43 +179,47 @@ public class FilmDbStorage implements FilmStorage {
                 "GROUP BY f.FILM_ID \n" +
                 "ORDER BY COUNT(l.USER_ID) DESC ";
 
-        Integer count = (Integer) params[0];
-        Integer genreId = null;
-        Integer year = null;
         List<Object> queryParams = new ArrayList<>();
 
-        for (int i = 1; i < params.length; i++) {
-            Integer value = (Integer) params[i];
-            if (value != null) {
-                if (value > 1895) {
-                    year = value;
-                } else {
-                    genreId = value;
+        if (sort.equals(FilmSort.POPULAR_FILMS_DESC)) {
+            Integer count = (Integer) params[0];
+            Integer genreId = null;
+            Integer year = null;
+
+
+            for (int i = 1; i < params.length; i++) {
+                Integer value = (Integer) params[i];
+                if (value != null) {
+                    if (value > 1895) {
+                        year = value;
+                    } else {
+                        genreId = value;
+                    }
                 }
             }
-        }
 
-        boolean hasCondition = false;
-        if (genreId != null || year != null) {
-            popularFilmDescSql += " WHERE f.FILM_ID IN (SELECT DISTINCT fg.FILM_ID FROM FILM_GENRES fg " +
-                    "JOIN FILMS f ON fg.FILM_ID = f.FILM_ID ";
+            boolean hasCondition = false;
+            if (genreId != null || year != null) {
+                popularFilmDescSql += " WHERE f.FILM_ID IN (SELECT DISTINCT fg.FILM_ID FROM FILM_GENRES fg " +
+                        "JOIN FILMS f ON fg.FILM_ID = f.FILM_ID ";
 
-            if (genreId != null) {
-                popularFilmDescSql += " WHERE fg.GENRE_ID = ?";
-                queryParams.add(genreId);
-                hasCondition = true;
+                if (genreId != null) {
+                    popularFilmDescSql += " WHERE fg.GENRE_ID = ?";
+                    queryParams.add(genreId);
+                    hasCondition = true;
+                }
+
+                if (year != null) {
+                    popularFilmDescSql += (hasCondition ? " AND " : " WHERE ") + "EXTRACT(YEAR FROM f.RELEASE_DATE) = ?";
+                    queryParams.add(year);
+                }
+
+                popularFilmDescSql += ") ";
             }
 
-            if (year != null) {
-                popularFilmDescSql += (hasCondition ? " AND " : " WHERE ") + "EXTRACT(YEAR FROM f.RELEASE_DATE) = ?";
-                queryParams.add(year);
-            }
-
-            popularFilmDescSql += ") ";
+            popularFilmDescSql += "GROUP BY f.FILM_ID, r.RATING_ID ORDER BY likes_count DESC LIMIT ?";
+            queryParams.add(count);
         }
-
-        popularFilmDescSql += "GROUP BY f.FILM_ID, r.RATING_ID ORDER BY likes_count DESC LIMIT ?";
-        queryParams.add(count);
 
         switch (sort) {
             case POPULAR_FILMS_DESC:
