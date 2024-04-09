@@ -3,10 +3,13 @@ package ru.yandex.practicum.filmorate.dao.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.LikeDao;
 import ru.yandex.practicum.filmorate.mapper.LikeMapper;
 import ru.yandex.practicum.filmorate.model.Like;
+
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -17,8 +20,13 @@ public class LikeDaoImpl implements LikeDao {
 
     @Override
     public void saveLike(Integer filmId, Integer userId) {
-        var sql = "insert into likes(film_id, user_id) values(?, ?)";
-        jdbcTemplate.update(sql, filmId, userId);
+        var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        var param = new MapSqlParameterSource()
+                .addValue("film_id", filmId)
+                .addValue("user_id", userId);
+        var sql = "merge into likes(film_id, user_id) values (:film_id, :user_id)";
+
+        namedParameterJdbcTemplate.update(sql, param);
     }
 
     @Override
