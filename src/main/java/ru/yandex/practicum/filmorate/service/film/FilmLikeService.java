@@ -9,5 +9,5 @@ public interface FilmLikeService {
 
     String deleteLikeFilm(Integer filmId, Integer userId);
 
-    Collection<Film> getMostPopularFilm(Integer count);
+    Collection<Film> getMostPopularFilm(Integer count, Integer genreId, Integer year);
 }
