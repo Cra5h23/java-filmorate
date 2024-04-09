@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.EventDao;
 import ru.yandex.practicum.filmorate.dao.FriendDao;
 import ru.yandex.practicum.filmorate.exeption.UserFriendServiceException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -21,6 +22,7 @@ public class UserFriendServiceDbImpl implements UserFriendService {
     private final FriendDao friendDao;
     @Qualifier("userDbStorage")
     private final UserStorage userStorage;
+    private final EventDao eventDao;
 
     @Override
     public String addingUserAsFriend(Integer userId, Integer friendId) {
@@ -28,6 +30,8 @@ public class UserFriendServiceDbImpl implements UserFriendService {
         checkUser(userId, "добавить друга для");
         checkUser(friendId, "добавить в друзья");
         friendDao.addingUserAsFriend(userId, friendId);
+        eventDao.createAddUserFriendEvent(userId,friendId);
+
         log.info("Пользователь с id: {} добавил в друзья пользователя с id: {}", userId, friendId);
         return String.format("Пользователь с id: %d добавил в друзья пользователя с id: %d", userId, friendId);
     }
@@ -38,6 +42,7 @@ public class UserFriendServiceDbImpl implements UserFriendService {
         checkUser(userId, "удалить друга для");
         checkUser(deletingFriendId, "удалить из друзей");
         friendDao.deletingFromUserFriends(userId, deletingFriendId);
+        eventDao.createDeleteUserFriendEvent(userId,deletingFriendId);
         log.info("Пользователь с id: {} удалил из друзей пользователя с id: {}", userId, deletingFriendId);
         return String.format("Пользователь с id: %d удалил из друзей пользователя с id: %d", userId, deletingFriendId);
     }

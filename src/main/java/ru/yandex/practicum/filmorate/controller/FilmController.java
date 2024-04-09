@@ -83,9 +83,13 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<?> getListOfMostPopularFilms(@RequestParam(defaultValue = "10") Integer count) {
-        log.info("GET /films/popular?count={}", count);
-        return ResponseEntity.ok(filmLikeService.getMostPopularFilm(count));
+    public ResponseEntity<?> getListOfMostPopularFilms(
+            @RequestParam(defaultValue = "10") Integer count,
+            @RequestParam(required = false) Integer genreId,
+            @RequestParam(required = false) Integer year) {
+
+        log.info("GET /films/popular?count={}&genreId={}&year={}", count, genreId, year);
+        return ResponseEntity.ok(filmLikeService.getMostPopularFilm(count, genreId, year));
     }
 
     @GetMapping("/director/{directorId}")
@@ -106,7 +110,7 @@ public class FilmController {
     @GetMapping("/search")
     public ResponseEntity<Collection<Film>> searchFilms(@RequestParam(name = "query", required = false) String query,
                                                         @RequestParam(name = "by", required = false) String by) {
-        log.info("GET /films/search?query={}&by={}");
+        log.info("GET /films/search?query={}&by={}", query, by);
         return ResponseEntity.ok(filmService.findFilms(query, by));
     }
 }

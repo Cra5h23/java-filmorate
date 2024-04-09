@@ -484,7 +484,7 @@ public class FilmControllerTest {
     @DisplayName("GET /films/popular возвращает список из 10 самых популярных фильмов по умолчанию")
     void getListOfMostPopularFilmsTest_ReturnsDefaultListMostPopularFilms() throws Exception {
         var requestBuilder = get("/films/popular");
-        Mockito.when(filmLikeService.getMostPopularFilm(10)).thenReturn(List.of(
+        Mockito.when(filmLikeService.getMostPopularFilm(10,null,null)).thenReturn(List.of(
                 Film.builder()
                         .id(1)
                         .name("TestFilm1")
@@ -616,7 +616,7 @@ public class FilmControllerTest {
     @DisplayName("GET /films/popular возвращает список из 11 самых популярных фильмов если передан параметр count=11")
     void getListOfMostPopularFilmsTest_ReturnsList11MostPopularFilms() throws Exception {
         var requestBuilder = get("/films/popular?count=11");
-        Mockito.when(filmLikeService.getMostPopularFilm(11)).thenReturn(List.of(
+        Mockito.when(filmLikeService.getMostPopularFilm(11,null,null)).thenReturn(List.of(
                 Film.builder()
                         .id(1)
                         .name("TestFilm1")
@@ -760,7 +760,7 @@ public class FilmControllerTest {
     void getListOfMostPopularFilmsTest_ReturnsList1MostPopularFilms() throws Exception {
         var requestBuilder = get("/films/popular?count=1");
 
-        Mockito.when(filmLikeService.getMostPopularFilm(1)).thenReturn(List.of(
+        Mockito.when(filmLikeService.getMostPopularFilm(1,null,null)).thenReturn(List.of(
                 Film.builder()
                         .id(1)
                         .name("TestFilm1")
