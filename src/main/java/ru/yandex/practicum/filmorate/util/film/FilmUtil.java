@@ -41,13 +41,7 @@ public class FilmUtil {
     }
 
     private static Set<Genre> makeGenreList(ResultSet rs) throws SQLException {
-        String genres = null;
-
-        try {
-            genres = rs.getString("genres");
-        } catch (SQLException e) {
-            return Set.of();
-        }
+        var genres = rs.getString("genres");
 
         return Arrays.stream(genres.substring(1, genres.length() - 1).split(", "))
                 .map(s -> s.split(";"))
@@ -57,13 +51,7 @@ public class FilmUtil {
     }
 
     private static List<Director> makeDirectorList(ResultSet rs) throws SQLException {
-        String directors = null;
-
-        try {
-            directors = rs.getString("directors");
-        } catch (SQLException e) {
-            return List.of();
-        }
+        var directors = rs.getString("directors");
 
         return Arrays.stream(directors.substring(1, directors.length() - 1).split(", "))
                 .map(s -> s.split(";"))

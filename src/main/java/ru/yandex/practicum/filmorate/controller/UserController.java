@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
-import ru.yandex.practicum.filmorate.service.film.EventService;
+import ru.yandex.practicum.filmorate.service.event.EventService;
 import ru.yandex.practicum.filmorate.service.user.UserFriendService;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 
@@ -27,9 +27,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
     private final FilmService filmService;
-
     private final UserFriendService userFriendService;
     private final EventService eventService;
 
@@ -86,7 +84,7 @@ public class UserController {
 
     @GetMapping("/{userId}/friends")
     public ResponseEntity<?> getUserFriends(@PathVariable Integer userId) {
-        log.info("GET /users/{}", userId);
+        log.info("GET /users/{}/friends", userId);
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -117,7 +115,7 @@ public class UserController {
 
     @GetMapping("/{userId}/feed")
     public ResponseEntity<?> getUserFeed(@PathVariable Integer userId) {
-        log.info("/GET /users/{}/feed", userId);
+        log.info("GET /users/{}/feed", userId);
         return ResponseEntity
                 .ok(eventService.getUserFeed(userId));
     }

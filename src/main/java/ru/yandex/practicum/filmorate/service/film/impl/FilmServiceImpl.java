@@ -2,27 +2,18 @@ package ru.yandex.practicum.filmorate.service.film.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.FilmSort;
-import ru.yandex.practicum.filmorate.dao.DirectorDao;
-import ru.yandex.practicum.filmorate.dao.LikeDao;
+import ru.yandex.practicum.filmorate.model.FilmSort;
+import ru.yandex.practicum.filmorate.dao.director.DirectorDao;
+import ru.yandex.practicum.filmorate.dao.film.FilmDao;
+import ru.yandex.practicum.filmorate.dao.like.LikeDao;
 import ru.yandex.practicum.filmorate.exeption.FilmServiceException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Like;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import static java.lang.String.format;
 
@@ -30,11 +21,8 @@ import static java.lang.String.format;
 @Slf4j
 @RequiredArgsConstructor
 public class FilmServiceImpl implements FilmService {
-    @Qualifier("filmDbStorage")
-    private final FilmStorage filmStorage;
-
+    private final FilmDao filmDao;
     private final DirectorDao directorDao;
-
     private final LikeDao likeDao;
 
     /**
@@ -45,7 +33,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public Collection<Film> getFilms() {
         log.info("Запрошен список всех фильмов");
-        return filmStorage.getAllFilms();
+        return filmDao.getAllFilms();
     }
 
     /**
@@ -65,7 +53,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public Film addFilm(Film film) {
         log.info("Добавлен фильм {}", film);
-        return filmStorage.addFilm(film);
+        return filmDao.addFilm(film);
     }
 
     /**
@@ -76,7 +64,7 @@ public class FilmServiceImpl implements FilmService {
     public Film updateFilm(Film film) {
         var f = checkFilm(film.getId(), "обновить");
         log.info("Обновлён фильм с id: {}", film.getId());
-        return filmStorage.updateFilm(film);
+        return filmDao.updateFilm(film);
     }
 
     /**
@@ -86,7 +74,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public String deleteFilmById(Integer filmId) {
         checkFilm(filmId, "удалить");
-        filmStorage.deleteFilm(filmId);
+        filmDao.deleteFilm(filmId);
         log.info("Удалён фильм с id: {}", filmId);
         return format("Удалён фильм с id: %d", filmId);
     }
@@ -105,17 +93,17 @@ public class FilmServiceImpl implements FilmService {
         byId.orElseThrow(() -> new FilmServiceException(
                 format("Нельзя получить список фильмов для не существующего режиссёра с id %d", directorId)));
 
-        return filmStorage.getSortedFilms(FilmSort.FILMS_BY_DIRECTOR,directorId, sortBy);
+        return filmDao.getSortedFilms(FilmSort.FILMS_BY_DIRECTOR, directorId, sortBy);
     }
 
     @Override
     public Collection<Film> findFilms(String query, String by) {
         log.info("Выполнен поиск фильма по запросу {} и параметру {}", query, by);
-        return filmStorage.findFilms(query,by);
+        return filmDao.findFilms(query, by);
     }
 
     private Film checkFilm(Integer filmId, String s) {
-        return filmStorage.getFilmById(filmId)
+        return filmDao.getFilmById(filmId)
                 .orElseThrow(() -> new FilmServiceException(
                         format("Попытка %s фильм с несуществующим id: %d", s, filmId)));
     }
@@ -171,6 +159,6 @@ public class FilmServiceImpl implements FilmService {
             return new ArrayList<>();
         }
 
-        return filmStorage.getFilmsByIds(recommendationFilmIds);
+        return filmDao.getFilmsByIds(recommendationFilmIds);
     }
 }

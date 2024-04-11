@@ -24,7 +24,6 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class FilmController {
     private final FilmLikeService filmLikeService;
-
     private final FilmService filmService;
 
     @GetMapping

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.service.review.ReviewService;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.Collection;
@@ -42,7 +43,6 @@ public class ReviewController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(reviewService.getByParams(filmId, count));
     }
-
 
 
     /**

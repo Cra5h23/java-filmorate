@@ -2,14 +2,13 @@ package ru.yandex.practicum.filmorate.service.user.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.EventDao;
-import ru.yandex.practicum.filmorate.dao.FriendDao;
+import ru.yandex.practicum.filmorate.dao.event.EventDao;
+import ru.yandex.practicum.filmorate.dao.friend.FriendDao;
+import ru.yandex.practicum.filmorate.dao.user.UserDao;
 import ru.yandex.practicum.filmorate.exeption.UserFriendServiceException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserFriendService;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
 
@@ -20,8 +19,7 @@ import static java.lang.String.format;
 @Service
 public class UserFriendServiceDbImpl implements UserFriendService {
     private final FriendDao friendDao;
-    @Qualifier("userDbStorage")
-    private final UserStorage userStorage;
+    private final UserDao userDao;
     private final EventDao eventDao;
 
     @Override
@@ -78,7 +76,7 @@ public class UserFriendServiceDbImpl implements UserFriendService {
 
 
     private void checkUser(Integer friendId, String... s) {
-        userStorage.getUserById(friendId)
+        userDao.getUserById(friendId)
                 .orElseThrow(() -> new UserFriendServiceException(
                         format("Попытка %s несуществующего пользователя с id: %d", s[0], friendId)));
     }
