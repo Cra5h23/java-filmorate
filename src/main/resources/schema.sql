@@ -94,7 +94,7 @@ ispositive BOOLEAN NOT NULL
 CREATE TABLE IF NOT EXISTS reviewratings(
 review_id INTEGER REFERENCES reviews (review_id) ON DELETE CASCADE,
 user_id INTEGER REFERENCES users (user_id) ON DELETE CASCADE,
-islike BOOLEAN NOT NULL,
+rating INTEGER NOT NULL,
 PRIMARY KEY(review_id,user_id)
 );
 --

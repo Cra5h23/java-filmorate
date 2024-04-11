@@ -25,10 +25,7 @@ public class ReviewDaoImpl implements ReviewDao {
             "r.user_id, " +
             "r.content, " +
             "r.ispositive, " +
-            "coalesce(" +
-            "   sum(case when rr.islike then 1 else 0 end) - " +
-            "   sum(case when not(rr.islike) then 1 else 0 end) " +
-            ", 0) as useful ";
+            "sum(coalesce(rr.rating,0)) as useful ";
 
     private final String mainGetFrom = "from reviews as r " +
             "left join reviewratings as rr on r.review_id = rr.review_id ";
