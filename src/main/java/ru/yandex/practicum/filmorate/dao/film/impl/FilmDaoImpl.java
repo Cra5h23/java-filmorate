@@ -239,9 +239,8 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public Collection<Film> getFilmsByIds(Set<Integer> filmIds) {
-        String inSql = String.join(",", Collections.nCopies(filmIds.size(), "?"));
-
+    public Collection<Film> getRecommendationFilms(Integer userId) {
+        Object[] params = new Object[]{userId, userId, userId};
         String sql = "SELECT f.*,\n" +
                 "r.RATING_NAME,\n" +
                 "ARRAY_AGG(DISTINCT g.GENRE_ID || ';' || g.genre_name) genres,\n" +
@@ -252,11 +251,20 @@ public class FilmDaoImpl implements FilmDao {
                 "LEFT JOIN GENRES g ON fg.GENRE_ID = g.GENRE_ID\n" +
                 "LEFT JOIN FILMS_DIRECTORS fd ON fd.FILM_ID  = f.FILM_ID\n" +
                 "LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = fd.DIRECTOR_ID\n" +
-                "WHERE f.FILM_ID IN (" + inSql + ") " +
+                "WHERE f.FILM_ID IN (\n" +
+                "SELECT DISTINCT film_id FROM likes AS fl_2\n" +
+                "WHERE user_id IN (\n" +
+                "       SELECT DISTINCT user_id FROM likes AS fl_1\n" +
+                "       WHERE\n" +
+                "       fl_1.user_id != ?\n" +
+                "       AND fl_1.film_id IN (SELECT fl_0.film_id FROM likes AS fl_0 WHERE fl_0.user_id = ?)\n" +
+                "    )\n" +
+                "    AND film_id NOT IN (SELECT fl_0.film_id FROM likes AS fl_0 WHERE fl_0.user_id = ?)\n" +
+                ") " +
                 "GROUP BY f.FILM_ID\n";
-        log.info("Выполняется запрос к БД: {} Параметры: {}", sql, filmIds.toArray());
+        log.info("Выполняется запрос к БД: {} Параметры: {}", sql, params);
 
-        return jdbcTemplate.query(sql, FilmUtil::makeFilm, filmIds.toArray());
+        return jdbcTemplate.query(sql, FilmUtil::makeFilm, params);
     }
 
     @Override
