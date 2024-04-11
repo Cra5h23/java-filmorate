@@ -1,20 +1,82 @@
-# java-filmorate
+# Java-Filmorate
 
-Template repository for Filmorate project.
-
-# Стуруктура базы данных для приложения Filmorate.
+Java-Filmorate проект приложения соцсети где вы можете добавлять друг друга в друзья, искать фильмы по названию фильма
+и его режжисёру, оставлять отзывы, ставить лайки, находить общие с другом фильмы.
 
 ## Содержание:
 
-1. [Схема базы данных.]
+1. Описание основных функций.
+    * Функциональность пользователи.
+    * Функциональность фильмы.
+    * Функциональность отзывы.
+    * Функциональность друзья.
+    * Функциональность лайки.
+    * Функциональность Поиск.
+    * Функциональность рекомендации.
+    * Функциональность лента событий.
+    * Функциональность общие фильмы.
 
-2. [Краткое описание всех таблиц.]
+2. Структура Базы данных.
+    * Схема базы данных.
+    * Краткое описание всех таблиц.
+    * Примеры запросов.
+   
+3. Состав команды.
 
-3. [Примеры запросов.]
+## Описание основных функций.
+
+### Приложение Filmorate имеет следующии функции.
+
+* #### Функциональность пользователи.
+    * Вы можете добавить нового пользователя введя данные такие как: логин, день рождения,
+      электронную почту и имя пользователя.
+    * Обновить данные пользователя.
+    * Вы можете запросить список всех пользователей.
+    * Запросить пользователя по его id.
+    * Удалить пользователя.
+
+* #### Функциональность фильмы.
+    * Вы можете добавить новый фильм введя такие данные как: название фильма, описание фильма, жанр
+      фильма, год выпуска фильма, продолжительность фильма, его жанры, возрастной рейтинг и его режжисёры.
+    * Обновить данные фильма.
+    * Запросить список всех фильмов.
+    * Запросить фильм по его id.
+    * Удалить фильм.
+
+* #### Функциональность отзывы.
+    * Пользователи могут оставлять отзывы к фильмам.
+    * Пользователи могут ставить рейтинг отзывам.
+    * Можно запросить список всех отзывов для фильма.
+
+* #### Функциональность друзья.
+    * Пользователи могут добавлять друг друга в друзья.
+    * Пользователи могут подтверждать стаус дружбы.
+    * Пользователи могут запрашивать список друзей.
+    * Пользователи могут запрашивать список общих друзей с другим пользователем.
+    * Пользователи могут удалять из друзей друг друга.
+
+* #### Функциональность лайки.
+    * Пользователи могут ставить лайки фильмам.
+    * Пользователи могут удалять лайки у фильмов.
+
+* #### Функциональность поиск.
+    * Можно выполнить поиск самых популярных фильмов.
+    * Можно выполнить поиск по названию фильма, а также его режжисёру.
+
+* #### Функциональность рекомендации.
+    * Вывод списка рекомендованных пользователю фильмов.
+
+* #### Функциональность лента событий.
+    * Просмотр последних событий на платформе для пользователя таких как: добавление в друзья, удаление из друзей, лайки
+      и отзывы, которые оставили друзья пользователя.
+* #### Функциональность общие фильмы.
+    * Вывод общих с другом фильмов.
+
+## Стуруктура базы данных для приложения Filmorate.
 
 ### Схема базы данных.
 
-![Sprint11DataBAseSprint12.drawio.png](src%2Fmain%2Fresources%2FSprint11DataBAseSprint12.drawio.png)
+![Sprint12.drawio.png](src%2Fmain%2Fresources%2FSprint12.drawio.png)
 
 ### Краткое описание всех таблиц.
 
@@ -88,31 +150,34 @@ Template repository for Filmorate project.
 ### Примеры запросов.
 
 - #### Получение всех фильмов.
-  ```SQL
-  SELECT f.*, 
-  r.rating_name 
-  FROM films f 
-  LEFT JOIN ratings r ON f.rating_id = r.rating_id
+- ```SQL
+  SELECT f.*,
+  r.RATING_NAME,
+  ARRAY_AGG(DISTINCT g.GENRE_ID || ';' || g.genre_name) genres,
+  ARRAY_AGG(DISTINCT d.DIRECTOR_ID || ';' || d.DIRECTOR_NAME) directors
+  FROM FILMS f
+  LEFT JOIN RATINGS r ON f.RATING_ID = r.RATING_ID
+  LEFT JOIN FILM_GENRES fg ON f.FILM_ID = fg.FILM_ID
+  LEFT JOIN GENRES g ON fg.GENRE_ID = g.GENRE_ID
+  LEFT JOIN FILMS_DIRECTORS fd ON fd.FILM_ID  = f.FILM_ID
+  LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = fd.DIRECTOR_ID
+  GROUP BY f.FILM_ID
   ```
+
 - #### Получение фильма по id.
   ```SQL
-  SELECT f.*, 
-  r.rating_name 
-  FROM films f 
-  LEFR JOIN ratings r ON f.rating_id=r.rating_id 
-  WHERE f.film_id=?
-  ```
-- #### Получение списка самых популярных фильмов, c колличеством фильмов count
-  ```SQL
-  SELECT
-  f.*,
-  r.rating_name
-  FROM FILMS
-  LEFT JOIN ratings r on f.rating_id=r.rating_id
-  LEFT JOIN LIKES l ON f.FILM_ID =l.FILM_ID
+  SELECT f.*,
+  r.RATING_NAME,
+  ARRAY_AGG(DISTINCT g.GENRE_ID || ';' || g.genre_name) genres,
+  ARRAY_AGG(DISTINCT d.DIRECTOR_ID || ';' || d.DIRECTOR_NAME) directors
+  FROM FILMS f
+  LEFT JOIN RATINGS r ON f.RATING_ID = r.RATING_ID
+  LEFT JOIN FILM_GENRES fg ON f.FILM_ID = fg.FILM_ID
+  LEFT JOIN GENRES g ON fg.GENRE_ID = g.GENRE_ID
+  LEFT JOIN FILMS_DIRECTORS fd ON fd.FILM_ID  = f.FILM_ID
+  LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = fd.DIRECTOR_ID
+  WHERE f.FILM_ID = :film_id
   GROUP BY f.FILM_ID
-  ORDER BY count(l.user_id) DESC
-  limit ?
   ```
 
 - #### Получение всех пользователей.
@@ -127,3 +192,9 @@ Template repository for Filmorate project.
   FROM users 
   WHERE user_id=?
   ```
+## Состав команды
+  ### [Николай Радзивон](https://github.com/Cra5h23)
+  ### [Зимичева Екатерина](https://github.com/katrinzimi)
+  ### [Рахманов Айрат](https://github.com/raaCodeCat)
+  ### [Алпеев Кирилл](https://github.com/byLucz)
+  ### [Воробьев Егор](https://github.com/Egor151)
