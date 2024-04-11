@@ -9,12 +9,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
-import ru.yandex.practicum.filmorate.dao.impl.EventDaoImpl;
+import ru.yandex.practicum.filmorate.dao.event.EventDao;
+import ru.yandex.practicum.filmorate.dao.event.impl.EventDaoImpl;
 import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.OperationType;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.impl.UserDbStorage;
+import ru.yandex.practicum.filmorate.dao.user.impl.UserDaoImpl;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -35,7 +36,7 @@ class EventDaoTest {
     void init() {
         clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
         eventDao = new EventDaoImpl(jdbcTemplate, clock);
-        var userDbStorage = new UserDbStorage(jdbcTemplate);
+        var userDbStorage = new UserDaoImpl(jdbcTemplate);
         userDbStorage.addUser(User.builder()
                 .id(1)
                 .login("TestLogin")
