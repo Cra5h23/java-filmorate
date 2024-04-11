@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.user.impl;
+package ru.yandex.practicum.filmorate.dao.user.impl;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +16,7 @@ import java.util.*;
 @JdbcTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Sql({"/schema.sql", "/data.sql"})
-class UserDbStorageTest {
+class UserDaoImplTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -24,7 +24,7 @@ class UserDbStorageTest {
     @DisplayName("Метод getAllUser возвращает список всех пользователей")
     void getAllUserTest() {
         Collection<User> users = generateUsersList(3);
-        var userDbStorage = new UserDbStorage(jdbcTemplate);
+        var userDbStorage = new UserDaoImpl(jdbcTemplate);
         users.forEach(userDbStorage::addUser);
         Collection<User> allUsers = userDbStorage.getAllUsers();
         Assertions.assertThat(allUsers)
@@ -37,7 +37,7 @@ class UserDbStorageTest {
     @DisplayName("Метод addUser добавляет пользователя в базу данных")
     void addUserTest() {
         var users = generateUsersList(1);
-        var userDbStorage = new UserDbStorage(jdbcTemplate);
+        var userDbStorage = new UserDaoImpl(jdbcTemplate);
         var user = users.stream().findFirst().map(userDbStorage::addUser).get();
         var userById = userDbStorage.getUserById(user.getId()).get();
 
@@ -50,7 +50,7 @@ class UserDbStorageTest {
     @Test
     void testUpdateUser() {
         var users = generateUsersList(2);
-        var userDbStorage = new UserDbStorage(jdbcTemplate);
+        var userDbStorage = new UserDaoImpl(jdbcTemplate);
         var addedUser = userDbStorage.addUser(users.get(0));
         var updateUser = users.get(1);
         updateUser.setId(addedUser.getId());
@@ -67,7 +67,7 @@ class UserDbStorageTest {
     @Test
     void getUserByIdTest() {
         var users = generateUsersList(1);
-        var userDbStorage = new UserDbStorage(jdbcTemplate);
+        var userDbStorage = new UserDaoImpl(jdbcTemplate);
         User user = userDbStorage.addUser(users.get(0));
         int id = user.getId();
 
@@ -81,7 +81,7 @@ class UserDbStorageTest {
     @Test
     void deleteUser() {
         var users = generateUsersList(1);
-        var userDbStorage = new UserDbStorage(jdbcTemplate);
+        var userDbStorage = new UserDaoImpl(jdbcTemplate);
         User user = userDbStorage.addUser(users.get(0));
 
         userDbStorage.deleteUser(user.getId());
