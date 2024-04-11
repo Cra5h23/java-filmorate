@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.film.impl;
+package ru.yandex.practicum.filmorate.dao.film.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +9,9 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.FilmSort;
+import ru.yandex.practicum.filmorate.model.FilmSort;
+import ru.yandex.practicum.filmorate.dao.film.FilmDao;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.util.film.FilmUtil;
 
 import java.util.*;
@@ -20,7 +20,7 @@ import java.util.*;
 @Primary
 @RequiredArgsConstructor
 @Slf4j
-public class FilmDbStorage implements FilmStorage {
+public class FilmDaoImpl implements FilmDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
@@ -225,9 +225,9 @@ public class FilmDbStorage implements FilmStorage {
             case POPULAR_FILMS_DESC:
                 return jdbcTemplate.query(popularFilmDescSql, FilmUtil::makeFilm, queryParams.toArray());
             case FILMS_BY_DIRECTOR:
-                if (params[1].equals("year")) {
+                if ("year".equals(params[1])) {
                     return jdbcTemplate.query(filmsByDirectorSortYearSql, FilmUtil::makeFilm, params[0]);
-                } else if (params[1].equals("likes")) {
+                } else if ("likes".equals(params[1])) {
                     return jdbcTemplate.query(filmsByDirectorSortLikesSql, FilmUtil::makeFilm, params[0]);
                 }
                 return List.of();

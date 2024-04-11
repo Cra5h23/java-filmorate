@@ -1,13 +1,13 @@
-package ru.yandex.practicum.filmorate.storage.film;
+package ru.yandex.practicum.filmorate.dao.film;
 
-import ru.yandex.practicum.filmorate.FilmSort;
+import ru.yandex.practicum.filmorate.model.FilmSort;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
-public interface FilmStorage {
+public interface FilmDao {
     Collection<Film> getAllFilms();
 
     Film addFilm(Film film);
