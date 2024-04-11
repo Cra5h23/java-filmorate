@@ -82,7 +82,7 @@ public class DirectorDaoImpl implements DirectorDao {
      */
     @Override
     public void delete(Integer id) {
-        var sql = "delete directors where director_id = ?;";
+        var sql = "delete directors where director_id = ?";
         log.info("Создан запрос на удаление из базы данных режиссёра с id {}", id);
         jdbcTemplate.update(sql, id);
     }
