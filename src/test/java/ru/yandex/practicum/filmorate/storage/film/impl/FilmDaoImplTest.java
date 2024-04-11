@@ -8,12 +8,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
-import ru.yandex.practicum.filmorate.FilmSort;
-import ru.yandex.practicum.filmorate.dao.impl.LikeDaoImpl;
+import ru.yandex.practicum.filmorate.model.FilmSort;
+import ru.yandex.practicum.filmorate.dao.film.impl.FilmDaoImpl;
+import ru.yandex.practicum.filmorate.dao.like.impl.LikeDaoImpl;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.impl.UserDbStorage;
+import ru.yandex.practicum.filmorate.dao.user.impl.UserDaoImpl;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -21,7 +22,7 @@ import java.util.*;
 @JdbcTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Sql({"/schema.sql", "/data.sql"})
-class FilmDbStorageTest {
+class FilmDaoImplTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -29,7 +30,7 @@ class FilmDbStorageTest {
     @DisplayName("Метод getAllFilms возвращает коллекцию всех фильмов из базы данных")
     void getAllFilmsTest() {
         Collection<Film> films = generatorFilmList(3);
-        var filmDbStorage = new FilmDbStorage(jdbcTemplate);
+        var filmDbStorage = new FilmDaoImpl(jdbcTemplate);
         films.forEach(filmDbStorage::addFilm);
         Collection<Film> allFilms = filmDbStorage.getAllFilms();
 
@@ -43,7 +44,7 @@ class FilmDbStorageTest {
     @DisplayName("Метод addFilm добавляет фильм в базу данных")
     void addFilmTest() {
         List<Film> films = generatorFilmList(1);
-        var filmDbStorage = new FilmDbStorage(jdbcTemplate);
+        var filmDbStorage = new FilmDaoImpl(jdbcTemplate);
         Film film = films.stream().findFirst().map(filmDbStorage::addFilm).get();
         Film filmById = filmDbStorage.getFilmById(film.getId()).get();
 
@@ -57,7 +58,7 @@ class FilmDbStorageTest {
     @DisplayName("Метод updateFilm обновляет пользователя в базе данных")
     void updateFilmTest() {
         List<Film> films = generatorFilmList(2);
-        var filmDbStorage = new FilmDbStorage(jdbcTemplate);
+        var filmDbStorage = new FilmDaoImpl(jdbcTemplate);
 
         Film film = filmDbStorage.addFilm(films.get(0));
         Film updateFilm = films.get(1);
@@ -76,7 +77,7 @@ class FilmDbStorageTest {
     @Test
     void getFilmById() {
         List<Film> films = generatorFilmList(1);
-        var filmDbStorage = new FilmDbStorage(jdbcTemplate);
+        var filmDbStorage = new FilmDaoImpl(jdbcTemplate);
         Film film = filmDbStorage.addFilm(films.get(0));
 
         int id = film.getId();
@@ -92,7 +93,7 @@ class FilmDbStorageTest {
     @Test
     void deleteFilm() {
         List<Film> films = generatorFilmList(1);
-        var filmDbStorage = new FilmDbStorage(jdbcTemplate);
+        var filmDbStorage = new FilmDaoImpl(jdbcTemplate);
         Film film = filmDbStorage.addFilm(films.get(0));
         int id = film.getId();
 
@@ -107,8 +108,8 @@ class FilmDbStorageTest {
     @Test
     void getSortedFilms() {
         List<Film> films = generatorFilmList(3);
-        var filmDbStorage = new FilmDbStorage(jdbcTemplate);
-        var userDbStorage = new UserDbStorage(jdbcTemplate);
+        var filmDbStorage = new FilmDaoImpl(jdbcTemplate);
+        var userDbStorage = new UserDaoImpl(jdbcTemplate);
         LikeDaoImpl likeDao = new LikeDaoImpl(jdbcTemplate);
 
         List<User> users = List.of(
@@ -158,8 +159,8 @@ class FilmDbStorageTest {
     @Test
     void getCommonFilms() {
         List<Film> films = generatorFilmList(5);
-        var filmDbStorage = new FilmDbStorage(jdbcTemplate);
-        var userDbStorage = new UserDbStorage(jdbcTemplate);
+        var filmDbStorage = new FilmDaoImpl(jdbcTemplate);
+        var userDbStorage = new UserDaoImpl(jdbcTemplate);
         LikeDaoImpl likeDao = new LikeDaoImpl(jdbcTemplate);
 
         List<User> users = List.of(
@@ -215,7 +216,7 @@ class FilmDbStorageTest {
     @Test
     void getFilmsByIds() {
         var films = generatorFilmList(2);
-        var filmDbStorage = new FilmDbStorage(jdbcTemplate);
+        var filmDbStorage = new FilmDaoImpl(jdbcTemplate);
 
         filmDbStorage.addFilm(films.get(0));
         filmDbStorage.addFilm(films.get(1));
@@ -230,7 +231,7 @@ class FilmDbStorageTest {
     @Test
     void getFilmsByIds_incorrectFilmIds() {
         var films = generatorFilmList(2);
-        var filmDbStorage = new FilmDbStorage(jdbcTemplate);
+        var filmDbStorage = new FilmDaoImpl(jdbcTemplate);
 
         filmDbStorage.addFilm(films.get(0));
         filmDbStorage.addFilm(films.get(1));
