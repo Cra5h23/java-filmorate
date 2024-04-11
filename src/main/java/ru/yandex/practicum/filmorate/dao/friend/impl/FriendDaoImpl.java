@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.dao.impl;
+package ru.yandex.practicum.filmorate.dao.friend.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,7 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.util.user.UserUtil;
-import ru.yandex.practicum.filmorate.dao.FriendDao;
+import ru.yandex.practicum.filmorate.dao.friend.FriendDao;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
@@ -21,7 +21,7 @@ public class FriendDaoImpl implements FriendDao {
     @Override
     public void addingUserAsFriend(Integer userId, Integer friendId) {
         var sql = "insert into friends(user_id, friend_id, status) values(?, ?, ?);" +
-                "insert into friends(user_id, friend_id, status) values(?,?, ?);";
+                "insert into friends(user_id, friend_id, status) values(?, ?, ?);";
         jdbcTemplate.update(sql, userId, friendId, true, friendId, userId, false);
     }
 
@@ -34,6 +34,7 @@ public class FriendDaoImpl implements FriendDao {
     @Override
     public Collection<User> getUserFriends(Integer userId) {
         var sql = "select u.* from friends f left join users u on f.friend_id=u.user_id where f.user_id=? and f.status=true";
+
         try {
             return jdbcTemplate.query(sql, UserUtil::makeUser, userId);
         } catch (EmptyResultDataAccessException e) {
@@ -47,7 +48,7 @@ public class FriendDaoImpl implements FriendDao {
                 "from friends f\n" +
                 "join friends f2 on f.friend_id = f2.friend_id and f2.user_id=? and f2.status= true\n" +
                 "join users u on f.friend_id = u.user_id\n" +
-                "where f.user_id=? and f.status= true;";
+                "where f.user_id=? and f.status = true";
         try {
             return jdbcTemplate.query(sql, UserUtil::makeUser, otherUserId, userId);
         } catch (EmptyResultDataAccessException e) {

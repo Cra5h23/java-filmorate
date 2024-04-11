@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.dao;
+package ru.yandex.practicum.filmorate.dao.rating;
 
 import org.springframework.data.repository.CrudRepository;
 import ru.yandex.practicum.filmorate.model.Rating;

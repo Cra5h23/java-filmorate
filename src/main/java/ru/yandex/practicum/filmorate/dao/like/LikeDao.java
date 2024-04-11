@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.dao;
+package ru.yandex.practicum.filmorate.dao.like;
 
 import ru.yandex.practicum.filmorate.model.Like;
 import java.util.List;
