@@ -18,7 +18,7 @@ public class ReviewRatingDaoImpl implements ReviewRatingDao {
     @Override
     public Optional<ReviewRating> getByParam(Integer id, Integer userId) {
         Object[] params = new Object[]{id, userId};
-        String sql = "select review_id, user_id, islike from reviewratings " +
+        String sql = "select review_id, user_id, rating from reviewratings " +
                 "where review_id = ? and user_id = ?";
         log.info("Выполняется запрос к БД: {} Параметры: {}", sql, params);
 
@@ -30,9 +30,9 @@ public class ReviewRatingDaoImpl implements ReviewRatingDao {
         Object[] params = new Object[]{
                 reviewRating.getReviewId(),
                 reviewRating.getUserId(),
-                reviewRating.getIsLike()
+                reviewRating.getRating()
         };
-        String sql = "insert into reviewratings(review_id, user_id, islike) " +
+        String sql = "insert into reviewratings(review_id, user_id, rating) " +
                 "values (?, ?, ?)";
 
         log.info("Выполняется запрос к БД: {} Параметры: {}", sql, params);
@@ -42,12 +42,12 @@ public class ReviewRatingDaoImpl implements ReviewRatingDao {
     @Override
     public void update(ReviewRating reviewRating) {
         Object[] params = new Object[]{
-                reviewRating.getIsLike(),
+                reviewRating.getRating(),
                 reviewRating.getReviewId(),
                 reviewRating.getUserId()
         };
         String sql = "update reviewratings " +
-                "set islike = ? " +
+                "set rating = ? " +
                 "where review_id = ? and user_id = ?";
 
         log.info("Выполняется запрос к БД: {} Параметры: {}", sql, params);
@@ -58,11 +58,10 @@ public class ReviewRatingDaoImpl implements ReviewRatingDao {
     public void delete(ReviewRating reviewRating) {
         Object[] params = new Object[]{
                 reviewRating.getReviewId(),
-                reviewRating.getUserId(),
-                reviewRating.getIsLike()
+                reviewRating.getUserId()
         };
         String sql = "delete from reviewratings " +
-                "where review_id = ? and user_id = ? and islike = ?";
+                "where review_id = ? and user_id = ?";
 
         log.info("Выполняется запрос к БД: {} Параметры: {}", sql, params);
         jdbcTemplate.update(sql, params);

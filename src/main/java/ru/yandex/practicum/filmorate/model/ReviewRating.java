@@ -28,5 +28,5 @@ public class ReviewRating {
     /**
      * Признак оценки: true = лайк, false = дизлайк.
      */
-    private Boolean isLike;
+    private Integer rating;
 }
