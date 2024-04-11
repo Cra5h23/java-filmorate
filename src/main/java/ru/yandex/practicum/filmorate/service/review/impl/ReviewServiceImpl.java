@@ -3,16 +3,16 @@ package ru.yandex.practicum.filmorate.service.review.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.EventDao;
-import ru.yandex.practicum.filmorate.dao.ReviewDao;
-import ru.yandex.practicum.filmorate.dao.ReviewRatingDao;
+import ru.yandex.practicum.filmorate.dao.event.EventDao;
+import ru.yandex.practicum.filmorate.dao.review.ReviewDao;
+import ru.yandex.practicum.filmorate.dao.review.ReviewRatingDao;
 import ru.yandex.practicum.filmorate.exeption.BadRequestException;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.model.ReviewRating;
 import ru.yandex.practicum.filmorate.service.review.ReviewService;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.dao.film.FilmDao;
+import ru.yandex.practicum.filmorate.dao.user.UserDao;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +23,9 @@ import java.util.Optional;
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewDao reviewDao;
 
-    private final FilmStorage filmStorage;
+    private final FilmDao filmDao;
 
-    private final UserStorage userStorage;
+    private final UserDao userDao;
 
     private final ReviewRatingDao reviewRatingDao;
     private final EventDao eventDao;
@@ -190,12 +190,12 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private void checkExistsFilmById(Integer id) {
-        filmStorage.getFilmById(id).orElseThrow(() -> new NotFoundException(
+        filmDao.getFilmById(id).orElseThrow(() -> new NotFoundException(
                 String.format("Фильма с filmId %d не существует", id)));
     }
 
     private void checkExistsUserById(Integer id) {
-        userStorage.getUserById(id).orElseThrow(() -> new NotFoundException(
+        userDao.getUserById(id).orElseThrow(() -> new NotFoundException(
                 String.format("Пользователя с userId %d не существует", id)));
     }
 
