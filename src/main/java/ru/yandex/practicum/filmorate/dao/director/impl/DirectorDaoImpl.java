@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.dao.impl;
+package ru.yandex.practicum.filmorate.dao.director.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,7 +6,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.dao.DirectorDao;
+import ru.yandex.practicum.filmorate.dao.director.DirectorDao;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.util.director.DirectorUtil;
 
