@@ -213,33 +213,116 @@ class FilmDaoImplTest {
     }
 
     @Test
-    void getFilmsByIds() {
+    void getRecommendation_returnVoid_BecauseNoIntersections() {
         var films = generatorFilmList(2);
-        var filmDbStorage = new FilmDaoImpl(jdbcTemplate);
+        var filmDao = new FilmDaoImpl(jdbcTemplate);
+        var likeDao = new LikeDaoImpl(jdbcTemplate);
+        var userDao = new UserDaoImpl(jdbcTemplate);
 
-        filmDbStorage.addFilm(films.get(0));
-        filmDbStorage.addFilm(films.get(1));
+        List<User> users = List.of(
+                User.builder()
+                        .id(1)
+                        .name("testName1")
+                        .login("testLogin1")
+                        .email("testEmail1@test.com")
+                        .birthday(LocalDate.parse("1989-03-05"))
+                        .build(),
+                User.builder()
+                        .id(2)
+                        .name("testName2")
+                        .login("testLogin2")
+                        .email("testEmail2@test.com")
+                        .birthday(LocalDate.parse("1989-10-05"))
+                        .build()
+        );
+        filmDao.addFilm(films.get(0));
+        filmDao.addFilm(films.get(1));
+        userDao.addUser(users.get(0));
+        userDao.addUser(users.get(1));
+        likeDao.saveLike(1, 1);
+        likeDao.saveLike(2, 2);
 
-        Collection<Film> gettedFilms = filmDbStorage.getFilmsByIds(Set.of(1,2));
-
-        Assertions.assertThat(gettedFilms)
-                .isNotNull()
-                .isEqualTo(films);
-    }
-
-    @Test
-    void getFilmsByIds_incorrectFilmIds() {
-        var films = generatorFilmList(2);
-        var filmDbStorage = new FilmDaoImpl(jdbcTemplate);
-
-        filmDbStorage.addFilm(films.get(0));
-        filmDbStorage.addFilm(films.get(1));
-
-        Collection<Film> gettedFilms = filmDbStorage.getFilmsByIds(Set.of(101,102));
+        Collection<Film> gettedFilms = filmDao.getRecommendationFilms(1);
 
         Assertions.assertThat(gettedFilms)
                 .isNotNull()
                 .isEqualTo(List.of());
+    }
+
+    @Test
+    void getRecommendation_returnVoid_BecauseNoIntersectionsLikesTheSame() {
+        var films = generatorFilmList(1);
+        var filmDao = new FilmDaoImpl(jdbcTemplate);
+        var likeDao = new LikeDaoImpl(jdbcTemplate);
+        var userDao = new UserDaoImpl(jdbcTemplate);
+
+        List<User> users = List.of(
+                User.builder()
+                        .id(1)
+                        .name("testName1")
+                        .login("testLogin1")
+                        .email("testEmail1@test.com")
+                        .birthday(LocalDate.parse("1989-03-05"))
+                        .build(),
+                User.builder()
+                        .id(2)
+                        .name("testName2")
+                        .login("testLogin2")
+                        .email("testEmail2@test.com")
+                        .birthday(LocalDate.parse("1989-10-05"))
+                        .build()
+        );
+        filmDao.addFilm(films.get(0));
+        userDao.addUser(users.get(0));
+        userDao.addUser(users.get(1));
+        likeDao.saveLike(1, 1);
+        likeDao.saveLike(1, 2);
+
+        Collection<Film> gettedFilms = filmDao.getRecommendationFilms(1);
+
+        Assertions.assertThat(gettedFilms)
+                .isNotNull()
+                .isEqualTo(List.of());
+    }
+
+    @Test
+    void getRecommendation() {
+        var films = generatorFilmList(3);
+        var filmDao = new FilmDaoImpl(jdbcTemplate);
+        var likeDao = new LikeDaoImpl(jdbcTemplate);
+        var userDao = new UserDaoImpl(jdbcTemplate);
+
+        List<User> users = List.of(
+                User.builder()
+                        .id(1)
+                        .name("testName1")
+                        .login("testLogin1")
+                        .email("testEmail1@test.com")
+                        .birthday(LocalDate.parse("1989-03-05"))
+                        .build(),
+                User.builder()
+                        .id(2)
+                        .name("testName2")
+                        .login("testLogin2")
+                        .email("testEmail2@test.com")
+                        .birthday(LocalDate.parse("1989-10-05"))
+                        .build()
+        );
+        filmDao.addFilm(films.get(0));
+        filmDao.addFilm(films.get(1));
+        filmDao.addFilm(films.get(2));
+        userDao.addUser(users.get(0));
+        userDao.addUser(users.get(1));
+        likeDao.saveLike(1, 1);
+        likeDao.saveLike(2, 1);
+        likeDao.saveLike(1, 2);
+        likeDao.saveLike(3, 2);
+
+        Collection<Film> gettedFilms = filmDao.getRecommendationFilms(1);
+
+        Assertions.assertThat(gettedFilms)
+                .isNotNull()
+                .isEqualTo(List.of(films.get(2)));
     }
 
     private List<Film> generatorFilmList(Integer count) {
