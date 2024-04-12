@@ -193,8 +193,8 @@ Java-Filmorate проект приложения соцсети где вы мо
   WHERE user_id=?
   ```
 ## Состав команды
-  ### [Николай Радзивон](https://github.com/Cra5h23)
-  ### [Зимичева Екатерина](https://github.com/katrinzimi)
-  ### [Рахманов Айрат](https://github.com/raaCodeCat)
-  ### [Алпеев Кирилл](https://github.com/byLucz)
-  ### [Воробьев Егор](https://github.com/Egor151)
+  ### [Николай Радзивон](https://github.com/Cra5h23) - Тимлид.
+  ### [Зимичева Екатерина](https://github.com/katrinzimi) - Разработчик.
+  ### [Рахманов Айрат](https://github.com/raaCodeCat) - Разработчик.
+  ### [Алпеев Кирилл](https://github.com/byLucz) - Разработчик.
+  ### [Воробьев Егор](https://github.com/Egor151) - Разработчик.

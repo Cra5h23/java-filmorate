@@ -11,7 +11,6 @@ DROP TABLE IF EXISTS ratings;
 DROP TABLE IF EXISTS genres;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS directors;
-
 --
 
 --Рейтинги
