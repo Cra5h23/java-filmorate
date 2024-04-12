@@ -149,6 +149,9 @@ class FilmDaoImplTest {
 
         Collection<Film> sortedFilms = filmDbStorage.getSortedFilms(FilmSort.POPULAR_FILMS_DESC, 10);
 
+        System.out.println(filmCollection);
+        System.out.println(sortedFilms);
+
         Assertions.assertThat(sortedFilms)
                 .isNotNull()
                 .usingRecursiveComparison()

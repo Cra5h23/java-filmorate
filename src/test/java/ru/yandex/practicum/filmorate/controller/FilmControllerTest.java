@@ -22,7 +22,6 @@ import ru.yandex.practicum.filmorate.service.film.FilmService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -82,7 +81,7 @@ public class FilmControllerTest {
                     .mpa(new Rating(1, "Комедия"))
                     .duration(120 + i)
                     .releaseDate(LocalDate.of(1989, 5, 1).plusDays(1))
-                    .genres(Set.of(new Genre(1, "G")))
+                    .genres(List.of(new Genre(1, "G")))
                     .directors(List.of(new Director(1, "testDirector")))
                     .build();
             films.add(f);

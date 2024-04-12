@@ -182,8 +182,8 @@ public class FilmDaoImpl implements FilmDao {
 
         if (sort.equals(FilmSort.POPULAR_FILMS_DESC)) {
             Integer count = (Integer) params[0];
-            Integer genreId = (Integer) params[1];
-            Integer year = (Integer) params[2];
+            Integer genreId = params.length > 1 ? (Integer) params[1] : null;
+            Integer year = params.length > 2 ? (Integer) params[2] : null;
 
             boolean hasCondition = false;
             if (genreId != null || year != null) {
