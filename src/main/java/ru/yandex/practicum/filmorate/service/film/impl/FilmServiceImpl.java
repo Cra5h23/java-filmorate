@@ -6,11 +6,9 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.FilmSort;
 import ru.yandex.practicum.filmorate.dao.director.DirectorDao;
 import ru.yandex.practicum.filmorate.dao.film.FilmDao;
-import ru.yandex.practicum.filmorate.dao.like.LikeDao;
 import ru.yandex.practicum.filmorate.exeption.FilmServiceException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Like;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import java.util.*;
@@ -23,7 +21,6 @@ import static java.lang.String.format;
 public class FilmServiceImpl implements FilmService {
     private final FilmDao filmDao;
     private final DirectorDao directorDao;
-    private final LikeDao likeDao;
 
     /**
      * Метод получения списка всех фильмов
@@ -113,52 +110,6 @@ public class FilmServiceImpl implements FilmService {
      */
     @Override
     public Collection<Film> getRecommendationsByUserId(Integer userId) {
-        List<Like> likes = likeDao.getAllFilmLikes();
-        Set<Integer> currentUserLikes = new HashSet<>();
-        Map<Integer, Set<Integer>> otherUsersLikes = new HashMap<>();
-        Set<Integer> recommendationFilmIds = new HashSet<>();
-
-        if (likes == null || likes.size() == 0) {
-            return new ArrayList<>();
-        }
-
-        for (Like like : likes) {
-            Integer likeUserId = like.getUserId();
-            Integer likeFilmId = like.getFilmId();
-
-            if (Objects.equals(likeUserId, userId)) {
-                currentUserLikes.add(likeFilmId);
-            } else {
-                if (otherUsersLikes.containsKey(likeUserId)) {
-                    otherUsersLikes.get(likeUserId).add(likeFilmId);
-                } else {
-                    Set<Integer> filmIds = new HashSet<>();
-                    filmIds.add(likeFilmId);
-                    otherUsersLikes.put(likeUserId, filmIds);
-                }
-            }
-        }
-
-        if (otherUsersLikes.size() == 0) {
-            return new ArrayList<>();
-        }
-
-        for (Map.Entry<Integer, Set<Integer>> entry : otherUsersLikes.entrySet()) {
-            Set<Integer> idsForCheck = new HashSet<>(entry.getValue());
-            Set<Integer> idsTmp = new HashSet<>(entry.getValue());
-            idsTmp.removeAll(currentUserLikes);
-
-            if (idsTmp.equals(idsForCheck)) {
-                continue;
-            }
-
-            recommendationFilmIds.addAll(idsTmp);
-        }
-
-        if (recommendationFilmIds.size() == 0) {
-            return new ArrayList<>();
-        }
-
-        return filmDao.getFilmsByIds(recommendationFilmIds);
+        return filmDao.getRecommendationFilms(userId);
     }
 }

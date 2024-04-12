@@ -5,7 +5,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.Set;
 
 public interface FilmDao {
     Collection<Film> getAllFilms();
@@ -22,5 +21,5 @@ public interface FilmDao {
 
     Collection<Film> findFilms(String query, String by);
 
-    Collection<Film> getFilmsByIds(Set<Integer> filmIds);
+    Collection<Film> getRecommendationFilms(Integer userId);
 }

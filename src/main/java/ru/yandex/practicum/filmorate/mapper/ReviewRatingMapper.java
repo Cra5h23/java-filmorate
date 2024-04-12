@@ -12,7 +12,7 @@ public class ReviewRatingMapper implements RowMapper<ReviewRating> {
         ReviewRating reviewRating = new ReviewRating();
         reviewRating.setReviewId(rs.getInt("review_id"));
         reviewRating.setUserId(rs.getInt("user_id"));
-        reviewRating.setIsLike(rs.getBoolean("islike"));
+        reviewRating.setRating(rs.getInt("rating"));
 
         return reviewRating;
     }

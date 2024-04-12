@@ -15,6 +15,7 @@ import ru.yandex.practicum.filmorate.dao.film.FilmDao;
 import ru.yandex.practicum.filmorate.dao.user.UserDao;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -29,6 +30,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRatingDao reviewRatingDao;
     private final EventDao eventDao;
+
+    static final Integer LIKE_RATING = 1;
+
+    static final Integer DISLIKE_RATING = -1;
 
     @Override
     public Review getReviewById(Integer id) {
@@ -84,14 +89,14 @@ public class ReviewServiceImpl implements ReviewService {
 
         if (ratingOptional.isPresent()) {
             ReviewRating reviewRating = ratingOptional.get();
-            Boolean isLike = reviewRating.getIsLike();
+            Integer rating = reviewRating.getRating();
 
-            if (isLike) {
+            if (Objects.equals(rating, LIKE_RATING)) {
                 return String.format(
                         "Пользователь с userId %d уже поставил лайк отзыву c reviewId %d", userId, id
                 );
             } else {
-                reviewRating.setIsLike(true);
+                reviewRating.setRating(DISLIKE_RATING);
                 reviewRatingDao.update(reviewRating);
 
                 return String.format(
@@ -103,7 +108,7 @@ public class ReviewServiceImpl implements ReviewService {
         ReviewRating newReviewRating = ReviewRating.builder()
                 .reviewId(id)
                 .userId(userId)
-                .isLike(true)
+                .rating(LIKE_RATING)
                 .build();
         reviewRatingDao.create(newReviewRating);
 
@@ -121,14 +126,14 @@ public class ReviewServiceImpl implements ReviewService {
 
         if (ratingOptional.isPresent()) {
             ReviewRating reviewRating = ratingOptional.get();
-            Boolean isLike = reviewRating.getIsLike();
+            Integer rating = reviewRating.getRating();
 
-            if (!isLike) {
+            if (Objects.equals(rating, DISLIKE_RATING)) {
                 return String.format(
                         "Пользователь с userId %d уже поставил дизлайк отзыву c reviewId %d", userId, id
                 );
             } else {
-                reviewRating.setIsLike(false);
+                reviewRating.setRating(DISLIKE_RATING);
                 reviewRatingDao.update(reviewRating);
 
                 return String.format(
@@ -140,7 +145,7 @@ public class ReviewServiceImpl implements ReviewService {
         ReviewRating newReviewRating = ReviewRating.builder()
                 .reviewId(id)
                 .userId(userId)
-                .isLike(false)
+                .rating(DISLIKE_RATING)
                 .build();
         reviewRatingDao.create(newReviewRating);
 
@@ -156,7 +161,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         Optional<ReviewRating> ratingOptional = reviewRatingDao.getByParam(id, userId);
 
-        if (ratingOptional.isPresent() && ratingOptional.get().getIsLike()) {
+        if (ratingOptional.isPresent() && Objects.equals(ratingOptional.get().getRating(), LIKE_RATING)) {
             reviewRatingDao.delete(ratingOptional.get());
 
             return String.format(
@@ -176,7 +181,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         Optional<ReviewRating> ratingOptional = reviewRatingDao.getByParam(id, userId);
 
-        if (ratingOptional.isPresent() && !ratingOptional.get().getIsLike()) {
+        if (ratingOptional.isPresent() && Objects.equals(ratingOptional.get().getRating(), DISLIKE_RATING)) {
             reviewRatingDao.delete(ratingOptional.get());
 
             return String.format(
