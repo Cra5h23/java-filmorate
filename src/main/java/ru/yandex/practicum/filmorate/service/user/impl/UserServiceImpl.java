@@ -2,12 +2,11 @@ package ru.yandex.practicum.filmorate.service.user.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.user.UserDao;
 import ru.yandex.practicum.filmorate.exeption.UserServiceException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
 
@@ -17,8 +16,7 @@ import static java.lang.String.format;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Qualifier("userDbStorage")
-    private final UserStorage userStorage;
+    private final UserDao userDao;
 
     /**
      * @return
@@ -26,7 +24,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Collection<User> getUsers() {
         log.info("Запрошен список всех пользователей");
-        return userStorage.getAllUsers();
+        return userDao.getAllUsers();
     }
 
     /**
@@ -35,7 +33,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User addUser(User user) {
-        var u = userStorage.addUser(user);
+        var u = userDao.addUser(user);
         log.info("Добавлен пользователь {}", u);
         return u;
     }
@@ -48,7 +46,7 @@ public class UserServiceImpl implements UserService {
     public User updateUser(User user) {
         checkUser(user.getId(), "обновить");
         log.info("Обновлён пользователь с id: {}", user.getId());
-        return userStorage.updateUser(user);
+        return userDao.updateUser(user);
     }
 
     /**
@@ -68,13 +66,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public String deleteUserById(Integer userId) {
         checkUser(userId, "удалить");
-        userStorage.deleteUser(userId);
+        userDao.deleteUser(userId);
         log.info("Удалён пользователь с id: {}", userId);
         return format("Удалён пользователь с id: %d", userId);
     }
 
     public User checkUser(Integer userId, String s) {
-        return userStorage.getUserById(userId)
+        return userDao.getUserById(userId)
                 .orElseThrow(() -> new UserServiceException(
                         format("Попытка %s пользователя с несуществующим id: %d", s, userId)));
     }
