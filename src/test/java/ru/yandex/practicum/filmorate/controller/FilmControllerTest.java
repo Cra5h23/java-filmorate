@@ -134,7 +134,7 @@ public class FilmControllerTest {
                 .mpa(new Rating(1, "Комедия"))
                 .duration(120)
                 .releaseDate(LocalDate.of(1989, 5, 1).plusDays(1))
-                .genres(Set.of(new Genre(1, "G")))
+                .genres(List.of(new Genre(1, "G")))
                 .directors(List.of(new Director(1,"testDirector")))
                 .build();
         String s = objectMapper.writeValueAsString(f);
