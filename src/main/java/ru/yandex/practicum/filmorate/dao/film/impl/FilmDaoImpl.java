@@ -68,15 +68,13 @@ public class FilmDaoImpl implements FilmDao {
                 "where film_id = :film_id;" +
                 "delete from film_genres where film_id = :film_id;" +
                 "delete from films_directors where film_id = :film_id;";
+        var insertGenreSql = "merge into film_genres (film_id, genre_id) values (:film_id, :genre_id)";
+        var insertDirectorSql = "merge into films_directors (film_id, director_id) values (:film_id, :director_id)";
         var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-        var simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("film_genres");
-        var simpleJdbcInsert1 = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("films_directors");
 
         namedParameterJdbcTemplate.update(sql, FilmUtil.toMap(film));
-        simpleJdbcInsert.executeBatch(FilmUtil.toGenreMap(film));
-        simpleJdbcInsert1.executeBatch(FilmUtil.toDirectorMap(film));
+        namedParameterJdbcTemplate.batchUpdate(insertGenreSql, FilmUtil.toGenreMap(film));
+        namedParameterJdbcTemplate.batchUpdate(insertDirectorSql, FilmUtil.toDirectorMap(film));
 
         return getFilmById(film.getId()).get();
     }
