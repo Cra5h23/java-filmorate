@@ -183,20 +183,8 @@ public class FilmDaoImpl implements FilmDao {
 
         if (sort.equals(FilmSort.POPULAR_FILMS_DESC)) {
             Integer count = (Integer) params[0];
-            Integer genreId = null;
-            Integer year = null;
-
-
-            for (int i = 1; i < params.length; i++) {
-                Integer value = (Integer) params[i];
-                if (value != null) {
-                    if (value > 1895) {
-                        year = value;
-                    } else {
-                        genreId = value;
-                    }
-                }
-            }
+            Integer genreId = (Integer) params[1];
+            Integer year = (Integer) params[2];
 
             boolean hasCondition = false;
             if (genreId != null || year != null) {
