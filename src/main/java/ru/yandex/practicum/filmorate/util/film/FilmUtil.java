@@ -40,14 +40,14 @@ public class FilmUtil {
                 .addValue("rating_id", film.getMpa().getId());
     }
 
-    private static Set<Genre> makeGenreList(ResultSet rs) throws SQLException {
+    private static List<Genre> makeGenreList(ResultSet rs) throws SQLException {
         var genres = rs.getString("genres");
 
         return Arrays.stream(genres.substring(1, genres.length() - 1).split(", "))
                 .map(s -> s.split(";"))
                 .filter(s -> s.length == 2)
                 .map(s -> new Genre(Integer.parseInt(s[0]), s[1]))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+                .collect(Collectors.toList());
     }
 
     private static List<Director> makeDirectorList(ResultSet rs) throws SQLException {

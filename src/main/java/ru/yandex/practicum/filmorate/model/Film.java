@@ -16,9 +16,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Film.
@@ -73,7 +71,7 @@ public class Film {
      * Список жанров фильма
      */
     @Builder.Default
-    private Set<Genre> genres = new HashSet<>();
+    private List<Genre> genres = new ArrayList<>();
 
     /**
      * Список всех режссёров

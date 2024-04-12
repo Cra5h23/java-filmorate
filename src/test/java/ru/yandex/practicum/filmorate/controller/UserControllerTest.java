@@ -12,13 +12,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.exeption.UserFriendServiceException;
 import ru.yandex.practicum.filmorate.exeption.UserServiceException;
-import ru.yandex.practicum.filmorate.model.Event;
-import ru.yandex.practicum.filmorate.model.EventType;
-import ru.yandex.practicum.filmorate.model.OperationType;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Rating;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.service.event.EventService;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.service.user.UserFriendService;
@@ -26,7 +20,6 @@ import ru.yandex.practicum.filmorate.service.user.UserService;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -697,7 +690,7 @@ class UserControllerTest {
                         .description("TestDescription1")
                         .releaseDate(LocalDate.parse("1900-01-02"))
                         .duration(2)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build()
         ));
@@ -722,7 +715,7 @@ class UserControllerTest {
                         .description("TestDescription1")
                         .releaseDate(LocalDate.parse("1900-01-02"))
                         .duration(2)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -731,7 +724,7 @@ class UserControllerTest {
                         .description("TestDescription2")
                         .releaseDate(LocalDate.parse("1900-01-03"))
                         .duration(3)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build()
         ));

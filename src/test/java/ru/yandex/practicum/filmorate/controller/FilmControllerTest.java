@@ -261,7 +261,7 @@ public class FilmControllerTest {
                 .mpa(new Rating(1, "Комедия"))
                 .duration(120)
                 .releaseDate(LocalDate.of(1989, 5, 1).plusDays(1))
-                .genres(Set.of(new Genre(1, "G")))
+                .genres(List.of(new Genre(1, "G")))
                 .build();
 
         var requestBuilder = put("/films")
@@ -496,7 +496,7 @@ public class FilmControllerTest {
                         .description("TestDescription1")
                         .releaseDate(LocalDate.parse("1900-01-02"))
                         .duration(2)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -505,7 +505,7 @@ public class FilmControllerTest {
                         .description("TestDescription11")
                         .releaseDate(LocalDate.parse("1900-01-12"))
                         .duration(12)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -514,7 +514,7 @@ public class FilmControllerTest {
                         .description("TestDescription4")
                         .releaseDate(LocalDate.parse("1900-01-05"))
                         .duration(5)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -523,7 +523,7 @@ public class FilmControllerTest {
                         .description("TestDescription5")
                         .releaseDate(LocalDate.parse("1900-01-06"))
                         .duration(6)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -532,7 +532,7 @@ public class FilmControllerTest {
                         .description("TestDescription7")
                         .releaseDate(LocalDate.parse("1900-01-08"))
                         .duration(8)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -541,7 +541,7 @@ public class FilmControllerTest {
                         .description("TestDescription9")
                         .releaseDate(LocalDate.parse("1900-01-10"))
                         .duration(10)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -550,7 +550,7 @@ public class FilmControllerTest {
                         .description("TestDescription10")
                         .releaseDate(LocalDate.parse("1900-01-11"))
                         .duration(11)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -559,7 +559,7 @@ public class FilmControllerTest {
                         .description("TestDescription6")
                         .releaseDate(LocalDate.parse("1900-01-07"))
                         .duration(7)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -568,7 +568,7 @@ public class FilmControllerTest {
                         .description("TestDescription8")
                         .releaseDate(LocalDate.parse("1900-01-09"))
                         .duration(9)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -577,7 +577,7 @@ public class FilmControllerTest {
                         .description("TestDescription3")
                         .releaseDate(LocalDate.parse("1900-01-04"))
                         .duration(4)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build()
         ));
@@ -628,7 +628,7 @@ public class FilmControllerTest {
                         .description("TestDescription1")
                         .releaseDate(LocalDate.parse("1900-01-02"))
                         .duration(2)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -637,7 +637,7 @@ public class FilmControllerTest {
                         .description("TestDescription11")
                         .releaseDate(LocalDate.parse("1900-01-12"))
                         .duration(12)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -646,7 +646,7 @@ public class FilmControllerTest {
                         .description("TestDescription4")
                         .releaseDate(LocalDate.parse("1900-01-05"))
                         .duration(5)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -654,7 +654,7 @@ public class FilmControllerTest {
                         .description("TestDescription5")
                         .releaseDate(LocalDate.parse("1900-01-06"))
                         .duration(6)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -663,7 +663,7 @@ public class FilmControllerTest {
                         .description("TestDescription7")
                         .releaseDate(LocalDate.parse("1900-01-08"))
                         .duration(8)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -672,7 +672,7 @@ public class FilmControllerTest {
                         .description("TestDescription9")
                         .releaseDate(LocalDate.parse("1900-01-10"))
                         .duration(10)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -681,7 +681,7 @@ public class FilmControllerTest {
                         .description("TestDescription10")
                         .releaseDate(LocalDate.parse("1900-01-11"))
                         .duration(11)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -690,7 +690,7 @@ public class FilmControllerTest {
                         .description("TestDescription6")
                         .releaseDate(LocalDate.parse("1900-01-07"))
                         .duration(7)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -699,7 +699,7 @@ public class FilmControllerTest {
                         .description("TestDescription8")
                         .releaseDate(LocalDate.parse("1900-01-09"))
                         .duration(9)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -708,7 +708,7 @@ public class FilmControllerTest {
                         .description("TestDescription3")
                         .releaseDate(LocalDate.parse("1900-01-04"))
                         .duration(4)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -717,7 +717,7 @@ public class FilmControllerTest {
                         .description("TestDescription2")
                         .releaseDate(LocalDate.parse("1900-01-03"))
                         .duration(3)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build()
         ));
@@ -772,7 +772,7 @@ public class FilmControllerTest {
                         .description("TestDescription1")
                         .releaseDate(LocalDate.parse("1900-01-02"))
                         .duration(2)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build()));
 
@@ -795,7 +795,7 @@ public class FilmControllerTest {
                         .description("TestDescription1")
                         .releaseDate(LocalDate.parse("1900-01-02"))
                         .duration(2)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build(),
                 Film.builder()
@@ -804,7 +804,7 @@ public class FilmControllerTest {
                         .description("TestDescription11")
                         .releaseDate(LocalDate.parse("1900-01-12"))
                         .duration(12)
-                        .genres(Set.of(new Genre(1, "G")))
+                        .genres(List.of(new Genre(1, "G")))
                         .mpa(new Rating(1, "Комедия"))
                         .build()
 

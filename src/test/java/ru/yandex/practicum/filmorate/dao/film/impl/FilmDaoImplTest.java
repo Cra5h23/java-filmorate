@@ -334,7 +334,7 @@ class FilmDaoImplTest {
                     .description("testDescription" + i)
                     .mpa(new Rating(1, "G"))
                     .duration(10 + i)
-                    .genres(Set.of())
+                    .genres(List.of())
                     .releaseDate(LocalDate.parse("1991-10-01").plusDays(i))
                     .build();
             films.add(f);
