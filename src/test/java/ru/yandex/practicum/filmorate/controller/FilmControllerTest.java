@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -13,6 +12,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.exeption.FilmLikeServiceException;
 import ru.yandex.practicum.filmorate.exeption.FilmServiceException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Rating;
@@ -38,7 +38,6 @@ public class FilmControllerTest {
     FilmService filmService;
 
     @MockBean
-    @Qualifier("filmLikeServiceDbImpl")
     FilmLikeService filmLikeService;
 
     @Autowired
@@ -59,14 +58,16 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1989-05-02\"," +
                         "\"duration\":121," +
                         "\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
-                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]," +
+                        "\"directors\":[{\"id\":1,\"name\":\"testDirector\"}]}," +
                         "{\"id\":2," +
                         "\"name\":\"testName2\"," +
                         "\"description\":\"testDescription2\"," +
                         "\"releaseDate\":\"1989-05-02\"," +
                         "\"duration\":122," +
                         "\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
-                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}]")
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]," +
+                        "\"directors\":[{\"id\":1,\"name\":\"testDirector\"}]}]")
         );
     }
 
@@ -81,6 +82,7 @@ public class FilmControllerTest {
                     .duration(120 + i)
                     .releaseDate(LocalDate.of(1989, 5, 1).plusDays(1))
                     .genres(List.of(new Genre(1, "G")))
+                    .directors(List.of(new Director(1, "testDirector")))
                     .build();
             films.add(f);
         }
@@ -103,7 +105,8 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1989-05-02\"," +
                         "\"duration\":121," +
                         "\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
-                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}"));
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]," +
+                        "\"directors\":[{\"id\":1,\"name\":\"testDirector\"}]}"));
     }
 
     @Test
@@ -131,6 +134,7 @@ public class FilmControllerTest {
                 .duration(120)
                 .releaseDate(LocalDate.of(1989, 5, 1).plusDays(1))
                 .genres(List.of(new Genre(1, "G")))
+                .directors(List.of(new Director(1,"testDirector")))
                 .build();
         String s = objectMapper.writeValueAsString(f);
         f.setId(1);
@@ -148,7 +152,8 @@ public class FilmControllerTest {
                         "\"releaseDate\":\"1989-05-02\"," +
                         "\"duration\":120," +
                         "\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
-                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}")
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]," +
+                        "\"directors\":[{\"id\":1,\"name\":\"testDirector\"}]}")
         );
     }
 
@@ -483,7 +488,7 @@ public class FilmControllerTest {
     @DisplayName("GET /films/popular возвращает список из 10 самых популярных фильмов по умолчанию")
     void getListOfMostPopularFilmsTest_ReturnsDefaultListMostPopularFilms() throws Exception {
         var requestBuilder = get("/films/popular");
-        Mockito.when(filmLikeService.getMostPopularFilm(10)).thenReturn(List.of(
+        Mockito.when(filmLikeService.getMostPopularFilm(10,null,null)).thenReturn(List.of(
                 Film.builder()
                         .id(1)
                         .name("TestFilm1")
@@ -615,7 +620,7 @@ public class FilmControllerTest {
     @DisplayName("GET /films/popular возвращает список из 11 самых популярных фильмов если передан параметр count=11")
     void getListOfMostPopularFilmsTest_ReturnsList11MostPopularFilms() throws Exception {
         var requestBuilder = get("/films/popular?count=11");
-        Mockito.when(filmLikeService.getMostPopularFilm(11)).thenReturn(List.of(
+        Mockito.when(filmLikeService.getMostPopularFilm(11,null,null)).thenReturn(List.of(
                 Film.builder()
                         .id(1)
                         .name("TestFilm1")
@@ -759,7 +764,7 @@ public class FilmControllerTest {
     void getListOfMostPopularFilmsTest_ReturnsList1MostPopularFilms() throws Exception {
         var requestBuilder = get("/films/popular?count=1");
 
-        Mockito.when(filmLikeService.getMostPopularFilm(1)).thenReturn(List.of(
+        Mockito.when(filmLikeService.getMostPopularFilm(1,null,null)).thenReturn(List.of(
                 Film.builder()
                         .id(1)
                         .name("TestFilm1")
@@ -775,6 +780,43 @@ public class FilmControllerTest {
                 content().contentType(APPLICATION_JSON),
                 content().json("[{\"id\":1,\"name\":\"TestFilm1\",\"description\":\"TestDescription1\"," +
                         "\"releaseDate\":\"1900-01-02\",\"duration\":2,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}]"));
+    }
+
+    @Test
+    @DisplayName("GET /films/common возвращает список общих с другом фильмов с сортировкой по их популярности")
+    void getFilmsTestCommonFriends() throws Exception {
+        var requestBuilder = get("/films/common?userId=1&friendId=2");
+        Mockito.when(filmLikeService.getCommonFilms(1, 2)).thenReturn(List.of(
+                Film.builder()
+                        .id(1)
+                        .name("TestFilm1")
+                        .description("TestDescription1")
+                        .releaseDate(LocalDate.parse("1900-01-02"))
+                        .duration(2)
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
+                        .build(),
+                Film.builder()
+                        .id(11)
+                        .name("TestFilm11")
+                        .description("TestDescription11")
+                        .releaseDate(LocalDate.parse("1900-01-12"))
+                        .duration(12)
+                        .genres(List.of(new Genre(1, "G")))
+                        .mpa(new Rating(1, "Комедия"))
+                        .build()
+
+        ));
+
+        this.mockMvc.perform(requestBuilder).andExpectAll(
+                status().isOk(),
+                content().contentType(APPLICATION_JSON),
+                content().json("[{\"id\":1,\"name\":\"TestFilm1\",\"description\":\"TestDescription1\"," +
+                        "\"releaseDate\":\"1900-01-02\",\"duration\":2,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
+                        "\"genres\":[{\"id\":1,\"name\":\"G\"}]}," +
+                        "{\"id\":11,\"name\":\"TestFilm11\",\"description\":\"TestDescription11\"," +
+                        "\"releaseDate\":\"1900-01-12\",\"duration\":12,\"mpa\":{\"id\":1,\"name\":\"Комедия\"}," +
                         "\"genres\":[{\"id\":1,\"name\":\"G\"}]}]"));
     }
 }
